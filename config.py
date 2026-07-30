@@ -30,18 +30,16 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 	if not isinstance(raw_config, dict):
 		raise ConfigError(f"Config file must contain a JSON object: {config_path}")
 
-	spreadsheet_path = _required_path(raw_config, "spreadsheet_path")
-	sheet_name = _required_string(raw_config, "sheet_name")
+	reading_order_path = _required_path(raw_config, "reading_order_path")
 	destination_folder = _required_path(raw_config, "destination_folder")
 	source_folders = _source_folders(raw_config.get("source_folders"))
 	issue_overrides = _issue_overrides(raw_config.get("issue_overrides", {}))
 
-	_require_file(spreadsheet_path, "Spreadsheet")
+	_require_file(reading_order_path, "Reading-order JSON")
 	_require_directory(destination_folder, "Destination folder")
 
 	return OrganizerConfig(
-		spreadsheet_path=spreadsheet_path,
-		sheet_name=sheet_name,
+		reading_order_path=reading_order_path,
 		destination_folder=destination_folder,
 		source_folders=tuple(source_folders),
 		issue_overrides=issue_overrides,

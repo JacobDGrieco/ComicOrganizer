@@ -1,4 +1,4 @@
-"""Match parsed source files to the spreadsheet reading order."""
+"""Match parsed source files to the configured reading order."""
 
 from __future__ import annotations
 

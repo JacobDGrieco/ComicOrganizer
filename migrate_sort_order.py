@@ -1,4 +1,4 @@
-"""Renumber existing destination files after the reading-order spreadsheet changes."""
+"""Renumber existing destination files after the reading-order JSON changes."""
 
 from __future__ import annotations
 
@@ -47,10 +47,8 @@ class MigrationPlan:
 
 def plan_migration(
 	folder: str | Path,
-	new_spreadsheet_path: str | Path,
-	sheet_name: str,
-	old_spreadsheet_path: str | Path | None = None,
-	old_sheet_name: str | None = None,
+	new_reading_order_path: str | Path,
+	old_reading_order_path: str | Path | None = None,
 	config: OrganizerConfig | None = None,
 ) -> MigrationPlan:
 	"""Build a renumbering plan for existing destination files."""
@@ -59,13 +57,13 @@ def plan_migration(
 		raise MigrationError(f"Destination folder does not exist: {folder_path}")
 
 	issue_overrides = config.issue_overrides if config is not None else {}
-	new_entries = read_reading_order(new_spreadsheet_path, sheet_name, issue_overrides)
+	new_entries = read_reading_order(new_reading_order_path, issue_overrides)
 	new_entries_by_match_key = _unique_entry_index(new_entries)
 	destination_comics = _destination_comics(folder_path)
 
-	if old_spreadsheet_path is not None:
-		old_entries = read_reading_order(old_spreadsheet_path, old_sheet_name or sheet_name, issue_overrides)
-		items, warnings = _plan_from_old_sheet(destination_comics, old_entries, new_entries_by_match_key)
+	if old_reading_order_path is not None:
+		old_entries = read_reading_order(old_reading_order_path, issue_overrides)
+		items, warnings = _plan_from_old_order(destination_comics, old_entries, new_entries_by_match_key)
 	else:
 		items, warnings = _plan_from_filenames(destination_comics, new_entries, config)
 
@@ -98,18 +96,15 @@ def main(argv: list[str] | None = None) -> int:
 	try:
 		config = load_config(args.config) if args.config else None
 		folder = Path(args.folder) if args.folder else _config_value(config, "destination_folder", "--folder or --config is required")
-		new_spreadsheet = Path(args.new_spreadsheet) if args.new_spreadsheet else _config_value(
+		new_reading_order = Path(args.new_reading_order) if args.new_reading_order else _config_value(
 			config,
-			"spreadsheet_path",
-			"--new-spreadsheet or --config is required",
+			"reading_order_path",
+			"--new-reading-order or --config is required",
 		)
-		sheet_name = args.sheet_name or (config.sheet_name if config is not None else "Issue Release Order")
 		plan = plan_migration(
 			folder=folder,
-			new_spreadsheet_path=new_spreadsheet,
-			sheet_name=sheet_name,
-			old_spreadsheet_path=args.old_spreadsheet,
-			old_sheet_name=args.old_sheet_name,
+			new_reading_order_path=new_reading_order,
+			old_reading_order_path=args.old_reading_order,
 			config=config,
 		)
 	except (ConfigError, MigrationError, ReadingOrderError) as exc:
@@ -143,13 +138,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
-	parser = argparse.ArgumentParser(description="Renumber existing destination files against a revised sort-order spreadsheet.")
-	parser.add_argument("--config", help="Organizer config JSON. Provides folder, new spreadsheet, sheet name, and output-name aliases.")
+	parser = argparse.ArgumentParser(description="Renumber existing destination files against a revised sort-order JSON file.")
+	parser.add_argument("--config", help="Organizer config JSON. Provides folder, new reading-order file, and output-name aliases.")
 	parser.add_argument("--folder", help="Destination folder containing already organized files.")
-	parser.add_argument("--new-spreadsheet", help="Reworked spreadsheet path. Defaults to config spreadsheet_path.")
-	parser.add_argument("--old-spreadsheet", help="Original spreadsheet path. Recommended when repeated issue numbers exist across volumes.")
-	parser.add_argument("--sheet-name", help="Sheet name in the new spreadsheet. Defaults to config sheet_name, then Issue Release Order.")
-	parser.add_argument("--old-sheet-name", help="Sheet name in the old spreadsheet. Defaults to --sheet-name.")
+	parser.add_argument("--new-reading-order", help="Reworked reading-order JSON path. Defaults to config reading_order_path.")
+	parser.add_argument("--old-reading-order", help="Original reading-order JSON path. Recommended when repeated issue numbers exist across volumes.")
 	parser.add_argument("--apply", action="store_true", help="Actually rename files. Without this, only prints the plan.")
 	return parser.parse_args(argv)
 
@@ -183,7 +176,7 @@ def _destination_comics(folder: Path) -> tuple[DestinationComic, ...]:
 	return tuple(comics)
 
 
-def _plan_from_old_sheet(
+def _plan_from_old_order(
 	destination_comics: tuple[DestinationComic, ...],
 	old_entries: tuple[ReadingOrderEntry, ...],
 	new_entries_by_match_key: dict[tuple[str, str, str], ReadingOrderEntry],
@@ -195,13 +188,13 @@ def _plan_from_old_sheet(
 	for comic in destination_comics:
 		old_entry = old_entries_by_position.get(comic.position)
 		if old_entry is None:
-			warnings.append(f"{comic.path.name}: no old spreadsheet row for position {comic.position:04d}; skipped")
+			warnings.append(f"{comic.path.name}: no old reading-order entry for position {comic.position:04d}; skipped")
 			continue
 
 		new_entry = new_entries_by_match_key.get(entry_match_key(old_entry))
 		if new_entry is None:
 			warnings.append(
-				f"{comic.path.name}: no new spreadsheet row for {old_entry.run} volume {old_entry.volume} #{old_entry.issue_label}; skipped"
+				f"{comic.path.name}: no new reading-order entry for {old_entry.run} volume {old_entry.volume} #{old_entry.issue_label}; skipped"
 			)
 			continue
 
@@ -223,11 +216,11 @@ def _plan_from_filenames(
 		key = _decoded_key(comic.title, comic.issue_label)
 		matching_entries = entries_by_decoded_key.get(key, ())
 		if not matching_entries:
-			warnings.append(f"{comic.path.name}: no new spreadsheet row matching {comic.title} #{comic.issue_label}; skipped")
+			warnings.append(f"{comic.path.name}: no new reading-order entry matching {comic.title} #{comic.issue_label}; skipped")
 			continue
 		if len(matching_entries) > 1:
 			positions = ", ".join(f"{entry.position:04d}/v{entry.volume}" for entry in matching_entries)
-			warnings.append(f"{comic.path.name}: ambiguous new spreadsheet matches ({positions}); use --old-spreadsheet; skipped")
+			warnings.append(f"{comic.path.name}: ambiguous new reading-order matches ({positions}); use --old-reading-order; skipped")
 			continue
 
 		items.append(_migration_item(comic, matching_entries[0].position))
@@ -240,7 +233,7 @@ def _unique_entry_index(entries: tuple[ReadingOrderEntry, ...]) -> dict[tuple[st
 	for entry in entries:
 		key = entry_match_key(entry)
 		if key in index:
-			raise MigrationError(f"New spreadsheet has duplicate entry: {entry.run} volume {entry.volume} #{entry.issue_label}")
+			raise MigrationError(f"New reading-order JSON has duplicate entry: {entry.run} volume {entry.volume} #{entry.issue_label}")
 		index[key] = entry
 
 	return index

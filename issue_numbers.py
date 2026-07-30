@@ -1,4 +1,4 @@
-"""Issue-number normalization shared by spreadsheet and filename matching."""
+"""Issue-number normalization shared by reading-order and filename matching."""
 
 from __future__ import annotations
 
@@ -38,7 +38,7 @@ def comparable_issue_number(value: object) -> str:
 
 
 def normalize_volume_label(value: object) -> str:
-	"""Return a stable volume label for spreadsheet/config/filename matching."""
+	"""Return a stable volume label for reading-order/config/filename matching."""
 	if value is None:
 		return ""
 

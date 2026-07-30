@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import re
-import shutil
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,15 +24,6 @@ class ShiftPlanItem:
 	destination_path: Path
 	source_position: int
 	destination_position: int
-
-
-@dataclass(frozen=True)
-class SpreadsheetInsertPlan:
-	spreadsheet_path: Path
-	sheet_name: str
-	insert_before_row: int
-	row_count: int
-	backup_path: Path
 
 
 def plan_shift(folder: str | Path, from_file: str | Path, increment: int = 1) -> tuple[ShiftPlanItem, ...]:
@@ -110,71 +100,12 @@ def apply_shift(plan: tuple[ShiftPlanItem, ...]) -> None:
 		item.source_path.rename(item.destination_path)
 
 
-def plan_spreadsheet_insert(
-	spreadsheet_path: str | Path,
-	sheet_name: str,
-	start_position: int,
-	row_count: int,
-) -> SpreadsheetInsertPlan:
-	"""Build and validate a spreadsheet-row insertion plan."""
-	if row_count < 1:
-		raise ShiftPositionsError("Spreadsheet row insertion requires a positive increment")
-
-	path = Path(spreadsheet_path)
-	if not path.is_file():
-		raise ShiftPositionsError(f"Spreadsheet does not exist: {path}")
-
-	insert_before_row = start_position + 1
-	if insert_before_row < 2:
-		raise ShiftPositionsError("Spreadsheet insertion row must be after the header row")
-
-	try:
-		from openpyxl import load_workbook
-	except ImportError as exc:
-		raise ShiftPositionsError("openpyxl is required to insert spreadsheet rows. Install requirements.txt.") from exc
-
-	workbook = load_workbook(path, read_only=True)
-	try:
-		if sheet_name not in workbook.sheetnames:
-			raise ShiftPositionsError(f"Spreadsheet does not contain sheet '{sheet_name}'")
-		sheet = workbook[sheet_name]
-		if insert_before_row > sheet.max_row + 1:
-			raise ShiftPositionsError(
-				f"Insert row {insert_before_row} is beyond sheet end {sheet.max_row + 1}"
-			)
-	finally:
-		workbook.close()
-
-	return SpreadsheetInsertPlan(
-		spreadsheet_path=path,
-		sheet_name=sheet_name,
-		insert_before_row=insert_before_row,
-		row_count=row_count,
-		backup_path=_backup_path(path),
-	)
-
-
-def apply_spreadsheet_insert(plan: SpreadsheetInsertPlan) -> None:
-	"""Insert blank rows into the spreadsheet after first writing a backup."""
-	from openpyxl import load_workbook
-
-	shutil.copy2(plan.spreadsheet_path, plan.backup_path)
-	workbook = load_workbook(plan.spreadsheet_path)
-	try:
-		sheet = workbook[plan.sheet_name]
-		sheet.insert_rows(plan.insert_before_row, amount=plan.row_count)
-		workbook.save(plan.spreadsheet_path)
-	finally:
-		workbook.close()
-
-
 def main(argv: list[str] | None = None) -> int:
 	args = _parse_args(argv)
 	try:
 		config = _load_optional_config(args.config)
 		folder = _folder_from_args(args, config)
 		plan = plan_shift(folder, args.from_file, args.increment)
-		spreadsheet_plan = _spreadsheet_plan_from_args(args, config, plan)
 	except (ConfigError, ShiftPositionsError) as exc:
 		print(f"ERROR {exc}", file=sys.stderr)
 		return 1
@@ -183,19 +114,8 @@ def main(argv: list[str] | None = None) -> int:
 		action = "rename" if args.apply else "would rename"
 		print(f"{action}: {item.source_path.name} -> {item.destination_path.name}")
 
-	if spreadsheet_plan is not None:
-		action = "insert" if args.apply else "would insert"
-		print(
-			f"{action}: {spreadsheet_plan.row_count} spreadsheet row(s) before row "
-			f"{spreadsheet_plan.insert_before_row} in {spreadsheet_plan.sheet_name}"
-		)
-		if args.apply:
-			print(f"Spreadsheet backup: {spreadsheet_plan.backup_path}")
-
 	if args.apply:
 		apply_shift(plan)
-		if spreadsheet_plan is not None:
-			apply_spreadsheet_insert(spreadsheet_plan)
 		print(f"Renamed {len(plan)} files.")
 	else:
 		print(f"Dry run only. {len(plan)} files would be renamed. Pass --apply to make changes.")
@@ -206,12 +126,9 @@ def main(argv: list[str] | None = None) -> int:
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
 	parser = argparse.ArgumentParser(description="Shift 4-digit comic position prefixes from a selected file onward.")
 	parser.add_argument("from_file", help="Filename or full path to the first file that should shift.")
-	parser.add_argument("--config", help="Organizer config JSON. Provides folder, spreadsheet, and sheet defaults.")
+	parser.add_argument("--config", help="Organizer config JSON. Provides the destination folder default.")
 	parser.add_argument("--folder", help="Destination folder. Required when from_file is only a filename unless --config is provided.")
 	parser.add_argument("--increment", type=int, default=1, help="Amount to add to each position. Defaults to 1.")
-	parser.add_argument("--insert-spreadsheet-rows", action="store_true", help="Also insert blank rows into the reading-order spreadsheet.")
-	parser.add_argument("--spreadsheet", help="Spreadsheet path. Defaults to config spreadsheet_path when --config is provided.")
-	parser.add_argument("--sheet-name", help="Spreadsheet sheet name. Defaults to config sheet_name, then Issue Release Order.")
 	parser.add_argument("--apply", action="store_true", help="Actually rename files. Without this, only prints the plan.")
 	return parser.parse_args(argv)
 
@@ -230,28 +147,6 @@ def _folder_from_args(args: argparse.Namespace, config) -> Path:
 		return config.destination_folder
 
 	return _folder_from_from_file(args.from_file)
-
-
-def _spreadsheet_plan_from_args(args: argparse.Namespace, config, plan: tuple[ShiftPlanItem, ...]) -> SpreadsheetInsertPlan | None:
-	if not args.insert_spreadsheet_rows:
-		return None
-	if args.increment < 1:
-		raise ShiftPositionsError("Spreadsheet row insertion only supports positive increments")
-
-	spreadsheet_path = args.spreadsheet
-	if spreadsheet_path is None and config is not None:
-		spreadsheet_path = config.spreadsheet_path
-	if spreadsheet_path is None:
-		raise ShiftPositionsError("--spreadsheet or --config is required with --insert-spreadsheet-rows")
-
-	sheet_name = args.sheet_name
-	if sheet_name is None and config is not None:
-		sheet_name = config.sheet_name
-	if sheet_name is None:
-		sheet_name = "Issue Release Order"
-
-	start_position = min(item.source_position for item in plan)
-	return plan_spreadsheet_insert(spreadsheet_path, sheet_name, start_position, args.increment)
 
 
 def _folder_from_from_file(from_file: str) -> Path:
@@ -297,19 +192,6 @@ def _replace_position(name: str, position: int) -> str:
 		raise ShiftPositionsError(f"File does not start with a 4-digit position prefix: {name}")
 
 	return f"{position:04d} - {match.group('rest')}"
-
-
-def _backup_path(path: Path) -> Path:
-	candidate = path.with_name(f"{path.stem}.backup{path.suffix}")
-	if not candidate.exists():
-		return candidate
-
-	index = 1
-	while True:
-		candidate = path.with_name(f"{path.stem}.backup-{index}{path.suffix}")
-		if not candidate.exists():
-			return candidate
-		index += 1
 
 
 if __name__ == "__main__":

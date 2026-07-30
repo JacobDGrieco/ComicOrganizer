@@ -2,7 +2,7 @@
 
 Python utilities for organizing Tachidesk/Suwayomi comic downloads into a single reading-order folder.
 
-The main organizer reads an `.xlsx` spreadsheet, matches downloaded `.cbz` files by run, volume, and issue, then renames/moves them into:
+The main organizer reads a JSON sort-order file, matches downloaded `.cbz` files by run, volume, and issue, then renames/moves them into:
 
 ```text
 NNNN - <Output Name> #<Issue>.cbz
@@ -42,6 +42,19 @@ The organizer is safe to rerun. It checks existing destination files by their `N
 
 `config.json` controls all paths and naming.
 
+Reading-order files are ordered JSON arrays, either as a bare array or inside an `entries` property:
+
+```json
+{
+	"entries": [
+		{ "run": "Amazing Fantasy", "volume": 1, "issue": "15" },
+		{ "run": "The Amazing Spider-Man", "volume": 1, "issue": "1" }
+	]
+}
+```
+
+The array order is the destination position order. The first entry becomes `0001`, the second becomes `0002`, and so on.
+
 Source folder example:
 
 ```json
@@ -59,14 +72,14 @@ Source folder example:
 Fields:
 
 - `path`: folder containing downloaded `.cbz` files.
-- `run`: exact spreadsheet `Run` value used for matching.
+- `run`: exact reading-order `run` value used for matching.
 - `output_name`: name used in moved filenames. Defaults to `run`.
-- `volume`: default spreadsheet `Volume` for files in this folder. Defaults to `1`.
-- `annual_run`: spreadsheet `Run` value for annual files in this folder. Defaults to `<run> Annual`.
+- `volume`: default reading-order `volume` for files in this folder. Defaults to `1`.
+- `annual_run`: reading-order `run` value for annual files in this folder. Defaults to `<run> Annual`.
 - `annual_output_name`: output name for annual files. Defaults to `<output_name> Annual`.
-- `annual_volume`: default spreadsheet `Volume` for annual files. Defaults to `volume`.
+- `annual_volume`: default reading-order `volume` for annual files. Defaults to `volume`.
 
-Filename `vN` volume markers override config volume for that file. For example, `v2 001.cbz` matches spreadsheet volume `2` even if the folder config says `"volume": 1`.
+Filename `vN` volume markers override config volume for that file. For example, `v2 001.cbz` matches reading-order volume `2` even if the folder config says `"volume": 1`.
 
 Source folders do not need to exist yet. Missing or unreachable source folders are reported as warnings and skipped, so you can add paths to `config.json` before those series finish downloading.
 
@@ -86,7 +99,7 @@ Annual 42 (2018).cbz
 
 ## Issue Overrides
 
-Use `issue_overrides` when the spreadsheet's generated issue label differs from the real/source issue number.
+Use `issue_overrides` when the generated/source sort-order issue label differs from the real/source issue number.
 
 Example:
 
@@ -98,7 +111,7 @@ Example:
 }
 ```
 
-This keeps the spreadsheet unchanged while matching/outputting `Amazing Fantasy #15`.
+This keeps the sort-order JSON unchanged while matching/outputting `Amazing Fantasy #15`.
 
 ## Position Shifter
 
@@ -137,54 +150,39 @@ The selected file and every prefixed file after it are shifted. With the default
 
 The shifter validates target position collisions before renaming anything. Without `--apply`, it only prints the plan.
 
-To also insert blank rows into the spreadsheet at the matching reading-order position, add `--insert-spreadsheet-rows`. The insert row is the file position plus one for the header row. For example, shifting from `0004 - ...` inserts rows before spreadsheet row `5`.
-
-Dry run with spreadsheet rows:
-
-```powershell
-python shift_positions.py "0004 - The Amazing Spider-Man #3.cbz" --config config.json --insert-spreadsheet-rows
-```
-
-Apply file renames and spreadsheet row insertion:
-
-```powershell
-python shift_positions.py "0004 - The Amazing Spider-Man #3.cbz" --config config.json --insert-spreadsheet-rows --apply
-```
-
-The number of inserted rows equals `--increment`. Spreadsheet row insertion only supports positive increments. On apply, the script creates a workbook backup next to the spreadsheet before saving row changes.
+After shifting destination files, insert the new issue entry directly into the JSON sort-order file at the matching array position.
 
 ## Sort-Order Migration
 
-Use `migrate_sort_order.py` when you rebuild the spreadsheet sort order and need existing destination files renumbered to match the new row positions.
+Use `migrate_sort_order.py` when you rebuild the JSON sort order and need existing destination files renumbered to match the new entry positions.
 
-Recommended dry run using the old spreadsheet as a reference:
+Recommended dry run using the old JSON file as a reference:
 
 ```powershell
-python migrate_sort_order.py --config config.json --old-spreadsheet "C:\Users\gamin\Downloads\spider_man_comics_master_old.xlsx"
+python migrate_sort_order.py --config config.json --old-reading-order "sort_orders\spider-verse-old.json"
 ```
 
 Apply:
 
 ```powershell
-python migrate_sort_order.py --config config.json --old-spreadsheet "C:\Users\gamin\Downloads\spider_man_comics_master_old.xlsx" --apply
+python migrate_sort_order.py --config config.json --old-reading-order "sort_orders\spider-verse-old.json" --apply
 ```
 
 With `--config`, the tool uses:
 
 - `destination_folder` as the folder to rename.
-- `spreadsheet_path` as the new/reworked spreadsheet.
-- `sheet_name` as the sheet to read.
+- `reading_order_path` as the new/reworked JSON sort order.
 - Config output names as aliases when decoding filenames.
 
-The old-spreadsheet mode is safest because it uses each existing file's current `NNNN` prefix to find the old spreadsheet row, then matches that issue in the new spreadsheet by `Run + Volume + Issue`. This avoids mistakes when a run has multiple volumes with repeated issue numbers.
+The old-reading-order mode is safest because it uses each existing file's current `NNNN` prefix to find the old JSON entry, then matches that issue in the new JSON file by `Run + Volume + Issue`. This avoids mistakes when a run has multiple volumes with repeated issue numbers.
 
-Fallback dry run without an old spreadsheet:
+Fallback dry run without an old JSON reference:
 
 ```powershell
 python migrate_sort_order.py --config config.json
 ```
 
-Fallback mode decodes names like `0455 - The Amazing Spider-Man #396.cbz` and looks for the same title/issue in the new spreadsheet. If that title/issue appears in multiple volumes, the tool warns and skips that file until you provide `--old-spreadsheet`.
+Fallback mode decodes names like `0455 - The Amazing Spider-Man #396.cbz` and looks for the same title/issue in the new JSON file. If that title/issue appears in multiple volumes, the tool warns and skips that file until you provide `--old-reading-order`.
 
 Migration applies renames through temporary filenames first, so swaps such as `0001 <-> 0002` are handled without overwriting.
 

@@ -10,18 +10,17 @@ class ConfigTests(unittest.TestCase):
 	def test_loads_valid_config(self):
 		with temporary_directory() as temp_dir:
 			base_path = Path(temp_dir)
-			spreadsheet_path = base_path / "order.xlsx"
+			reading_order_path = base_path / "reading_order.json"
 			destination_path = base_path / "destination"
 			source_path = base_path / "source"
-			spreadsheet_path.write_bytes(b"not a real workbook")
+			reading_order_path.write_text('{"entries": []}', encoding="utf-8")
 			destination_path.mkdir()
 			source_path.mkdir()
 			config_path = base_path / "config.json"
 			config_path.write_text(
 				json.dumps(
 					{
-						"spreadsheet_path": str(spreadsheet_path),
-						"sheet_name": "Issue Release Order",
+						"reading_order_path": str(reading_order_path),
 						"destination_folder": str(destination_path),
 						"source_folders": [
 							{
@@ -42,8 +41,7 @@ class ConfigTests(unittest.TestCase):
 
 			config = load_config(config_path)
 
-			self.assertEqual(spreadsheet_path, config.spreadsheet_path)
-			self.assertEqual("Issue Release Order", config.sheet_name)
+			self.assertEqual(reading_order_path, config.reading_order_path)
 			self.assertEqual(destination_path, config.destination_folder)
 			self.assertEqual("The Amazing Spider-Man", config.source_folders[0].run)
 			self.assertEqual("Amazing Spider-Man", config.source_folders[0].output_name)
@@ -56,18 +54,17 @@ class ConfigTests(unittest.TestCase):
 	def test_output_name_defaults_to_run(self):
 		with temporary_directory() as temp_dir:
 			base_path = Path(temp_dir)
-			spreadsheet_path = base_path / "order.xlsx"
+			reading_order_path = base_path / "reading_order.json"
 			destination_path = base_path / "destination"
 			source_path = base_path / "source"
-			spreadsheet_path.write_bytes(b"not a real workbook")
+			reading_order_path.write_text('{"entries": []}', encoding="utf-8")
 			destination_path.mkdir()
 			source_path.mkdir()
 			config_path = base_path / "config.json"
 			config_path.write_text(
 				json.dumps(
 					{
-						"spreadsheet_path": str(spreadsheet_path),
-						"sheet_name": "Issue Release Order",
+						"reading_order_path": str(reading_order_path),
 						"destination_folder": str(destination_path),
 						"source_folders": [{"path": str(source_path), "run": "The Amazing Spider-Man"}],
 						"issue_overrides": {},
@@ -85,16 +82,15 @@ class ConfigTests(unittest.TestCase):
 	def test_allows_missing_source_folder(self):
 		with temporary_directory() as temp_dir:
 			base_path = Path(temp_dir)
-			spreadsheet_path = base_path / "order.xlsx"
+			reading_order_path = base_path / "reading_order.json"
 			destination_path = base_path / "destination"
-			spreadsheet_path.write_bytes(b"not a real workbook")
+			reading_order_path.write_text('{"entries": []}', encoding="utf-8")
 			destination_path.mkdir()
 			config_path = base_path / "config.json"
 			config_path.write_text(
 				json.dumps(
 					{
-						"spreadsheet_path": str(spreadsheet_path),
-						"sheet_name": "Issue Release Order",
+						"reading_order_path": str(reading_order_path),
 						"destination_folder": str(destination_path),
 						"source_folders": [{"path": str(base_path / "missing"), "run": "The Amazing Spider-Man"}],
 						"issue_overrides": {},

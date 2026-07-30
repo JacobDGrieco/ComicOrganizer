@@ -1,6 +1,5 @@
 {
-	"spreadsheet_path": "C:\\Users\\gamin\\Downloads\\spider_man_comics_master.xlsx",
-	"sheet_name": "Issue Release Order",
+	"reading_order_path": "sort_orders/spider-verse.json",
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Verse",
 	"source_folders": [
 		{

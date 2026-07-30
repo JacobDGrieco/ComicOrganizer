@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 
@@ -12,12 +13,12 @@ class MigrateSortOrderTests(unittest.TestCase):
 			folder = base_path / "destination"
 			folder.mkdir()
 			_create_files(folder, "0001 - Run #1.cbz", "0002 - Run #2.cbz")
-			old_sheet = base_path / "old.xlsx"
-			new_sheet = base_path / "new.xlsx"
-			_create_workbook(old_sheet, [("Run", 1, "#1"), ("Run", 1, "#2")])
-			_create_workbook(new_sheet, [("Run", 1, "#2"), ("Run", 1, "#1")])
+			old_order = base_path / "old.json"
+			new_order = base_path / "new.json"
+			_create_reading_order(old_order, [("Run", 1, "#1"), ("Run", 1, "#2")])
+			_create_reading_order(new_order, [("Run", 1, "#2"), ("Run", 1, "#1")])
 
-			plan = plan_migration(folder, new_sheet, "Issue Release Order", old_spreadsheet_path=old_sheet)
+			plan = plan_migration(folder, new_order, old_reading_order_path=old_order)
 
 			self.assertEqual(
 				[
@@ -34,12 +35,12 @@ class MigrateSortOrderTests(unittest.TestCase):
 			folder = base_path / "destination"
 			folder.mkdir()
 			_create_files(folder, "0001 - Run #1.cbz", "0002 - Run #2.cbz")
-			old_sheet = base_path / "old.xlsx"
-			new_sheet = base_path / "new.xlsx"
-			_create_workbook(old_sheet, [("Run", 1, "#1"), ("Run", 1, "#2")])
-			_create_workbook(new_sheet, [("Run", 1, "#2"), ("Run", 1, "#1")])
+			old_order = base_path / "old.json"
+			new_order = base_path / "new.json"
+			_create_reading_order(old_order, [("Run", 1, "#1"), ("Run", 1, "#2")])
+			_create_reading_order(new_order, [("Run", 1, "#2"), ("Run", 1, "#1")])
 
-			apply_migration(plan_migration(folder, new_sheet, "Issue Release Order", old_spreadsheet_path=old_sheet))
+			apply_migration(plan_migration(folder, new_order, old_reading_order_path=old_order))
 
 			self.assertTrue((folder / "0001 - Run #2.cbz").exists())
 			self.assertTrue((folder / "0002 - Run #1.cbz").exists())
@@ -50,10 +51,10 @@ class MigrateSortOrderTests(unittest.TestCase):
 			folder = base_path / "destination"
 			folder.mkdir()
 			_create_files(folder, "0099 - Run #2.cbz")
-			new_sheet = base_path / "new.xlsx"
-			_create_workbook(new_sheet, [("Run", 1, "#1"), ("Run", 1, "#2")])
+			new_order = base_path / "new.json"
+			_create_reading_order(new_order, [("Run", 1, "#1"), ("Run", 1, "#2")])
 
-			plan = plan_migration(folder, new_sheet, "Issue Release Order")
+			plan = plan_migration(folder, new_order)
 
 			self.assertEqual("0002 - Run #2.cbz", plan.items[0].destination_path.name)
 			self.assertEqual((), plan.warnings)
@@ -64,10 +65,10 @@ class MigrateSortOrderTests(unittest.TestCase):
 			folder = base_path / "destination"
 			folder.mkdir()
 			_create_files(folder, "0099 - Run #1.cbz")
-			new_sheet = base_path / "new.xlsx"
-			_create_workbook(new_sheet, [("Run", 1, "#1"), ("Run", 2, "#1")])
+			new_order = base_path / "new.json"
+			_create_reading_order(new_order, [("Run", 1, "#1"), ("Run", 2, "#1")])
 
-			plan = plan_migration(folder, new_sheet, "Issue Release Order")
+			plan = plan_migration(folder, new_order)
 
 			self.assertEqual((), plan.items)
 			self.assertIn("ambiguous", plan.warnings[0])
@@ -78,13 +79,13 @@ class MigrateSortOrderTests(unittest.TestCase):
 			folder = base_path / "destination"
 			folder.mkdir()
 			_create_files(folder, "0001 - Run #1.cbz", "0002 - Run #2.cbz")
-			old_sheet = base_path / "old.xlsx"
-			new_sheet = base_path / "new.xlsx"
-			_create_workbook(old_sheet, [("Run", 1, "#1"), ("Run", 1, "#2")])
-			_create_workbook(new_sheet, [("Run", 1, "#1"), ("Run", 1, "#1")])
+			old_order = base_path / "old.json"
+			new_order = base_path / "new.json"
+			_create_reading_order(old_order, [("Run", 1, "#1"), ("Run", 1, "#2")])
+			_create_reading_order(new_order, [("Run", 1, "#1"), ("Run", 1, "#1")])
 
 			with self.assertRaises(MigrationError):
-				plan_migration(folder, new_sheet, "Issue Release Order", old_spreadsheet_path=old_sheet)
+				plan_migration(folder, new_order, old_reading_order_path=old_order)
 
 
 def _create_files(folder: Path, *names: str) -> None:
@@ -92,17 +93,11 @@ def _create_files(folder: Path, *names: str) -> None:
 		(folder / name).write_bytes(b"comic")
 
 
-def _create_workbook(path: Path, entries: list[tuple[str, int, str]]) -> None:
-	from openpyxl import Workbook
-
-	workbook = Workbook()
-	sheet = workbook.active
-	sheet.title = "Issue Release Order"
-	sheet.append(["Run", "Volume", "Issue"])
-	for run, volume, issue in entries:
-		sheet.append([run, volume, issue])
-	workbook.save(path)
-	workbook.close()
+def _create_reading_order(path: Path, entries: list[tuple[str, int, str]]) -> None:
+	path.write_text(
+		json.dumps({"entries": [{"run": run, "volume": volume, "issue": issue} for run, volume, issue in entries]}),
+		encoding="utf-8",
+	)
 
 
 if __name__ == "__main__":

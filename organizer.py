@@ -18,7 +18,7 @@ def main(argv: list[str] | None = None) -> int:
 
 	try:
 		config = load_config(args.config)
-		reading_order = read_reading_order(config.spreadsheet_path, config.sheet_name, config.issue_overrides)
+		reading_order = read_reading_order(config.reading_order_path, config.issue_overrides)
 	except (ConfigError, ReadingOrderError) as exc:
 		print(f"ERROR {exc}", file=sys.stderr)
 		return 1

@@ -19,8 +19,7 @@ class SourceFolderConfig:
 
 @dataclass(frozen=True)
 class OrganizerConfig:
-	spreadsheet_path: Path
-	sheet_name: str
+	reading_order_path: Path
 	destination_folder: Path
 	source_folders: tuple[SourceFolderConfig, ...]
 	issue_overrides: dict[str, dict[str, str]]
