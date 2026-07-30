@@ -1,0 +1,87 @@
+{
+	"spreadsheet_path": "C:\\Users\\gamin\\Downloads\\spider_man_comics_master.xlsx",
+	"sheet_name": "Issue Release Order",
+	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Verse",
+	"source_folders": [
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\ReadAllComics (EN)\\Amazing Spider-Man (Publisher_ Marvel)",
+			"run": "The Amazing Spider-Man",
+			"output_name": "The Amazing Spider-Man",
+			"volume": 1,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_output_name": "The Amazing Spider-Man Annual",
+			"annual_volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Marvel Team-Up",
+			"run": "Marvel Team-Up",
+			"output_name": "Marvel Team-Up",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\The Spectacular Spider-Man (1976)",
+			"run": "Peter Parker, The Spectacular Spider-Man",
+			"output_name": "Peter Parker, The Spectacular Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Spider-Woman (1978)",
+			"run": "Spider-Woman",
+			"output_name": "Spider-Woman",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Web of Spider-Man (1985)",
+			"run": "Web of Spider-Man",
+			"output_name": "Web of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Spider-Man (1990)",
+			"run": "Spider-Man",
+			"output_name": "Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Deadly Foes of Spider-Man",
+			"run": "The Deadly Foes of Spider-Man",
+			"output_name": "The Deadly Foes of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Spider-Man 2099 (1992)",
+			"run": "Spider-Man 2099",
+			"output_name": "Spider-Man 2099",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Venom_ Lethal Protector",
+			"run": "Venom: Lethal Protector",
+			"output_name": "Venom, Lethal Protector",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Spider-Man Unlimited (1993)",
+			"run": "Spider-Man Unlimited",
+			"output_name": "Spider-Man Unlimited",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\The Lethal Foes of Spider-Man",
+			"run": "The Lethal Foes of Spider-Man",
+			"output_name": "The Lethal Foes of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Spider-Woman (1993)",
+			"run": "Spider-Woman",
+			"output_name": "Spider-Woman",
+			"volume": 2
+		}
+	],
+	"issue_overrides": {
+		"Amazing Fantasy": {
+			"1": "15"
+		}
+	}
+}

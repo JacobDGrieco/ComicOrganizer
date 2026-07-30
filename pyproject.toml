@@ -1,0 +1,12 @@
+[project]
+name = "comic-organizer"
+version = "0.1.0"
+description = "CLI for organizing Tachidesk comic downloads into spreadsheet reading order."
+requires-python = ">=3.11"
+dependencies = [
+	"colorama>=0.4.6",
+	"openpyxl>=3.1.0",
+]
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
