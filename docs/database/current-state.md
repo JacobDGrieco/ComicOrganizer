@@ -3,7 +3,7 @@
 ## Stack
 
 - Application runtime: Python 3.11+.
-- Organizer source of truth today: simplified SQLite database loaded by `reading_order.py`; legacy ordered JSON remains supported.
+- Organizer source of truth today: simplified SQLite database loaded by `sorting/reading_order.py`; legacy ordered JSON remains supported.
 - Research/download source of truth today: SQLite `comic_runs`, `issues`, and `story_arcs`.
 - Database stack: local SQLite.
 - Migration framework: raw SQL schema file plus idempotent import scripts.
@@ -18,7 +18,7 @@ The target database has SQLite tables for:
 
 Current local counts after the 2026-07-31 Spider-affiliated limited-run expansion:
 
-- `comic_runs`: 250
+- `comic_runs`: 296
 - `issues`: 1,250
 - `story_arcs`: 1,250
 

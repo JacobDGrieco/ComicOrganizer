@@ -8,7 +8,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from config import ConfigError, load_config
+from .config import ConfigError, load_config
 
 
 POSITION_PREFIX_RE = re.compile(r"^(?P<position>\d{4}) - (?P<rest>.+)$")

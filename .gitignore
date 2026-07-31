@@ -8,5 +8,6 @@ sort_orders/
 pytest-cache-*/
 downloader/downloads/
 
+database.db
 config.json
 package-lock.json

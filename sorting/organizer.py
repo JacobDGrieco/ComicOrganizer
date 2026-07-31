@@ -5,12 +5,12 @@ from __future__ import annotations
 import argparse
 import sys
 
-from config import ConfigError, load_config
-from matcher import candidate_match_key, entry_match_key, match_candidates
-from parser import parse_source_files
-from processor import find_existing_positions, process_matches
-from reading_order import ReadingOrderError, read_reading_order
-from scanner import scan_source_folders
+from .config import ConfigError, load_config
+from .matcher import candidate_match_key, entry_match_key, match_candidates
+from .parser import parse_source_files
+from .processor import find_existing_positions, process_matches
+from .reading_order import ReadingOrderError, read_reading_order
+from .scanner import scan_source_folders
 
 
 def main(argv: list[str] | None = None) -> int:

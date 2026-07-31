@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from issue_numbers import comparable_issue_number
-from models import DuplicateCandidate, MatchedComic, MatchResult, ParsedCandidate, ReadingOrderEntry
+from .issue_numbers import comparable_issue_number
+from .models import DuplicateCandidate, MatchedComic, MatchResult, ParsedCandidate, ReadingOrderEntry
 
 
 def match_candidates(

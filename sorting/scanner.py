@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from colorama import Fore, Style
 
-from models import SourceFile, SourceFolderConfig
+from .models import SourceFile, SourceFolderConfig
 
 
 def scan_source_folders(source_folders: tuple[SourceFolderConfig, ...]) -> tuple[SourceFile, ...]:

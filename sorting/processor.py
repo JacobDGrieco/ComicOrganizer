@@ -8,7 +8,7 @@ import re
 
 from colorama import Fore, Style, init
 
-from models import MatchedComic, MoveResult, ProcessSummary
+from .models import MatchedComic, MoveResult, ProcessSummary
 
 
 init(autoreset=True)

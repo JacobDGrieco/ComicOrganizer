@@ -28,7 +28,7 @@ The workbook may be used only as a legacy discovery aid. It is not trusted as fi
 
 ## Current Counts
 
-- Comic run records: 250
+- Comic run records: 296
 - Issue records: 1,250
 - Story arc records: 1,250
 
@@ -48,6 +48,7 @@ Expanded `comic_runs` coverage from Marvel official series pages and the local M
 - Black Cat and Mary Jane-affiliated Spider-Man lines, including Black Cat solo series, Amazing Spider-Man Presents: Black Cat, Spider-Man/Black Cat: Evil That Men Do, Mary Jane & Black Cat, Jackpot & Black Cat, Amazing Mary Jane, and Spider-Man Loves Mary Jane.
 - Spider-centered What If material, including What If? Spider-Man, What If...? Miles Morales, What If? Spider-Man The Other, What If? Spider-Man: Back in Black, What If? Spider-Man: Grim Hunt, and What If...? Galactus: Galactus Transformed Spider-Gwen?
 - Spider-Man limited series around roughly five issues, including Spider-Man '94, Spider-Men, Spider-Men II, Spider-Verse Team-Up, Scarlet Spiders, Spider-Society, Spider-Man & the League of Realms, Spider-Man & the Secret Wars, Spider-Man Fairy Tales, Spider-Man: Blue, Life Story, Reign, Reign 2, Spider's Shadow, Spider-Man 1602, Spider-Man/Doctor Octopus limited series, Symbiote Spider-Man limited series, and Marvel's Spider-Man tie-in limited series.
+- Additional finite Spider-Man specials, one-shots, movie prelude/adaptation series, supporting-cast runs, and Fandom-only CyberComics entries, excluding obvious facsimile, digest, TPB, omnibus, and reprint-only rows.
 
 Created issue, story-arc, and reading-block records for:
 

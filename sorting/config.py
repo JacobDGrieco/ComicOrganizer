@@ -6,8 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from issue_numbers import normalize_volume_label
-from models import OrganizerConfig, SourceFolderConfig
+from .issue_numbers import normalize_volume_label
+from .models import OrganizerConfig, SourceFolderConfig
 
 
 class ConfigError(ValueError):

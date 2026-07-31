@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import re
 
-from issue_numbers import comparable_issue_number, normalize_volume_label
-from models import ParsedCandidate, SourceFile
+from .issue_numbers import comparable_issue_number, normalize_volume_label
+from .models import ParsedCandidate, SourceFile
 
 
 _ISSUE_HASH_RE = re.compile(r"^Issue\s*#?\s*(?P<issue>\d+)\s*$", re.IGNORECASE)

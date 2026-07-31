@@ -9,11 +9,11 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
-from config import ConfigError, load_config
-from issue_numbers import comparable_issue_number
-from matcher import entry_match_key
-from models import OrganizerConfig, ReadingOrderEntry
-from reading_order import ReadingOrderError, read_reading_order
+from .config import ConfigError, load_config
+from .issue_numbers import comparable_issue_number
+from .matcher import entry_match_key
+from .models import OrganizerConfig, ReadingOrderEntry
+from .reading_order import ReadingOrderError, read_reading_order
 
 
 DESTINATION_NAME_RE = re.compile(r"^(?P<position>\d{4}) - (?P<title>.+) #(?P<issue>.+)\.cbz$", re.IGNORECASE)
@@ -295,3 +295,7 @@ def _validate_plan(folder: Path, items: list[MigrationPlanItem]) -> None:
 		if target_name in existing_names and target_name not in source_names:
 			raise MigrationError(f"Target already exists outside migration plan: {item.destination_path.name}")
 		target_names.add(target_name)
+
+
+if __name__ == "__main__":
+	raise SystemExit(main())

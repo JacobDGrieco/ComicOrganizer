@@ -7,8 +7,8 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-from issue_numbers import comparable_issue_number, normalize_issue_label, normalize_volume_label
-from models import ReadingOrderEntry
+from .issue_numbers import comparable_issue_number, normalize_issue_label, normalize_volume_label
+from .models import ReadingOrderEntry
 
 
 class ReadingOrderError(ValueError):

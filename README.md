@@ -27,13 +27,13 @@ python -m pip install -r requirements.txt
 Run a dry run first:
 
 ```powershell
-python organizer.py --config config.json --dry-run
+python -m sorting.organizer --config config.json --dry-run
 ```
 
 Run for real:
 
 ```powershell
-python organizer.py --config config.json
+python -m sorting.organizer --config config.json
 ```
 
 The organizer is safe to rerun. It checks existing destination files by their `NNNN - ` prefix and skips reading-order positions that are already present.
@@ -232,30 +232,30 @@ This keeps the sort-order JSON unchanged while matching/outputting `Amazing Fant
 
 ## Position Shifter
 
-Use `shift_positions.py` when you need to insert a missing issue into the destination folder and shift existing `NNNN - ` prefixes out of the way.
+Use `python -m sorting.shift_positions` when you need to insert a missing issue into the destination folder and shift existing `NNNN - ` prefixes out of the way.
 
 Dry run:
 
 ```powershell
-python shift_positions.py "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse"
+python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse"
 ```
 
 Dry run using `config.json` for the destination folder:
 
 ```powershell
-python shift_positions.py "0004 - The Amazing Spider-Man #3.cbz" --config config.json
+python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --config config.json
 ```
 
 Apply:
 
 ```powershell
-python shift_positions.py "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --apply
+python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --apply
 ```
 
 Custom increment:
 
 ```powershell
-python shift_positions.py "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --increment 2 --apply
+python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --increment 2 --apply
 ```
 
 The selected file and every prefixed file after it are shifted. With the default increment of `1`, this means:
@@ -271,18 +271,18 @@ After shifting destination files, insert the new issue entry directly into the J
 
 ## Sort-Order Migration
 
-Use `migrate_sort_order.py` when you rebuild the JSON sort order and need existing destination files renumbered to match the new entry positions.
+Use `python -m sorting.migrate_sort_order` when you rebuild the JSON sort order and need existing destination files renumbered to match the new entry positions.
 
 Recommended dry run using the old JSON file as a reference:
 
 ```powershell
-python migrate_sort_order.py --config config.json --old-reading-order "sort_orders\spider-verse-old.json"
+python -m sorting.migrate_sort_order --config config.json --old-reading-order "sort_orders\spider-verse-old.json"
 ```
 
 Apply:
 
 ```powershell
-python migrate_sort_order.py --config config.json --old-reading-order "sort_orders\spider-verse-old.json" --apply
+python -m sorting.migrate_sort_order --config config.json --old-reading-order "sort_orders\spider-verse-old.json" --apply
 ```
 
 With `--config`, the tool uses:
@@ -296,7 +296,7 @@ The old-reading-order mode is safest because it uses each existing file's curren
 Fallback dry run without an old JSON reference:
 
 ```powershell
-python migrate_sort_order.py --config config.json
+python -m sorting.migrate_sort_order --config config.json
 ```
 
 Fallback mode decodes names like `0455 - The Amazing Spider-Man #396.cbz` and looks for the same title/issue in the new JSON file. If that title/issue appears in multiple volumes, the tool warns and skips that file until you provide `--old-reading-order`.
