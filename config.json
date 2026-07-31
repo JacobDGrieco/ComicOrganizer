@@ -17,27 +17,55 @@
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man (2014)",
 			"run": "The Amazing Spider-Man",
-			"volume": 3
+			"volume": 3,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_volume": 3,
+			"issue_aliases": {
+				"4.1": "1.4"
+			}
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man (2015)",
 			"run": "The Amazing Spider-Man",
-			"volume": 4
+			"volume": 4,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_volume": 4
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man (2018)",
 			"run": "The Amazing Spider-Man",
-			"volume": 5
+			"volume": 5,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_volume": 5,
+			"issue_aliases": {
+				"16.HU": "16.1",
+				"18.HU": "18.1",
+				"19.HU": "19.1",
+				"20.HU": "20.1",
+				"50.LR": "50.1",
+				"51.LR": "51.1",
+				"52.LR": "52.1",
+				"53.LR": "53.1",
+				"54.LR": "54.1",
+				"78.BEY": "78.1",
+				"80.BEY": "80.1",
+				"88.BEY": "88.1",
+				"92.BEY": "92.1"
+			}
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man (2022)",
 			"run": "The Amazing Spider-Man",
-			"volume": 6
+			"volume": 6,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_volume": 6
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man (2025)",
 			"run": "The Amazing Spider-Man",
-			"volume": 7
+			"volume": 7,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_volume": 8
 		}
 	],
 	"issue_overrides": {

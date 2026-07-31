@@ -6,7 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .issue_numbers import normalize_volume_label
+from .issue_numbers import comparable_issue_number, normalize_issue_label, normalize_volume_label
+from .logging import default_log_path
 from .models import OrganizerConfig, SourceFolderConfig
 
 
@@ -32,7 +33,7 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 
 	reading_order_path = _required_path(raw_config, "reading_order_path")
 	destination_folder = _required_path(raw_config, "destination_folder")
-	log_path = _optional_path(raw_config, "log_path") or destination_folder / "comic-organizer.log"
+	log_path = _optional_path(raw_config, "log_path") or default_log_path(config_path, "comic-organizer.log")
 	source_folders = _source_folders(raw_config.get("source_folders"))
 	issue_overrides = _issue_overrides(raw_config.get("issue_overrides", {}))
 
@@ -84,6 +85,7 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 		annual_run = raw_source_folder.get("annual_run", f"{run} Annual" if isinstance(run, str) else "")
 		annual_volume = raw_source_folder.get("annual_volume", volume)
 		annual_start_year = raw_source_folder.get("annual_start_year", "")
+		issue_aliases = _issue_aliases(raw_source_folder.get("issue_aliases", {}), f"source_folders[{index}].issue_aliases")
 		if not isinstance(path, str) or not path.strip():
 			raise ConfigError(f"source_folders[{index}].path must be a non-empty string")
 		if not isinstance(run, str) or not run.strip():
@@ -107,10 +109,26 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 				annual_run=annual_run.strip(),
 				annual_volume=annual_volume_label,
 				annual_start_year=str(annual_start_year or "").strip(),
+				issue_aliases=issue_aliases,
 			)
 		)
 
 	return source_folders
+
+
+def _issue_aliases(value: Any, label: str = "issue_aliases") -> dict[str, str]:
+	if not isinstance(value, dict):
+		raise ConfigError(f"Config field '{label}' must be an object")
+
+	aliases: dict[str, str] = {}
+	for source_issue, database_issue in value.items():
+		if not isinstance(source_issue, str) or not source_issue.strip():
+			raise ConfigError(f"{label} keys must be non-empty strings")
+		if not isinstance(database_issue, str) or not database_issue.strip():
+			raise ConfigError(f"{label}['{source_issue}'] must be a non-empty string")
+		aliases[comparable_issue_number(source_issue)] = normalize_issue_label(database_issue)
+
+	return aliases
 
 
 def _issue_overrides(value: Any) -> dict[str, dict[str, str]]:

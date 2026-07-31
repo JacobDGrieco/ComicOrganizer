@@ -45,9 +45,10 @@ class OrganizerPipelineTests(unittest.TestCase):
 			destination_folder = root / "destination"
 			source_folder.mkdir()
 			destination_folder.mkdir()
-			(source_folder / "The Amazing Spider-Man 1963 #1.cbz").write_text("regular", encoding="utf-8")
-			(source_folder / "The Amazing Spider-Man 1963 Annual '64.cbz").write_text("annual", encoding="utf-8")
-			(source_folder / "The Amazing Spider-Man 1963 #999.cbz").write_text("missing", encoding="utf-8")
+			(source_folder / "The Amazing Spider-Man (1963) #1.cbz").write_text("regular", encoding="utf-8")
+			(source_folder / "The Amazing Spider-Man (1963) #100.cbz").write_text("regular", encoding="utf-8")
+			(source_folder / "The Amazing Spider-Man (1963) Annual '64.cbz").write_text("annual", encoding="utf-8")
+			(source_folder / "The Amazing Spider-Man (1963) #-1.cbz").write_text("missing", encoding="utf-8")
 			_create_database(database_path)
 			config_path = root / "config.json"
 			log_path = root / "organizer.log"
@@ -79,17 +80,21 @@ class OrganizerPipelineTests(unittest.TestCase):
 			report = output.getvalue()
 			log = log_path.read_text(encoding="utf-8")
 			self.assertIn("Unmatched scanned files:", report)
-			self.assertIn(r"source\The Amazing Spider-Man 1963 #999.cbz", report)
+			self.assertIn(r"source\The Amazing Spider-Man (1963) #-1.cbz", report)
 			self.assertIn(
-				r"source\The Amazing Spider-Man 1963 #1.cbz -> 00001 - The Amazing Spider-Man 1963 #1.cbz",
+				r"source\The Amazing Spider-Man (1963) #1.cbz -> 00001 - The Amazing Spider-Man (1963) #1.cbz",
 				report,
 			)
 			self.assertIn(
-				r"source\The Amazing Spider-Man 1963 Annual '64.cbz -> 00002 - The Amazing Spider-Man 1963 Annual '64.cbz",
+				r"source\The Amazing Spider-Man (1963) Annual '64.cbz -> 00002 - The Amazing Spider-Man (1963) Annual '64.cbz",
+				report,
+			)
+			self.assertIn(
+				r"source\The Amazing Spider-Man (1963) #100.cbz -> 00003 - The Amazing Spider-Man (1963) #100.cbz",
 				report,
 			)
 			self.assertEqual(report, log)
-			self.assertFalse((destination_folder / "00001 - The Amazing Spider-Man 1963 #1.cbz").exists())
+			self.assertFalse((destination_folder / "00001 - The Amazing Spider-Man (1963) #1.cbz").exists())
 		finally:
 			shutil.rmtree(root, ignore_errors=True)
 
@@ -114,6 +119,32 @@ class OrganizerPipelineTests(unittest.TestCase):
 			report = output.getvalue()
 			self.assertIn(r"source\The Amazing Spider-Man 1963 #1.cbz", report)
 			self.assertIn("Conversions:\n  (none)", report)
+
+	def test_source_issue_aliases_match_database_issue_numbers(self) -> None:
+		with self._organizer_fixture() as fixture:
+			(fixture["source"] / "The Amazing Spider-Man (2018) #16.HU.cbz").write_text("side", encoding="utf-8")
+			_create_database(fixture["db"])
+			_write_config(
+				fixture["config"],
+				fixture["db"],
+				fixture["destination"],
+				fixture["log"],
+				fixture["source"],
+				volume=5,
+				issue_aliases={"16.HU": "16.1"},
+			)
+
+			output = io.StringIO()
+			with contextlib.redirect_stdout(output):
+				exit_code = main(["--config", str(fixture["config"]), "--dry-run"])
+
+			self.assertEqual(exit_code, 0)
+			report = output.getvalue()
+			self.assertIn(
+				r"source\The Amazing Spider-Man (2018) #16.HU.cbz -> 00004 - The Amazing Spider-Man (2018) #16.HU.cbz",
+				report,
+			)
+			self.assertNotIn("Unmatched scanned files:\n  source\\The Amazing Spider-Man (2018) #16.HU.cbz", report)
 
 	def _organizer_fixture(self):
 		return _OrganizerFixture()
@@ -170,6 +201,7 @@ def _create_database(database_path: Path) -> None:
 				("CAND-000002", "The Amazing Spider-Man", "1", "1963-1998", "core", "P0"),
 				("CAND-000003", "Amazing Spider-Man Annual", "1", "1964-1994", "annual", "P0"),
 				("CAND-000024", "The Amazing Spider-Man", "2", "1999-2013", "core", "P0"),
+				("CAND-000007", "The Amazing Spider-Man", "5", "2018-2022", "core", "P0"),
 			],
 		)
 		connection.executemany(
@@ -180,6 +212,8 @@ def _create_database(database_path: Path) -> None:
 			[
 				("LOCAL-ARC-ASM-1", "The Amazing Spider-Man #1", "1962-12-10", "day"),
 				("LOCAL-ARC-ASM-ANNUAL-1", "Amazing Spider-Man Annual #1", "1964-06-11", "day"),
+				("LOCAL-ARC-ASM-100", "The Amazing Spider-Man #100", "1971-09-01", "day"),
+				("LOCAL-ARC-ASM-2018-16-1", "The Amazing Spider-Man (2018) #16.1", "2019-03-06", "day"),
 			],
 		)
 		connection.executemany(
@@ -192,6 +226,8 @@ def _create_database(database_path: Path) -> None:
 			[
 				("FANDOM-ISS-CAND-000002-1", "CAND-000002", "1", "1962-12-10", "day", "LOCAL-ARC-ASM-1", None),
 				("FANDOM-ISS-CAND-000003-1", "CAND-000003", "1", "1964-06-11", "day", "LOCAL-ARC-ASM-ANNUAL-1", None),
+				("FANDOM-ISS-CAND-000002-100", "CAND-000002", "100", "1971-09-01", "day", "LOCAL-ARC-ASM-100", None),
+				("FANDOM-ISS-CAND-000007-16-POINT-1", "CAND-000007", "16.1", "2019-03-06", "day", "LOCAL-ARC-ASM-2018-16-1", None),
 			],
 		)
 		connection.commit()
@@ -230,6 +266,7 @@ def _write_config(
 	source_folder: Path,
 	*,
 	volume: int,
+	issue_aliases: dict[str, str] | None = None,
 ) -> None:
 	config_path.write_text(
 		json.dumps(
@@ -244,6 +281,7 @@ def _write_config(
 						"volume": volume,
 						"annual_run": "Amazing Spider-Man Annual",
 						"annual_volume": 1,
+						"issue_aliases": issue_aliases or {},
 					}
 				],
 			}

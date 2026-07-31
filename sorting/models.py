@@ -14,6 +14,7 @@ class SourceFolderConfig:
 	annual_run: str = ""
 	annual_volume: str = ""
 	annual_start_year: str = ""
+	issue_aliases: dict[str, str] | None = None
 
 
 @dataclass(frozen=True)
@@ -44,6 +45,7 @@ class SourceFile:
 	annual_run: str = ""
 	annual_volume: str = ""
 	annual_start_year: str = ""
+	issue_aliases: dict[str, str] | None = None
 
 
 @dataclass(frozen=True)

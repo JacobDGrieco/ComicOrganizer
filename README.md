@@ -258,7 +258,10 @@ Source folder example:
 	"run": "The Amazing Spider-Man",
 	"volume": 1,
 	"annual_run": "Amazing Spider-Man Annual",
-	"annual_volume": 1
+	"annual_volume": 1,
+	"issue_aliases": {
+		"16.HU": "16.1"
+	}
 }
 ```
 
@@ -270,6 +273,7 @@ Fields:
 - `annual_run`: reading-order `run` value for annual files in this folder. Defaults to `<run> Annual`.
 - `annual_volume`: exact `comic_runs.volume` value for annual files in this folder. Defaults to `volume`.
 - `annual_start_year`: optional annual database run start year, used only when the same annual title has repeated issue numbers across multiple database runs.
+- `issue_aliases`: optional map from normalized filename issue labels to database issue labels, useful when source files use arc suffixes like `16.HU` while Fandom stores the same issue as `16.1`.
 
 Moved files keep the original normalized filename after the five-digit reading-order prefix.
 
@@ -279,14 +283,18 @@ Supported filename formats include:
 
 ```text
 <comic run name> <comic run start year> #<issue number>.cbz
+<comic run name> (<comic run start year>) #<issue number>.cbz
 <comic run name> <comic run start year> Annual #<issue number>.cbz
+<comic run name> (<comic run start year>) Annual #<issue number>.cbz
 <comic run name> <comic run start year> Annual 'YY.cbz
+<comic run name> (<comic run start year>) Annual 'YY.cbz
 ```
 
 Examples:
 
 ```text
 The Amazing Spider-Man 1963 #396.cbz
+The Amazing Spider-Man (1963) #396.cbz
 The Amazing Spider-Man 1963 #-1.cbz
 The Amazing Spider-Man 1963 #27.NOW.cbz
 The Amazing Spider-Man 1963 Annual #28.cbz

@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from .config import ConfigError, load_config
+from .logging import append_log, default_log_path, write_log
 from .matcher import candidate_matches_entry, match_candidates
 from .parser import parse_source_files
 from .processor import find_existing_positions, process_matches
@@ -21,7 +22,9 @@ def main(argv: list[str] | None = None) -> int:
 		config = load_config(args.config)
 		reading_order = read_reading_order(config.reading_order_path, config.issue_overrides)
 	except (ConfigError, ReadingOrderError) as exc:
-		print(f"ERROR {exc}", file=sys.stderr)
+		error_lines = [f"ERROR {exc}"]
+		print(error_lines[0], file=sys.stderr)
+		write_log(default_log_path(args.config, "comic-organizer.log"), error_lines)
 		return 1
 
 	existing_positions = find_existing_positions(config.destination_folder)
@@ -36,12 +39,12 @@ def main(argv: list[str] | None = None) -> int:
 	report_lines = build_report_lines(match_result, completed_reading_order, unparsed_source_files, skipped_source_folders)
 	for line in report_lines:
 		print(line)
-	_write_log(config.log_path, report_lines)
+	write_log(config.log_path, report_lines)
 	summary = process_matches(match_result.matches, config.destination_folder, dry_run=args.dry_run, verbose=False)
 	result_lines = build_result_lines(summary, dry_run=args.dry_run)
 	for line in result_lines:
 		print(line)
-	_append_log(config.log_path, result_lines)
+	append_log(config.log_path, result_lines)
 	return 1 if summary.failed else 0
 
 
@@ -143,16 +146,6 @@ def build_result_lines(summary, *, dry_run: bool) -> list[str]:
 def display_path(path: Path) -> str:
 	parent = path.parent.name or str(path.parent)
 	return f"{parent}\\{path.name}"
-
-
-def _write_log(log_path: Path, lines: list[str]) -> None:
-	log_path.parent.mkdir(parents=True, exist_ok=True)
-	log_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-
-
-def _append_log(log_path: Path, lines: list[str]) -> None:
-	with log_path.open("a", encoding="utf-8") as log_file:
-		log_file.write("\n".join(lines) + "\n")
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import time
@@ -82,7 +83,7 @@ def main() -> int:
 	with connect_database(args.db) as connection:
 		ensure_sort_order_schema(connection, dry_run=args.dry_run)
 		issues = fetch_issue_rows(connection, args)
-		local_dates = build_local_date_index(issues)
+		local_dates = build_local_date_index(fetch_issue_rows(connection, args, ignore_filters=True))
 
 	fandom_client = FandomClient(cache_dir, args.delay_seconds)
 	arc_cache: dict[str, ArcMetadata] = {}
@@ -156,6 +157,7 @@ def parse_args() -> argparse.Namespace:
 	)
 	parser.add_argument("--run-id", help="Only process one comic_runs.id value.")
 	parser.add_argument("--issue-id", help="Only process one issues.id value.")
+	parser.add_argument("--issue-number", help="Only process one issue_number value.")
 	parser.add_argument("--priority", help="Only process runs with this comic_runs.priority value.")
 	parser.add_argument("--limit", type=int, help="Maximum issue rows to inspect.")
 	parser.add_argument("--offset", type=int, default=0, help="Issue-row offset for chunked sweeps.")
@@ -202,29 +204,32 @@ def ensure_sort_order_schema(connection, *, dry_run: bool) -> None:
 		)
 
 
-def fetch_issue_rows(connection, args: argparse.Namespace) -> list[IssueRow]:
+def fetch_issue_rows(connection, args: argparse.Namespace, *, ignore_filters: bool = False) -> list[IssueRow]:
 	conditions: list[str] = []
 	parameters: list[str | int] = []
 	has_sort_order = column_exists(connection, "issues", "sort_order")
 	sort_order_expression = "issues.sort_order" if has_sort_order else "NULL"
-	if args.run_id:
+	if args.run_id and not ignore_filters:
 		conditions.append("comic_runs.id = ?")
 		parameters.append(args.run_id)
-	if args.issue_id:
+	if args.issue_id and not ignore_filters:
 		conditions.append("issues.id = ?")
 		parameters.append(args.issue_id)
-	if args.priority:
+	if args.issue_number and not ignore_filters:
+		conditions.append("issues.issue_number = ?")
+		parameters.append(args.issue_number)
+	if args.priority and not ignore_filters:
 		conditions.append("comic_runs.priority = ?")
 		parameters.append(args.priority)
-	if args.only_missing:
+	if args.only_missing and not ignore_filters:
 		if has_sort_order:
 			conditions.append("issues.sort_order IS NULL")
 		conditions.append("issues.story_arc_id NOT LIKE 'FANDOM-EVENT-%'")
 		conditions.append("issues.story_arc_id NOT LIKE 'FANDOM-STORY-%'")
 	where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-	limit_clause = "LIMIT ?" if args.limit else ""
-	offset_clause = "OFFSET ?" if args.limit and args.offset else ""
-	if args.limit:
+	limit_clause = "LIMIT ?" if args.limit and not ignore_filters else ""
+	offset_clause = "OFFSET ?" if args.limit and args.offset and not ignore_filters else ""
+	if args.limit and not ignore_filters:
 		parameters.append(args.limit)
 		if args.offset:
 			parameters.append(args.offset)
@@ -306,7 +311,8 @@ class FandomClient:
 		if key in self.memory_cache:
 			return self.memory_cache[key]
 
-		cache_file = self.cache_dir / f"{slugify(key)}.json"
+		page_digest = hashlib.sha1(key.encode("utf-8")).hexdigest()[:12]
+		cache_file = self.cache_dir / f"{slugify(key)}-{page_digest}.json"
 		if cache_file.exists():
 			payload = json.loads(cache_file.read_text(encoding="utf-8"))
 			fandom_page = FandomPage(
@@ -371,6 +377,8 @@ def issue_page_candidates(issue: IssueRow) -> list[str]:
 	pages: list[str] = []
 	source_volume_page = run_fandom_volume_page(issue)
 	if source_volume_page:
+		if source_page_matches_issue(source_volume_page, issue.issue_number):
+			pages.append(source_volume_page)
 		pages.append(f"{source_volume_page}_{issue.issue_number}")
 
 	base_titles = [
@@ -385,6 +393,13 @@ def issue_page_candidates(issue: IssueRow) -> list[str]:
 	return pages
 
 
+def source_page_matches_issue(source_page: str, issue_number: str) -> bool:
+	"""Detect notes that already point at a direct Fandom issue page."""
+	return normalize_page_title(source_page).casefold().endswith(
+		f"_{issue_number}".casefold()
+	)
+
+
 def run_fandom_volume_page(issue: IssueRow) -> str | None:
 	match = re.search(r"Marvel Fandom page ([^;]+)", issue.notes)
 	if match:
@@ -396,7 +411,27 @@ def parse_issue_arc_candidates(wikitext: str) -> list[ArcCandidate]:
 	event_candidates = parse_numbered_page_fields(wikitext, "Event", "event")
 	if event_candidates:
 		return event_candidates
+	event_category_candidates = parse_event_categories(wikitext)
+	if event_category_candidates:
+		return event_category_candidates
 	return parse_numbered_page_fields(wikitext, "StoryArc", "story")
+
+
+def parse_event_categories(wikitext: str) -> list[ArcCandidate]:
+	"""Use issue-page event categories when Fandom omits EventN fields."""
+	candidates: list[ArcCandidate] = []
+	for match in re.finditer(r"\[\[Category:([^]|#]+)(?:#[^]|]+)?(?:\|[^]]+)?\]\]", wikitext):
+		raw_page = match.group(1).strip()
+		if not re.search(r"\(Event\)$", raw_page, re.I):
+			continue
+		candidate = ArcCandidate(
+			page=normalize_page_title(raw_page),
+			title=re.sub(r"\s*\(Event\)\s*$", "", raw_page, flags=re.I).strip() or raw_page,
+			source_kind="event",
+		)
+		if normalize_page_key(candidate.page) not in {normalize_page_key(existing.page) for existing in candidates}:
+			candidates.append(candidate)
+	return candidates
 
 
 def parse_numbered_page_fields(wikitext: str, field_name: str, source_kind: str) -> list[ArcCandidate]:

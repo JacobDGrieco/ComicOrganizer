@@ -9,16 +9,17 @@ from .models import ParsedCandidate, SourceFile
 
 
 _ISSUE_TOKEN = r"(?P<issue>-?\d+(?:\.[A-Za-z0-9]+)?|[A-Za-z0-9][A-Za-z0-9._-]*)"
+_START_YEAR_TOKEN = r"(?:\((?P<start_year_paren>\d{4})\)|(?P<start_year>\d{4}))"
 _ANNUAL_RELEASE_YEAR_RE = re.compile(
-	"^(?P<title>.+?)\\s+(?P<start_year>\\d{4})\\s+Annual\\s+['\\u2019](?P<short_year>\\d{2})$",
+	rf"^(?P<title>.+?)\s+{_START_YEAR_TOKEN}\s+Annual\s+['\u2019](?P<short_year>\d{{2}})$",
 	re.IGNORECASE,
 )
 _ANNUAL_ISSUE_RE = re.compile(
-	rf"^(?P<title>.+?)\s+(?P<start_year>\d{{4}})\s+Annual\s+#\s*{_ISSUE_TOKEN}$",
+	rf"^(?P<title>.+?)\s+{_START_YEAR_TOKEN}\s+Annual\s+#\s*{_ISSUE_TOKEN}$",
 	re.IGNORECASE,
 )
 _REGULAR_ISSUE_RE = re.compile(
-	rf"^(?P<title>.+?)\s+(?P<start_year>\d{{4}})\s+#\s*{_ISSUE_TOKEN}$",
+	rf"^(?P<title>.+?)\s+{_START_YEAR_TOKEN}\s+#\s*{_ISSUE_TOKEN}$",
 	re.IGNORECASE,
 )
 
@@ -42,7 +43,7 @@ def parse_source_file(source_file: SourceFile) -> ParsedCandidate | None:
 		return _candidate(
 			source_file,
 			filename_title=match.group("title"),
-			run_start_year=match.group("start_year"),
+			run_start_year=_matched_start_year(match),
 			issue_number="",
 			is_annual=True,
 			annual_release_year=_full_year(match.group("short_year")),
@@ -53,7 +54,7 @@ def parse_source_file(source_file: SourceFile) -> ParsedCandidate | None:
 		return _candidate(
 			source_file,
 			filename_title=match.group("title"),
-			run_start_year=match.group("start_year"),
+			run_start_year=_matched_start_year(match),
 			issue_number=match.group("issue"),
 			is_annual=True,
 		)
@@ -63,7 +64,7 @@ def parse_source_file(source_file: SourceFile) -> ParsedCandidate | None:
 		return _candidate(
 			source_file,
 			filename_title=match.group("title"),
-			run_start_year=match.group("start_year"),
+			run_start_year=_matched_start_year(match),
 			issue_number=match.group("issue"),
 			is_annual=False,
 		)
@@ -82,10 +83,16 @@ def _candidate(
 ) -> ParsedCandidate:
 	run = source_file.annual_run if is_annual else source_file.run
 	volume = source_file.annual_volume if is_annual else source_file.volume
+	normalized_issue_number = comparable_issue_number(issue_number) if issue_number else ""
+	if normalized_issue_number:
+		normalized_issue_number = (source_file.issue_aliases or {}).get(
+			normalized_issue_number,
+			normalized_issue_number,
+		)
 	return ParsedCandidate(
 		run=run,
 		volume=volume,
-		issue_number=comparable_issue_number(issue_number) if issue_number else "",
+		issue_number=normalized_issue_number,
 		is_annual=is_annual,
 		source_path=source_file.path,
 		raw_name=source_file.path.name,
@@ -101,3 +108,7 @@ def _full_year(short_year: str) -> str:
 	year = int(short_year)
 	century = 1900 if year >= 50 else 2000
 	return str(century + year)
+
+
+def _matched_start_year(match: re.Match[str]) -> str:
+	return match.group("start_year_paren") or match.group("start_year")
