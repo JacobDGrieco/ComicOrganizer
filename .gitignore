@@ -1,6 +1,12 @@
 __pycache__/
 .test-tmp
+.cache/
+node_modules/
+
 .agents/
 sort_orders/
+pytest-cache-*/
+downloader/downloads/
 
 config.json
+package-lock.json

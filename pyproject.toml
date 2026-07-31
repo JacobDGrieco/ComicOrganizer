@@ -1,7 +1,7 @@
 [project]
 name = "comic-organizer"
 version = "0.1.0"
-description = "CLI for organizing Tachidesk comic downloads into JSON reading order."
+description = "CLI for organizing Tachidesk comic downloads into SQLite or JSON reading order."
 requires-python = ">=3.11"
 dependencies = [
 	"colorama>=0.4.6",

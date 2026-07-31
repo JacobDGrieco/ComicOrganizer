@@ -35,7 +35,7 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 	source_folders = _source_folders(raw_config.get("source_folders"))
 	issue_overrides = _issue_overrides(raw_config.get("issue_overrides", {}))
 
-	_require_file(reading_order_path, "Reading-order JSON")
+	_require_file(reading_order_path, "Reading-order source")
 	_require_directory(destination_folder, "Destination folder")
 
 	return OrganizerConfig(

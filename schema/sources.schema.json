@@ -1,0 +1,44 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://comic-organizer.local/schema/sources.schema.json",
+	"title": "Spider-Man Source Database",
+	"type": "object",
+	"required": ["schemaVersion", "researchCutoff", "records"],
+	"additionalProperties": false,
+	"properties": {
+		"schemaVersion": { "type": "string" },
+		"researchCutoff": { "type": "string", "format": "date" },
+		"records": { "type": "array", "items": { "$ref": "#/$defs/source" } }
+	},
+	"$defs": {
+		"sourceId": { "type": "string", "pattern": "^SRC-[0-9]{6}$" },
+		"sourceType": {
+			"type": "string",
+			"enum": [
+				"Official Publisher",
+				"Official Solicitation",
+				"Bibliographic Database",
+				"Reading Order",
+				"Library Catalog",
+				"Fan Wiki",
+				"Reference Article",
+				"Community Checklist",
+				"Other"
+			]
+		},
+		"source": {
+			"type": "object",
+			"required": ["id", "name", "url", "sourceType", "accessedDate", "supports"],
+			"additionalProperties": false,
+			"properties": {
+				"id": { "$ref": "#/$defs/sourceId" },
+				"name": { "type": "string", "minLength": 1 },
+				"url": { "type": "string", "format": "uri" },
+				"sourceType": { "$ref": "#/$defs/sourceType" },
+				"accessedDate": { "type": "string", "format": "date" },
+				"supports": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+				"notes": { "type": ["string", "null"] }
+			}
+		}
+	}
+}

@@ -1,0 +1,73 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://comic-organizer.local/schema/events.schema.json",
+	"title": "Spider-Man Event Database",
+	"type": "object",
+	"required": ["schemaVersion", "researchCutoff", "records"],
+	"additionalProperties": false,
+	"properties": {
+		"schemaVersion": { "type": "string" },
+		"researchCutoff": { "type": "string", "format": "date" },
+		"records": { "type": "array", "items": { "$ref": "#/$defs/event" } }
+	},
+	"$defs": {
+		"eventId": { "type": "string", "pattern": "^EVT-[0-9]{6}$" },
+		"issueId": { "type": "string", "pattern": "^ISS-[0-9]{6}$" },
+		"universeId": { "type": "string", "pattern": "^UNI-[0-9]{6}$" },
+		"sourceId": { "type": "string", "pattern": "^SRC-[0-9]{6}$" },
+		"reviewId": { "type": "string", "pattern": "^REV-[0-9]{6}$" },
+		"verificationStatus": {
+			"type": "string",
+			"enum": ["Verified", "Partially Verified", "Conflicting Sources", "Manual Review", "Unverified"]
+		},
+		"eventType": {
+			"type": "string",
+			"enum": ["Crossover", "Line Event", "Spider-Man Event", "Symbiote Event", "Tie-In Cluster", "Status-Quo Event"]
+		},
+		"event": {
+			"type": "object",
+			"required": [
+				"id",
+				"title",
+				"eventType",
+				"continuityIds",
+				"coreIssueIds",
+				"requiredTieInIssueIds",
+				"recommendedTieInIssueIds",
+				"optionalTieInIssueIds",
+				"orderedCoreReadingIds",
+				"orderedCompleteReadingIds",
+				"preludeIssueIds",
+				"aftermathIssueIds",
+				"sourceIds",
+				"verificationStatus",
+				"confidence"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"id": { "$ref": "#/$defs/eventId" },
+				"title": { "type": "string", "minLength": 1 },
+				"eventType": { "$ref": "#/$defs/eventType" },
+				"continuityIds": { "type": "array", "items": { "$ref": "#/$defs/universeId" }, "uniqueItems": true },
+				"startDate": { "type": ["string", "null"] },
+				"startDatePrecision": { "type": "string", "enum": ["day", "month", "year", "unknown"] },
+				"endDate": { "type": ["string", "null"] },
+				"endDatePrecision": { "type": "string", "enum": ["day", "month", "year", "unknown"] },
+				"coreIssueIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"requiredTieInIssueIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"recommendedTieInIssueIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"optionalTieInIssueIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"orderedCoreReadingIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"orderedCompleteReadingIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"preludeIssueIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"aftermathIssueIds": { "type": "array", "items": { "$ref": "#/$defs/issueId" }, "uniqueItems": true },
+				"description": { "type": ["string", "null"] },
+				"sourceIds": { "type": "array", "items": { "$ref": "#/$defs/sourceId" }, "uniqueItems": true },
+				"verificationStatus": { "$ref": "#/$defs/verificationStatus" },
+				"confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+				"lastVerified": { "type": ["string", "null"], "format": "date" },
+				"reviewIds": { "type": "array", "items": { "$ref": "#/$defs/reviewId" }, "uniqueItems": true }
+			}
+		}
+	}
+}

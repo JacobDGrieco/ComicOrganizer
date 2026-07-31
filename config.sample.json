@@ -1,5 +1,5 @@
 {
-	"reading_order_path": "reading_order.sample.json",
+	"reading_order_path": "database.db",
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Verse",
 	"source_folders": [
 		{
