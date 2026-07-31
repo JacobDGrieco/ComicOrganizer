@@ -16,7 +16,8 @@ from .models import OrganizerConfig, ReadingOrderEntry
 from .reading_order import ReadingOrderError, read_reading_order
 
 
-DESTINATION_NAME_RE = re.compile(r"^(?P<position>\d{4}) - (?P<title>.+) #(?P<issue>.+)\.cbz$", re.IGNORECASE)
+DESTINATION_NAME_RE = re.compile(r"^(?P<position>\d{4,5}) - (?P<rest>.+)$", re.IGNORECASE)
+LEGACY_DESTINATION_BODY_RE = re.compile(r"^(?P<title>.+) #(?P<issue>.+)\.cbz$", re.IGNORECASE)
 
 
 class MigrationError(ValueError):
@@ -27,6 +28,7 @@ class MigrationError(ValueError):
 class DestinationComic:
 	path: Path
 	position: int
+	rest: str
 	title: str
 	issue_label: str
 
@@ -139,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
 	parser = argparse.ArgumentParser(description="Renumber existing destination files against a revised sort-order JSON file.")
-	parser.add_argument("--config", help="Organizer config JSON. Provides folder, new reading-order file, and output-name aliases.")
+	parser.add_argument("--config", help="Organizer config JSON. Provides folder and new reading-order file.")
 	parser.add_argument("--folder", help="Destination folder containing already organized files.")
 	parser.add_argument("--new-reading-order", help="Reworked reading-order JSON path. Defaults to config reading_order_path.")
 	parser.add_argument("--old-reading-order", help="Original reading-order JSON path. Recommended when repeated issue numbers exist across volumes.")
@@ -164,12 +166,16 @@ def _destination_comics(folder: Path) -> tuple[DestinationComic, ...]:
 		if match is None:
 			continue
 
+		legacy_body = LEGACY_DESTINATION_BODY_RE.match(match.group("rest"))
+		title = legacy_body.group("title").strip() if legacy_body else Path(match.group("rest")).stem
+		issue_label = legacy_body.group("issue").strip() if legacy_body else ""
 		comics.append(
 			DestinationComic(
 				path=path,
 				position=int(match.group("position")),
-				title=match.group("title").strip(),
-				issue_label=match.group("issue").strip(),
+				rest=match.group("rest"),
+				title=title,
+				issue_label=issue_label,
 			)
 		)
 
@@ -188,7 +194,7 @@ def _plan_from_old_order(
 	for comic in destination_comics:
 		old_entry = old_entries_by_position.get(comic.position)
 		if old_entry is None:
-			warnings.append(f"{comic.path.name}: no old reading-order entry for position {comic.position:04d}; skipped")
+			warnings.append(f"{comic.path.name}: no old reading-order entry for position {comic.position:05d}; skipped")
 			continue
 
 		new_entry = new_entries_by_match_key.get(entry_match_key(old_entry))
@@ -219,7 +225,7 @@ def _plan_from_filenames(
 			warnings.append(f"{comic.path.name}: no new reading-order entry matching {comic.title} #{comic.issue_label}; skipped")
 			continue
 		if len(matching_entries) > 1:
-			positions = ", ".join(f"{entry.position:04d}/v{entry.volume}" for entry in matching_entries)
+			positions = ", ".join(f"{entry.position:05d}/v{entry.volume}" for entry in matching_entries)
 			warnings.append(f"{comic.path.name}: ambiguous new reading-order matches ({positions}); use --old-reading-order; skipped")
 			continue
 
@@ -254,15 +260,7 @@ def _decoded_entry_index(
 
 
 def _output_name_aliases(config: OrganizerConfig | None) -> dict[tuple[str, str], set[str]]:
-	aliases: dict[tuple[str, str], set[str]] = {}
-	if config is None:
-		return aliases
-
-	for source_folder in config.source_folders:
-		aliases.setdefault((source_folder.run.casefold(), source_folder.volume), set()).add(source_folder.output_name)
-		aliases.setdefault((source_folder.annual_run.casefold(), source_folder.annual_volume), set()).add(source_folder.annual_output_name)
-
-	return aliases
+	return {}
 
 
 def _decoded_key(title: str, issue_label: str) -> tuple[str, str]:
@@ -272,7 +270,7 @@ def _decoded_key(title: str, issue_label: str) -> tuple[str, str]:
 def _migration_item(comic: DestinationComic, new_position: int) -> MigrationPlanItem:
 	return MigrationPlanItem(
 		source_path=comic.path,
-		destination_path=comic.path.with_name(f"{new_position:04d} - {comic.title} #{comic.issue_label}.cbz"),
+		destination_path=comic.path.with_name(f"{new_position:05d} - {comic.rest}"),
 		old_position=comic.position,
 		new_position=new_position,
 	)
@@ -286,7 +284,7 @@ def _validate_plan(folder: Path, items: list[MigrationPlanItem]) -> None:
 
 	for item in items:
 		if item.new_position in target_positions:
-			raise MigrationError(f"Migration would create duplicate target position: {item.new_position:04d}")
+			raise MigrationError(f"Migration would create duplicate target position: {item.new_position:05d}")
 		target_positions.add(item.new_position)
 
 		target_name = item.destination_path.name.casefold()

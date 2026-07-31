@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS issues (
 	release_date TEXT NOT NULL,
 	release_date_precision TEXT NOT NULL,
 	story_arc_id TEXT NOT NULL,
+	sort_order INTEGER,
 	UNIQUE (cand_id, issue_number),
 	FOREIGN KEY (cand_id) REFERENCES comic_runs(id) ON DELETE CASCADE,
 	FOREIGN KEY (story_arc_id) REFERENCES story_arcs(id)
@@ -42,3 +43,4 @@ CREATE INDEX IF NOT EXISTS idx_story_arcs_start_date ON story_arcs(start_date, t
 CREATE INDEX IF NOT EXISTS idx_issues_cand_issue_number ON issues(cand_id, issue_number);
 CREATE INDEX IF NOT EXISTS idx_issues_release_date ON issues(release_date);
 CREATE INDEX IF NOT EXISTS idx_issues_story_arc ON issues(story_arc_id);
+CREATE INDEX IF NOT EXISTS idx_issues_story_arc_sort_order ON issues(story_arc_id, sort_order, release_date);

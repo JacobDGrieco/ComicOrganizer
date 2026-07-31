@@ -10,17 +10,17 @@ from pathlib import Path
 class SourceFolderConfig:
 	path: Path
 	run: str
-	output_name: str = ""
-	volume: str = "1"
+	volume: str
 	annual_run: str = ""
-	annual_output_name: str = ""
-	annual_volume: str = "1"
+	annual_volume: str = ""
+	annual_start_year: str = ""
 
 
 @dataclass(frozen=True)
 class OrganizerConfig:
 	reading_order_path: Path
 	destination_folder: Path
+	log_path: Path
 	source_folders: tuple[SourceFolderConfig, ...]
 	issue_overrides: dict[str, dict[str, str]]
 
@@ -31,30 +31,34 @@ class ReadingOrderEntry:
 	run: str
 	issue_label: str
 	volume: str = "1"
+	run_start_year: str = ""
+	release_date: str = ""
 
 
 @dataclass(frozen=True)
 class SourceFile:
 	path: Path
 	run: str
+	volume: str
 	source_order: int
-	output_name: str = ""
-	volume: str = "1"
 	annual_run: str = ""
-	annual_output_name: str = ""
-	annual_volume: str = "1"
+	annual_volume: str = ""
+	annual_start_year: str = ""
 
 
 @dataclass(frozen=True)
 class ParsedCandidate:
 	run: str
+	volume: str
 	issue_number: str
 	is_annual: bool
 	source_path: Path
 	raw_name: str
 	source_order: int
-	output_name: str = ""
-	volume: str = "1"
+	filename_title: str = ""
+	run_start_year: str = ""
+	annual_release_year: str = ""
+	annual_start_year: str = ""
 
 
 @dataclass(frozen=True)

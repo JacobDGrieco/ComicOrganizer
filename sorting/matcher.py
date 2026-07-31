@@ -1,4 +1,4 @@
-"""Match parsed source files to the configured reading order."""
+"""Match parsed source files to the database-derived reading order."""
 
 from __future__ import annotations
 
@@ -10,34 +10,35 @@ def match_candidates(
 	reading_order: tuple[ReadingOrderEntry, ...],
 	candidates: tuple[ParsedCandidate, ...],
 ) -> MatchResult:
-	candidates_by_key: dict[tuple[str, str, str], list[ParsedCandidate]] = {}
-	for candidate in sorted(candidates, key=lambda current_candidate: (current_candidate.source_order, current_candidate.raw_name.casefold())):
-		candidates_by_key.setdefault(candidate_match_key(candidate), []).append(candidate)
-
-	reading_keys = {entry_match_key(entry) for entry in reading_order}
+	"""Match source candidates to reading-order entries without trusting filenames for output names."""
+	sorted_candidates = tuple(
+		sorted(candidates, key=lambda candidate: (candidate.source_order, candidate.raw_name.casefold()))
+	)
 	matches: list[MatchedComic] = []
 	unmatched_entries: list[ReadingOrderEntry] = []
 	duplicate_candidates: list[DuplicateCandidate] = []
 	used_candidate_ids: set[int] = set()
 
 	for entry in reading_order:
-		entry_candidates = candidates_by_key.get(entry_match_key(entry), [])
+		entry_candidates = [
+			candidate
+			for candidate in sorted_candidates
+			if id(candidate) not in used_candidate_ids and candidate_matches_entry(candidate, entry)
+		]
 		if not entry_candidates:
 			unmatched_entries.append(entry)
 			continue
 
 		winner = entry_candidates[0]
 		used_candidate_ids.add(id(winner))
-		output_name = winner.output_name or winner.run
-		is_annual = winner.is_annual or _is_annual_name(winner.run) or _is_annual_name(output_name)
 		matches.append(
 			MatchedComic(
 				position=entry.position,
-				run=output_name,
+				run=entry.run,
 				issue_label=entry.issue_label,
-				canonical_name=canonical_filename(entry, output_name),
+				canonical_name=canonical_filename(entry, winner),
 				source_path=winner.source_path,
-				is_annual=is_annual,
+				is_annual=winner.is_annual,
 			)
 		)
 
@@ -48,7 +49,7 @@ def match_candidates(
 	unmatched_candidates = tuple(
 		candidate
 		for candidate in candidates
-		if id(candidate) not in used_candidate_ids and candidate_match_key(candidate) not in reading_keys
+		if id(candidate) not in used_candidate_ids
 	)
 
 	return MatchResult(
@@ -59,9 +60,8 @@ def match_candidates(
 	)
 
 
-def canonical_filename(entry: ReadingOrderEntry, output_name: str | None = None) -> str:
-	run_name = output_name or entry.run
-	return f"{entry.position:04d} - {run_name} #{entry.issue_label}.cbz"
+def canonical_filename(entry: ReadingOrderEntry, candidate: ParsedCandidate) -> str:
+	return f"{entry.position:05d} - {candidate.source_path.name}"
 
 
 def entry_match_key(entry: ReadingOrderEntry) -> tuple[str, str, str]:
@@ -72,5 +72,15 @@ def candidate_match_key(candidate: ParsedCandidate) -> tuple[str, str, str]:
 	return (candidate.run.casefold(), candidate.volume, comparable_issue_number(candidate.issue_number))
 
 
-def _is_annual_name(run_name: str) -> bool:
-	return run_name.casefold().endswith(" annual")
+def candidate_matches_entry(candidate: ParsedCandidate, entry: ReadingOrderEntry) -> bool:
+	if candidate.run.casefold() != entry.run.casefold():
+		return False
+	if candidate.volume != entry.volume:
+		return False
+	if candidate.annual_release_year:
+		return entry.release_date.startswith(candidate.annual_release_year)
+	if candidate.annual_start_year and entry.run_start_year and entry.run_start_year != candidate.annual_start_year:
+		return False
+	if not candidate.is_annual and entry.run_start_year and candidate.run_start_year != entry.run_start_year:
+		return False
+	return comparable_issue_number(candidate.issue_number) == comparable_issue_number(entry.issue_label)

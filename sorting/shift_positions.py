@@ -11,7 +11,7 @@ from pathlib import Path
 from .config import ConfigError, load_config
 
 
-POSITION_PREFIX_RE = re.compile(r"^(?P<position>\d{4}) - (?P<rest>.+)$")
+POSITION_PREFIX_RE = re.compile(r"^(?P<position>\d{4,5}) - (?P<rest>.+)$")
 
 
 class ShiftPositionsError(ValueError):
@@ -38,14 +38,14 @@ def plan_shift(folder: str | Path, from_file: str | Path, increment: int = 1) ->
 	from_path = _resolve_from_file(folder_path, from_file)
 	start_position = _position_from_name(from_path.name)
 	if start_position is None:
-		raise ShiftPositionsError(f"From file does not start with a 4-digit position prefix: {from_path.name}")
+		raise ShiftPositionsError(f"From file does not start with a numeric position prefix: {from_path.name}")
 	if not from_path.is_file():
 		raise ShiftPositionsError(f"From file does not exist: {from_path}")
 
 	prefixed_files = _prefixed_files(folder_path)
 	selected_files = [file_info for file_info in prefixed_files if file_info[0] >= start_position]
 	if not selected_files:
-		raise ShiftPositionsError(f"No files found at or after position {start_position:04d}")
+		raise ShiftPositionsError(f"No files found at or after position {start_position:05d}")
 
 	selected_source_names = {path.name.casefold() for _, path in selected_files}
 	selected_source_positions = {position for position, _ in selected_files}
@@ -59,19 +59,19 @@ def plan_shift(folder: str | Path, from_file: str | Path, increment: int = 1) ->
 		destination_position = source_position + increment
 		if destination_position < 1:
 			raise ShiftPositionsError(
-				f"Shift would move {source_path.name} before position 0001"
+				f"Shift would move {source_path.name} before position 00001"
 			)
-		if destination_position > 9999:
+		if destination_position > 99999:
 			raise ShiftPositionsError(
-				f"Shift would move {source_path.name} beyond 9999"
+				f"Shift would move {source_path.name} beyond 99999"
 			)
 
 		destination_name = _replace_position(source_path.name, destination_position)
 		destination_name_key = destination_name.casefold()
 		if destination_position in target_positions:
-			raise ShiftPositionsError(f"Shift would create duplicate target position: {destination_position:04d}")
+			raise ShiftPositionsError(f"Shift would create duplicate target position: {destination_position:05d}")
 		if destination_position in existing_positions and destination_position not in selected_source_positions:
-			raise ShiftPositionsError(f"Target position already exists outside shifted range: {destination_position:04d}")
+			raise ShiftPositionsError(f"Target position already exists outside shifted range: {destination_position:05d}")
 		if destination_name_key in target_names:
 			raise ShiftPositionsError(f"Shift would create duplicate target name: {destination_name}")
 		if destination_name_key in existing_names and destination_name_key not in selected_source_names:
@@ -124,7 +124,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
-	parser = argparse.ArgumentParser(description="Shift 4-digit comic position prefixes from a selected file onward.")
+	parser = argparse.ArgumentParser(description="Shift comic position prefixes from a selected file onward.")
 	parser.add_argument("from_file", help="Filename or full path to the first file that should shift.")
 	parser.add_argument("--config", help="Organizer config JSON. Provides the destination folder default.")
 	parser.add_argument("--folder", help="Destination folder. Required when from_file is only a filename unless --config is provided.")
@@ -189,9 +189,9 @@ def _position_from_name(name: str) -> int | None:
 def _replace_position(name: str, position: int) -> str:
 	match = POSITION_PREFIX_RE.match(name)
 	if match is None:
-		raise ShiftPositionsError(f"File does not start with a 4-digit position prefix: {name}")
+		raise ShiftPositionsError(f"File does not start with a numeric position prefix: {name}")
 
-	return f"{position:04d} - {match.group('rest')}"
+	return f"{position:05d} - {match.group('rest')}"
 
 
 if __name__ == "__main__":

@@ -1,4 +1,13 @@
 {
+  "scripts": {
+    "sort": "python -m sorting.organizer --config config.json",
+    "sort:dry": "python -m sorting.organizer --config config.json --dry-run",
+    "missing": "python -m sorting.missing_entries --config config.json",
+    "db:validate": "python scripts/db_validate.py --db database/database.db",
+    "db:export": "python scripts/db_export_reading_order.py --db database/database.db",
+    "test": "python -m unittest discover -s tests",
+    "check": "python -m compileall -q sorting scripts tests && python -m unittest discover -s tests && python scripts/db_validate.py --db database/database.db"
+  },
   "dependencies": {
     "playwright": "^1.62.1"
   }

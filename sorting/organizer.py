@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import argparse
 import sys
+from pathlib import Path
 
 from .config import ConfigError, load_config
-from .matcher import candidate_match_key, entry_match_key, match_candidates
+from .matcher import candidate_matches_entry, match_candidates
 from .parser import parse_source_files
 from .processor import find_existing_positions, process_matches
 from .reading_order import ReadingOrderError, read_reading_order
@@ -25,16 +26,22 @@ def main(argv: list[str] | None = None) -> int:
 
 	existing_positions = find_existing_positions(config.destination_folder)
 	pending_reading_order, completed_reading_order = split_existing_entries(reading_order, existing_positions)
+	skipped_source_folders = unreachable_source_folders(config.source_folders)
 	source_files = scan_source_folders(config.source_folders)
 	candidates = parse_source_files(source_files)
+	unparsed_source_files = unparsed_files(source_files, candidates)
 	candidates = filter_completed_candidates(candidates, completed_reading_order)
 	match_result = match_candidates(pending_reading_order, candidates)
 
-	if completed_reading_order:
-		print(f"SKIP already organized: {len(completed_reading_order)} entries found in destination")
-	_report_match_warnings(match_result)
-	summary = process_matches(match_result.matches, config.destination_folder, dry_run=args.dry_run)
-	print(f"Summary: moved={summary.moved} skipped={summary.skipped} failed={summary.failed}")
+	report_lines = build_report_lines(match_result, completed_reading_order, unparsed_source_files, skipped_source_folders)
+	for line in report_lines:
+		print(line)
+	_write_log(config.log_path, report_lines)
+	summary = process_matches(match_result.matches, config.destination_folder, dry_run=args.dry_run, verbose=False)
+	result_lines = build_result_lines(summary, dry_run=args.dry_run)
+	for line in result_lines:
+		print(line)
+	_append_log(config.log_path, result_lines)
 	return 1 if summary.failed else 0
 
 
@@ -51,8 +58,20 @@ def split_existing_entries(reading_order, existing_positions: frozenset[int]):
 
 
 def filter_completed_candidates(candidates, completed_entries):
-	completed_keys = {entry_match_key(entry) for entry in completed_entries}
-	return tuple(candidate for candidate in candidates if candidate_match_key(candidate) not in completed_keys)
+	return tuple(
+		candidate
+		for candidate in candidates
+		if not any(candidate_matches_entry(candidate, entry) for entry in completed_entries)
+	)
+
+
+def unparsed_files(source_files, candidates):
+	parsed_paths = {candidate.source_path for candidate in candidates}
+	return tuple(source_file for source_file in source_files if source_file.path not in parsed_paths)
+
+
+def unreachable_source_folders(source_folders):
+	return tuple(source_folder for source_folder in source_folders if not source_folder.path.is_dir())
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
@@ -62,16 +81,78 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
 	return parser.parse_args(argv)
 
 
-def _report_match_warnings(match_result) -> None:
-	for duplicate in match_result.duplicate_candidates:
-		print(
-			"WARN duplicate candidate left in place: "
-			f"{duplicate.duplicate.source_path} matches {duplicate.entry.run} #{duplicate.entry.issue_label}; "
-			f"winner is {duplicate.winner.source_path}"
-		)
+def build_report_lines(match_result, completed_reading_order, unparsed_source_files, skipped_source_folders) -> list[str]:
+	lines: list[str] = []
+	lines.append("Unmatched scanned files:")
+	if unparsed_source_files or match_result.unmatched_candidates:
+		for source_file in sorted(unparsed_source_files, key=lambda item: display_path(item.path).casefold()):
+			lines.append(f"  {display_path(source_file.path)}")
+		for candidate in sorted(match_result.unmatched_candidates, key=lambda item: display_path(item.source_path).casefold()):
+			lines.append(f"  {display_path(candidate.source_path)}")
+	else:
+		lines.append("  (none)")
 
-	for candidate in match_result.unmatched_candidates:
-		print(f"WARN unmatched candidate left in place: {candidate.source_path} ({candidate.run} #{candidate.issue_number})")
+	lines.append("")
+	lines.append("Conversions:")
+	if match_result.matches:
+		for match in match_result.matches:
+			lines.append(f"  {display_path(match.source_path)} -> {match.canonical_name}")
+	else:
+		lines.append("  (none)")
+
+	if match_result.duplicate_candidates:
+		lines.append("")
+		lines.append("Duplicate scanned files:")
+		for duplicate in match_result.duplicate_candidates:
+			lines.append(
+				"  "
+				f"{display_path(duplicate.duplicate.source_path)} matches "
+				f"{duplicate.entry.run} #{duplicate.entry.issue_label}; "
+				f"winner is {display_path(duplicate.winner.source_path)}"
+			)
+
+	if completed_reading_order:
+		lines.append("")
+		lines.append(f"Already organized positions skipped: {len(completed_reading_order)}")
+
+	if skipped_source_folders:
+		lines.append("")
+		lines.append("Skipped source folders:")
+		for source_folder in skipped_source_folders:
+			lines.append(f"  {source_folder.path}")
+
+	return lines
+
+
+def build_result_lines(summary, *, dry_run: bool) -> list[str]:
+	planned = sum(1 for result in summary.results if result.action == "dry_run")
+	lines = [""]
+	if dry_run:
+		lines.append(f"Summary: planned={planned} moved=0 skipped={summary.skipped} failed={summary.failed}")
+	else:
+		lines.append(f"Summary: moved={summary.moved} skipped={summary.skipped} failed={summary.failed}")
+	failures = [result for result in summary.results if result.action == "failed"]
+	if failures:
+		lines.append("")
+		lines.append("Failures:")
+		for failure in failures:
+			lines.append(f"  {display_path(failure.match.source_path)} -> {failure.destination_path.name}: {failure.error}")
+	return lines
+
+
+def display_path(path: Path) -> str:
+	parent = path.parent.name or str(path.parent)
+	return f"{parent}\\{path.name}"
+
+
+def _write_log(log_path: Path, lines: list[str]) -> None:
+	log_path.parent.mkdir(parents=True, exist_ok=True)
+	log_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _append_log(log_path: Path, lines: list[str]) -> None:
+	with log_path.open("a", encoding="utf-8") as log_file:
+		log_file.write("\n".join(lines) + "\n")
 
 
 if __name__ == "__main__":

@@ -9,5 +9,6 @@ pytest-cache-*/
 downloader/
 
 database.db
+database/*.db
 config.json
 package-lock.json

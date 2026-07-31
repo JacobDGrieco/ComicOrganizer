@@ -32,6 +32,7 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 
 	reading_order_path = _required_path(raw_config, "reading_order_path")
 	destination_folder = _required_path(raw_config, "destination_folder")
+	log_path = _optional_path(raw_config, "log_path") or destination_folder / "comic-organizer.log"
 	source_folders = _source_folders(raw_config.get("source_folders"))
 	issue_overrides = _issue_overrides(raw_config.get("issue_overrides", {}))
 
@@ -41,6 +42,7 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 	return OrganizerConfig(
 		reading_order_path=reading_order_path,
 		destination_folder=destination_folder,
+		log_path=log_path,
 		source_folders=tuple(source_folders),
 		issue_overrides=issue_overrides,
 	)
@@ -58,6 +60,15 @@ def _required_path(raw_config: dict[str, Any], key: str) -> Path:
 	return Path(_required_string(raw_config, key))
 
 
+def _optional_path(raw_config: dict[str, Any], key: str) -> Path | None:
+	value = raw_config.get(key)
+	if value is None:
+		return None
+	if not isinstance(value, str) or not value.strip():
+		raise ConfigError(f"Config field '{key}' must be a non-empty string when provided")
+	return Path(value.strip())
+
+
 def _source_folders(value: Any) -> list[SourceFolderConfig]:
 	if not isinstance(value, list) or not value:
 		raise ConfigError("Config field 'source_folders' must be a non-empty list")
@@ -69,40 +80,33 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 
 		path = raw_source_folder.get("path")
 		run = raw_source_folder.get("run")
-		output_name = raw_source_folder.get("output_name", run)
-		volume = raw_source_folder.get("volume", "1")
+		volume = raw_source_folder.get("volume")
 		annual_run = raw_source_folder.get("annual_run", f"{run} Annual" if isinstance(run, str) else "")
-		annual_output_name = raw_source_folder.get(
-			"annual_output_name",
-			f"{output_name} Annual" if isinstance(output_name, str) else "",
-		)
 		annual_volume = raw_source_folder.get("annual_volume", volume)
+		annual_start_year = raw_source_folder.get("annual_start_year", "")
 		if not isinstance(path, str) or not path.strip():
 			raise ConfigError(f"source_folders[{index}].path must be a non-empty string")
 		if not isinstance(run, str) or not run.strip():
 			raise ConfigError(f"source_folders[{index}].run must be a non-empty string")
-		if not isinstance(output_name, str) or not output_name.strip():
-			raise ConfigError(f"source_folders[{index}].output_name must be a non-empty string")
 		volume_label = normalize_volume_label(volume)
 		if not volume_label:
 			raise ConfigError(f"source_folders[{index}].volume must be a non-empty value")
 		if not isinstance(annual_run, str) or not annual_run.strip():
 			raise ConfigError(f"source_folders[{index}].annual_run must be a non-empty string")
-		if not isinstance(annual_output_name, str) or not annual_output_name.strip():
-			raise ConfigError(f"source_folders[{index}].annual_output_name must be a non-empty string")
 		annual_volume_label = normalize_volume_label(annual_volume)
 		if not annual_volume_label:
 			raise ConfigError(f"source_folders[{index}].annual_volume must be a non-empty value")
+		if annual_start_year is not None and not isinstance(annual_start_year, str):
+			raise ConfigError(f"source_folders[{index}].annual_start_year must be a string")
 
 		source_folders.append(
 			SourceFolderConfig(
 				path=Path(path),
 				run=run.strip(),
-				output_name=output_name.strip(),
 				volume=volume_label,
 				annual_run=annual_run.strip(),
-				annual_output_name=annual_output_name.strip(),
 				annual_volume=annual_volume_label,
+				annual_start_year=str(annual_start_year or "").strip(),
 			)
 		)
 

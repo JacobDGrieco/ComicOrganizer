@@ -2,16 +2,16 @@
 
 Python utilities for organizing Tachidesk/Suwayomi comic downloads into a single reading-order folder.
 
-The main organizer reads a SQLite reading-order database or legacy JSON sort-order file, matches downloaded `.cbz` files by run, volume, and issue, then renames/moves them into:
+The main organizer reads the SQLite reading-order database, matches normalized downloaded `.cbz` filenames to database issues, then renames/moves them into:
 
 ```text
-NNNN - <Output Name> #<Issue>.cbz
+##### - <Original Filename>.cbz
 ```
 
 Example:
 
 ```text
-0455 - The Amazing Spider-Man #396.cbz
+00455 - The Amazing Spider-Man 1963 #396.cbz
 ```
 
 ## Setup
@@ -28,35 +28,79 @@ Run a dry run first:
 
 ```powershell
 python -m sorting.organizer --config config.json --dry-run
+npm run sort:dry
 ```
 
 Run for real:
 
 ```powershell
 python -m sorting.organizer --config config.json
+npm run sort
 ```
 
-The organizer is safe to rerun. It checks existing destination files by their `NNNN - ` prefix and skips reading-order positions that are already present.
+The organizer is safe to rerun. It checks existing destination files by their numeric prefix and skips reading-order positions that are already present.
+
+To report gaps in the output folder, run:
+
+```powershell
+python -m sorting.missing_entries --config config.json
+npm run missing
+```
+
+The report finds the highest existing numeric prefix in the destination folder, then lists every missing database reading-order entry from position `00001` through that last existing position. It prints to the terminal and writes `missing-entries.log` in the destination folder by default. Use `--output path\to\missing.log` to choose a different log file.
+
+Useful npm shortcuts:
+
+```powershell
+npm run sort:dry
+npm run sort
+npm run missing
+npm run db:validate
+npm run db:export
+npm test
+npm run check
+```
 
 ## Config
 
-`config.json` controls all paths and naming.
+`config.json` controls the SQLite database, destination folder, scan folders, and optional log path.
 
 For the Spider-Man project, point `reading_order_path` at the SQLite database:
 
 ```json
 {
-	"reading_order_path": "database/database.db"
+	"reading_order_path": "database/database.db",
+	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Reading Order",
+	"log_path": "D:\\Suwayomi\\Comics\\Spider-Man Reading Order\\comic-organizer.log",
+	"source_folders": [
+		{
+			"path": "D:\\Suwayomi\\Downloads\\Amazing Spider-Man",
+			"run": "The Amazing Spider-Man",
+			"volume": 1,
+			"annual_run": "Amazing Spider-Man Annual",
+			"annual_volume": 1
+		}
+	]
 }
 ```
 
 The organizer reads SQLite rows in this order:
 
 ```text
-story arc start date -> issue release date -> stable title/issue fallback
+story arc start date -> issue release date -> issue sort_order when present -> stable title/issue fallback
 ```
 
 This keeps a story arc together while still moving through publication history.
+
+The terminal output and `log_path` start with unmatched scanned files, then show the planned or applied conversions in this shape:
+
+```text
+Unmatched scanned files:
+  SourceFolder\The Amazing Spider-Man 1963 #999.cbz
+
+Conversions:
+  SourceFolder\The Amazing Spider-Man 1963 #396.cbz -> 00455 - The Amazing Spider-Man 1963 #396.cbz
+```
 
 ## SQLite Database
 
@@ -73,6 +117,14 @@ The simplified working schema keeps only:
 - `comic_runs`
 - `issues`
 - `story_arcs`
+
+Story-arc IDs use these namespaces:
+
+- `FANDOM-EVENT-*` for event groupings found on Marvel Fandom.
+- `FANDOM-STORY-*` for story-arc groupings found on Marvel Fandom.
+- `LOCAL-ARC-*` for local fallback placeholders.
+
+Issue IDs use `FANDOM-ISS-<comic_runs.id>-<issue-number>`, such as `FANDOM-ISS-CAND-000002-14`.
 
 Existing older databases can be migrated with:
 
@@ -157,6 +209,32 @@ python scripts\marvel_scrape_series_index.py --input-html ".cache\marvel-series.
 
 The scraper excludes obvious reprints, collections, facsimiles, variants, and similar non-original-publication rows. Treat its output as official Marvel discovery data that still needs scope review before issue import.
 
+## Marvel Fandom Issue Imports
+
+When Marvel's official series page is recorded on a run but the issue rows are still missing, import the dated Marvel Fandom volume list into the simplified SQLite schema:
+
+```powershell
+python scripts\db_import_fandom_volume.py --db database/database.db --run-id CAND-000022 --fandom-page Spider-Man_Vol_1 --dry-run
+python scripts\db_import_fandom_volume.py --db database/database.db --run-id CAND-000022 --fandom-page Spider-Man_Vol_1 --max-release-date 2026-07-31
+python scripts\db_validate.py --db database/database.db
+```
+
+The importer creates one issue row per dated issue and links it to the existing `comic_runs.id`. It creates placeholder story-arc rows because the current schema requires `issues.story_arc_id`; those rows should be replaced or regrouped during a later story-arc pass. Use `--max-release-date` for ongoing runs so future solicited issues are not imported before release.
+
+For one-shots or graphic novels where Fandom has a single issue page instead of a volume issue list, pass that issue page with `--issue-number 1`.
+
+## Marvel Fandom Story-Arc Backfill
+
+After issue rows exist, backfill Fandom event/story-arc assignments and within-arc order:
+
+```powershell
+python scripts\db_backfill_fandom_story_arcs.py --db database/database.db --dry-run --limit 25
+python scripts\db_backfill_fandom_story_arcs.py --db database/database.db --limit 300 --offset 0
+python scripts\db_validate.py --db database/database.db
+```
+
+The backfill reads issue-page `EventN` fields first, then `StoryArcN` fields. If multiple candidates are present, it chooses the event/story-arc page with the earliest detected start date. It fills `issues.sort_order` when Fandom exposes a `Reading Order:` list or ordered `PartN` fields; otherwise the organizer falls back to release date inside the selected arc.
+
 ## Legacy JSON Sort Order
 
 Reading-order JSON files are still supported. They are ordered arrays, either as a bare array or inside an `entries` property:
@@ -170,7 +248,7 @@ Reading-order JSON files are still supported. They are ordered arrays, either as
 }
 ```
 
-The array order is the destination position order. The first entry becomes `0001`, the second becomes `0002`, and so on.
+The array order is the destination position order. The first entry becomes `00001`, the second becomes `00002`, and so on.
 
 Source folder example:
 
@@ -178,10 +256,8 @@ Source folder example:
 {
 	"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\ReadAllComics (EN)\\Amazing Spider-Man (Publisher_ Marvel)",
 	"run": "The Amazing Spider-Man",
-	"output_name": "The Amazing Spider-Man",
 	"volume": 1,
 	"annual_run": "Amazing Spider-Man Annual",
-	"annual_output_name": "The Amazing Spider-Man Annual",
 	"annual_volume": 1
 }
 ```
@@ -189,29 +265,32 @@ Source folder example:
 Fields:
 
 - `path`: folder containing downloaded `.cbz` files.
-- `run`: exact reading-order `run` value used for matching.
-- `output_name`: name used in moved filenames. Defaults to `run`.
-- `volume`: default reading-order `volume` for files in this folder. Defaults to `1`.
+- `run`: exact `comic_runs.title` value used for regular issue matching.
+- `volume`: exact `comic_runs.volume` value used for regular issue matching.
 - `annual_run`: reading-order `run` value for annual files in this folder. Defaults to `<run> Annual`.
-- `annual_output_name`: output name for annual files. Defaults to `<output_name> Annual`.
-- `annual_volume`: default reading-order `volume` for annual files. Defaults to `volume`.
+- `annual_volume`: exact `comic_runs.volume` value for annual files in this folder. Defaults to `volume`.
+- `annual_start_year`: optional annual database run start year, used only when the same annual title has repeated issue numbers across multiple database runs.
 
-Filename `vN` volume markers override config volume for that file. For example, `v2 001.cbz` matches reading-order volume `2` even if the folder config says `"volume": 1`.
+Moved files keep the original normalized filename after the five-digit reading-order prefix.
 
 Source folders do not need to exist yet. Missing or unreachable source folders are reported as warnings and skipped, so you can add paths to `config.json` before those series finish downloading.
 
 Supported filename formats include:
 
 ```text
-Issue #12.cbz
-Issue 12.cbz
-v1 141.cbz
-v1 .Annual 010.cbz
-Annual 10.cbz
-Annual_1.cbz
-Annual_#12.cbz
-Annual 42 (2018).cbz
-94_-_Who_Was_Joey_Z.cbz
+<comic run name> <comic run start year> #<issue number>.cbz
+<comic run name> <comic run start year> Annual #<issue number>.cbz
+<comic run name> <comic run start year> Annual 'YY.cbz
+```
+
+Examples:
+
+```text
+The Amazing Spider-Man 1963 #396.cbz
+The Amazing Spider-Man 1963 #-1.cbz
+The Amazing Spider-Man 1963 #27.NOW.cbz
+The Amazing Spider-Man 1963 Annual #28.cbz
+The Amazing Spider-Man 1963 Annual '94.cbz
 ```
 
 ## Issue Overrides
@@ -232,37 +311,37 @@ This keeps the sort-order JSON unchanged while matching/outputting `Amazing Fant
 
 ## Position Shifter
 
-Use `python -m sorting.shift_positions` when you need to insert a missing issue into the destination folder and shift existing `NNNN - ` prefixes out of the way.
+Use `python -m sorting.shift_positions` when you need to insert a missing issue into the destination folder and shift existing numeric prefixes out of the way.
 
 Dry run:
 
 ```powershell
-python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse"
+python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse"
 ```
 
 Dry run using `config.json` for the destination folder:
 
 ```powershell
-python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --config config.json
+python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --config config.json
 ```
 
 Apply:
 
 ```powershell
-python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --apply
+python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --apply
 ```
 
 Custom increment:
 
 ```powershell
-python -m sorting.shift_positions "0004 - The Amazing Spider-Man #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --increment 2 --apply
+python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse" --increment 2 --apply
 ```
 
 The selected file and every prefixed file after it are shifted. With the default increment of `1`, this means:
 
 ```text
-0004 - The Amazing Spider-Man #3.cbz -> 0005 - The Amazing Spider-Man #3.cbz
-0005 - ... -> 0006 - ...
+00004 - The Amazing Spider-Man 1963 #3.cbz -> 00005 - The Amazing Spider-Man 1963 #3.cbz
+00005 - ... -> 00006 - ...
 ```
 
 The shifter validates target position collisions before renaming anything. Without `--apply`, it only prints the plan.
@@ -291,7 +370,7 @@ With `--config`, the tool uses:
 - `reading_order_path` as the new/reworked SQLite database or JSON sort order.
 - Config output names as aliases when decoding filenames.
 
-The old-reading-order mode is safest because it uses each existing file's current `NNNN` prefix to find the old JSON entry, then matches that issue in the new JSON file by `Run + Volume + Issue`. This avoids mistakes when a run has multiple volumes with repeated issue numbers.
+The old-reading-order mode is safest because it uses each existing file's current numeric prefix to find the old JSON entry, then matches that issue in the new JSON file by `Run + Volume + Issue`. This avoids mistakes when a run has multiple volumes with repeated issue numbers.
 
 Fallback dry run without an old JSON reference:
 
@@ -299,7 +378,7 @@ Fallback dry run without an old JSON reference:
 python -m sorting.migrate_sort_order --config config.json
 ```
 
-Fallback mode decodes names like `0455 - The Amazing Spider-Man #396.cbz` and looks for the same title/issue in the new JSON file. If that title/issue appears in multiple volumes, the tool warns and skips that file until you provide `--old-reading-order`.
+Fallback mode decodes legacy generated names like `00455 - The Amazing Spider-Man #396.cbz` and looks for the same title/issue in the new JSON file. If that title/issue appears in multiple volumes, the tool warns and skips that file until you provide `--old-reading-order`.
 
 Migration applies renames through temporary filenames first, so swaps such as `0001 <-> 0002` are handled without overwriting.
 

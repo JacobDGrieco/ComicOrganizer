@@ -5,22 +5,18 @@
 		{
 			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Giant-Size Spider-Man",
 			"run": "Giant-Size Spider-Man",
-			"output_name": "Giant-Size Spider-Man",
 			"volume": 1
 		},
 		{
 			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\ReadAllComics (EN)\\Amazing Spider-Man (Publisher_ Marvel)",
 			"run": "The Amazing Spider-Man",
-			"output_name": "Amazing Spider-Man",
-			"volume": 1,
 			"annual_run": "Amazing Spider-Man Annual",
-			"annual_output_name": "Amazing Spider-Man Annual",
+			"volume": 1,
 			"annual_volume": 1
 		},
 		{
 			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\ReadComicOnline (EN)\\The Amazing Spider-Man (1963)",
 			"run": "The Amazing Spider-Man",
-			"output_name": "Amazing Spider-Man",
 			"volume": 1
 		}
 	],

@@ -14,7 +14,7 @@ from .models import MatchedComic, MoveResult, ProcessSummary
 init(autoreset=True)
 
 
-_POSITION_PREFIX_RE = re.compile(r"^(?P<position>\d{4}) - ")
+_POSITION_PREFIX_RE = re.compile(r"^(?P<position>\d{4,5}) - ")
 
 
 def find_existing_positions(destination_folder: str | Path) -> frozenset[int]:
@@ -85,7 +85,7 @@ def _print_move(match: MatchedComic, destination_path: Path, dry_run: bool) -> N
 
 
 def _print_skip(match: MatchedComic) -> None:
-	print(f"{Fore.CYAN}SKIP{Style.RESET_ALL} already present: {match.position:04d} - {match.run} #{match.issue_label}")
+	print(f"{Fore.CYAN}SKIP{Style.RESET_ALL} already present: {match.position:05d} - {match.run} #{match.issue_label}")
 
 
 def _print_failure(match: MatchedComic, error: OSError) -> None:

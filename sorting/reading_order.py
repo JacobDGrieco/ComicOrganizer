@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from pathlib import Path
 from typing import Any
@@ -38,7 +39,7 @@ def read_entries_from_sqlite(
 	reading_order_path: str | Path,
 	issue_overrides: dict[str, dict[str, str]] | None = None,
 ) -> tuple[ReadingOrderEntry, ...]:
-	"""Load entries from SQLite using story-arc start date, then issue release date."""
+	"""Load entries from SQLite using story-arc date, issue release date, and stable fallbacks."""
 	path = Path(reading_order_path)
 	overrides = issue_overrides or {}
 	try:
@@ -53,13 +54,17 @@ def read_entries_from_sqlite(
 			SELECT
 				comic_runs.title AS run,
 				comic_runs.volume AS volume,
-				issues.issue_number AS issue
+				comic_runs.years AS years,
+				issues.issue_number AS issue,
+				issues.release_date AS release_date
 			FROM issues
 			JOIN comic_runs ON comic_runs.id = issues.cand_id
 			JOIN story_arcs ON story_arcs.id = issues.story_arc_id
 			ORDER BY
 				story_arcs.start_date,
 				issues.release_date,
+				CASE WHEN issues.sort_order IS NULL THEN 1 ELSE 0 END,
+				issues.sort_order,
 				comic_runs.title,
 				CAST(issues.issue_number AS REAL),
 				issues.issue_number,
@@ -79,7 +84,16 @@ def read_entries_from_sqlite(
 		issue_label = overrides.get(run_name, {}).get(sequence_number, normalize_issue_label(row["issue"]))
 		if not run_name or not volume or not issue_label:
 			raise ReadingOrderError(f"Reading-order SQLite row {position} must contain non-empty run, volume, and issue")
-		entries.append(ReadingOrderEntry(position=position, run=run_name, volume=volume, issue_label=issue_label))
+		entries.append(
+			ReadingOrderEntry(
+				position=position,
+				run=run_name,
+				volume=volume,
+				issue_label=issue_label,
+				run_start_year=_start_year(row["years"]),
+				release_date=str(row["release_date"] or ""),
+			)
+		)
 
 	return tuple(entries)
 
@@ -135,3 +149,8 @@ def _entry_value(raw_entry: dict[str, Any], *names: str) -> Any:
 				return raw_entry[key]
 
 	return None
+
+
+def _start_year(years: object) -> str:
+	match = re.match(r"^\s*(\d{4})", str(years or ""))
+	return match.group(1) if match else ""
