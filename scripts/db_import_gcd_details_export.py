@@ -71,7 +71,7 @@ def parse_args() -> argparse.Namespace:
         description="Import a GCD series details export into SQLite."
     )
     parser.add_argument(
-        "--db", default="database.db", help="Local ComicOrganizer SQLite database."
+        "--db", default="database/database.db", help="Local ComicOrganizer SQLite database."
     )
     parser.add_argument(
         "--gcd-series-id", required=True, type=int, help="GCD series id."

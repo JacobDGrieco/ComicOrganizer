@@ -28,7 +28,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Initialize the Spider-Man SQLite database."
     )
-    parser.add_argument("--db", default="database.db", help="SQLite database path.")
+    parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
     parser.add_argument(
         "--reset",
         action="store_true",

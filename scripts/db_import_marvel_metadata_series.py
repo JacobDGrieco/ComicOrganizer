@@ -48,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Import one Marvel Metadata API series into SQLite."
     )
-    parser.add_argument("--db", default="database.db", help="SQLite database path.")
+    parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
     parser.add_argument(
         "--marvel-series-id",
         required=True,

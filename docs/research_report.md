@@ -6,7 +6,7 @@ Research cutoff: 2026-07-31
 
 ## Current State
 
-- SQLite `database.db` is the active source of truth for the research/download queue.
+- SQLite `database/database.db` is the active source of truth for the research/download queue.
 - `comic_runs`, `issues`, and `story_arcs` are the active catalog tables.
 - No Excel workbook will be created or maintained.
 - Legacy JSON files under `data/` remain transitional/export material only and should not be treated as authoritative.
@@ -58,6 +58,8 @@ Created issue, story-arc, and reading-block records for:
 - The Amazing Spider-Man #3.
 
 Most `comic_runs` records intentionally remain run-level records. `marvel_issue_count` stores researched Marvel result counts where the count is sufficiently clear; `issues` rows still need issue-level verification before those counts are treated as final reading-order data.
+
+The limited-series issue-count audit is complete for the current `comic_runs` set. All 143 rows marked `Limited Series` now have a populated `marvel_issue_count`; corrections included Spider-Gwen, Spider-Woman, Spider-Girls, Spider-Man Noir, Spider-Man: India, Spider-Ham, Spider-Island, Amazing Spider-Man: Spider-Versity, Knull, and Godzilla Conquers the Multiverse rows. Issue-table repopulation for limited series is intentionally deferred until the Marvel issue importer is updated for the simplified `issues(cand_id, issue_number, release_date, story_arc_id)` schema.
 
 Several conflicts remain open, including Amazing Fantasy #15 date semantics, early The Amazing Spider-Man date semantics, page-count modeling, The Amazing Spider-Man volume 1 issue-count reconciliation, later annual structure, inconsistent source labels for recent volumes, and bulk-imported run boundaries where Marvel result counts may include collections, variants, or stale present labels.
 

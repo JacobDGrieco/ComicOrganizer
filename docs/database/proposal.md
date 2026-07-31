@@ -34,7 +34,7 @@ This is a breaking SQLite schema change. Legacy JSON remains readable, but scrip
 
 ## Data Transformation
 
-1. Back up `database.db`.
+1. Back up `database/database.db`.
 2. Create a new simplified database from `database/schema.sql`.
 3. Copy `comic_run_candidates` into the new `comic_runs`.
 4. Copy `story_arcs` without `universe_id`.
@@ -48,15 +48,15 @@ Rows that cannot map from old `SER-*` IDs to candidate IDs must fail the migrati
 Run:
 
 ```powershell
-python scripts\db_migrate_simplify_schema.py --db database.db
-python scripts\db_validate.py --db database.db
-python scripts\db_export_reading_order.py --db database.db
+python scripts\db_migrate_simplify_schema.py --db database/database.db
+python scripts\db_validate.py --db database/database.db
+python scripts\db_export_reading_order.py --db database/database.db
 python -m unittest discover -s tests
 ```
 
 ## Rollback
 
-Restore the timestamped backup written next to `database.db`.
+Restore the timestamped backup written next to `database/database.db`.
 
 ## Classification
 

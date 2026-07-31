@@ -51,7 +51,7 @@ def main() -> int:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export SQLite reading order as JSON.")
-    parser.add_argument("--db", default="database.db", help="SQLite database path.")
+    parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
     return parser.parse_args()
 
 

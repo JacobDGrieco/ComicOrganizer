@@ -6,6 +6,7 @@
 - Organizer source of truth today: simplified SQLite database loaded by `sorting/reading_order.py`; legacy ordered JSON remains supported.
 - Research/download source of truth today: SQLite `comic_runs`, `issues`, and `story_arcs`.
 - Database stack: local SQLite.
+- Active database file: `database/database.db`.
 - Migration framework: raw SQL schema file plus idempotent import scripts.
 
 ## Existing Data

@@ -6,7 +6,7 @@ node_modules/
 .agents/
 sort_orders/
 pytest-cache-*/
-downloader/downloads/
+downloader/
 
 database.db
 config.json

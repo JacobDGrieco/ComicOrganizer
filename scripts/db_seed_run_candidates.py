@@ -41,7 +41,7 @@ def main() -> int:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Seed Spider-Man comic runs.")
-    parser.add_argument("--db", default="database.db", help="SQLite database path.")
+    parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
     return parser.parse_args()
 
 
@@ -358,6 +358,7 @@ CANDIDATES = [
         "Imported",
         "SER-000017",
         21740,
+        marvel_issue_count=1,
     ),
     RunCandidate(
         "CAND-000018",
@@ -485,6 +486,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/722/the_sensational_spider-man_2006_2007",
+        marvel_issue_count=21,
+        notes="Marvel Metadata lists #23-41 plus #33.1 and #33.2.",
     ),
     RunCandidate(
         "CAND-000027",
@@ -498,6 +502,8 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/2203/sensational_spider-man_annual_1_%282007%29",
+        marvel_issue_count=1,
     ),
     RunCandidate(
         "CAND-000028",
@@ -524,6 +530,8 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/26679/friendly_neighborhood_spider-man_2019_present",
+        marvel_issue_count=14,
     ),
     RunCandidate(
         "CAND-000030",
@@ -877,6 +885,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/33961/spidergwen_gwenverse_2022",
+        marvel_issue_count=5,
+        notes="Official Marvel page shows five issues.",
     ),
     RunCandidate(
         "CAND-000057",
@@ -890,6 +901,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/36645/spidergwen_shadow_clones_2023",
+        marvel_issue_count=5,
+        notes="Official Marvel page lists #1-5.",
     ),
     RunCandidate(
         "CAND-000058",
@@ -903,6 +917,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/38794/spider-gwen_smash_2023_-_2024",
+        marvel_issue_count=4,
+        notes="Official Marvel page lists #1-4.",
     ),
     RunCandidate(
         "CAND-000059",
@@ -1007,6 +1024,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/15298/scarlet_spider_2011_2012",
+        marvel_issue_count=26,
+        notes="Marvel/Fandom count includes #12.1.",
     ),
     RunCandidate(
         "CAND-000067",
@@ -1150,6 +1170,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/2073/spider-woman_1978_1983",
+        marvel_issue_count=50,
     ),
     RunCandidate(
         "CAND-000078",
@@ -1163,6 +1185,9 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/21494/spider-woman_1993",
+        marvel_issue_count=4,
+        notes="Official Marvel page shows four issues.",
     ),
     RunCandidate(
         "CAND-000079",
@@ -1176,6 +1201,9 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/23928/spiderwoman_1999_2000",
+        marvel_issue_count=18,
+        notes="Marvel page only exposes #9; Fandom confirms the full 18-issue volume.",
     ),
     RunCandidate(
         "CAND-000080",
@@ -1189,6 +1217,9 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/7119/spiderwoman_2009_2010",
+        marvel_issue_count=7,
+        notes="Official Marvel page shows seven issues.",
     ),
     RunCandidate(
         "CAND-000081",
@@ -1202,6 +1233,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/18894/spiderwoman_2014_2015",
+        marvel_issue_count=10,
     ),
     RunCandidate(
         "CAND-000082",
@@ -1215,6 +1248,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/20618/spider-woman_2015_-_2017",
+        marvel_issue_count=17,
     ),
     RunCandidate(
         "CAND-000083",
@@ -1228,6 +1263,9 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/28048/spider-woman_2020_-_2022",
+        marvel_issue_count=21,
+        notes="Fandom confirms 21 issues; official Marvel page uses 2020-2022 in the URL.",
     ),
     RunCandidate(
         "CAND-000084",
@@ -1241,6 +1279,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/417/spider-girl_%281998_-_2006%29",
+        marvel_issue_count=102,
+        notes="Fandom counts #0, #1/2, and #1-100; GCD counts the direct regular series as #0-100.",
     ),
     RunCandidate(
         "CAND-000085",
@@ -1254,6 +1295,8 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/1126/amazing_spidergirl_2006_2009",
+        marvel_issue_count=31,
     ),
     RunCandidate(
         "CAND-000086",
@@ -1267,6 +1310,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/8891/spectacular_spidergirl_digital_comic_2009_2010",
+        marvel_issue_count=11,
     ),
     RunCandidate(
         "CAND-000087",
@@ -1280,6 +1325,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/9856/spidergirl_2010_2011",
+        marvel_issue_count=8,
     ),
     RunCandidate(
         "CAND-000088",
@@ -1293,6 +1340,9 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/26177/spidergirls_2018",
+        marvel_issue_count=3,
+        notes="Official Marvel page shows three Spider-Geddon tie-in issues.",
     ),
     RunCandidate(
         "CAND-000089",
@@ -1332,6 +1382,9 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/29329/spiderman_noir_2020",
+        marvel_issue_count=5,
+        notes="Official Marvel page shows five issues.",
     ),
     RunCandidate(
         "CAND-000092",
@@ -1345,6 +1398,9 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/826/spider-man_india_2004_-_2005",
+        marvel_issue_count=4,
+        notes="Official Marvel page shows four issues; Marvel Fandom also lists Spider-Man: India Vol 1 #1-4.",
     ),
     RunCandidate(
         "CAND-000093",
@@ -1411,8 +1467,9 @@ CANDIDATES = [
         "Include",
         "Candidate",
         marvel_metadata_series_id=26902,
-        marvel_url="https://www.marvel.com/comics/series/26902/spider-ham_2019_-_2020",
+        marvel_url="https://www.marvel.com/comics/series/28163/spiderham_2019_2020",
         marvel_issue_count=5,
+        notes="Official Marvel page shows five issues; previous series ID 26902 points to a collection result.",
     ),
     RunCandidate(
         "CAND-000098",
@@ -1426,6 +1483,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/26786/peter_porker_the_spectacular_spiderham_1985_1987",
+        marvel_issue_count=17,
     ),
     RunCandidate(
         "CAND-000099",
@@ -1452,6 +1511,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/433/venom_2003_2004",
+        marvel_issue_count=18,
     ),
     RunCandidate(
         "CAND-000101",
@@ -1517,6 +1578,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/20720/carnage_2015_-_2017",
+        marvel_issue_count=16,
     ),
     RunCandidate(
         "CAND-000106",
@@ -1530,6 +1593,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/33904/carnage_2022_2023",
+        marvel_issue_count=14,
     ),
     RunCandidate(
         "CAND-000107",
@@ -1543,6 +1608,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/37716/carnage_2023_present",
+        marvel_issue_count=8,
     ),
     RunCandidate(
         "CAND-000108",
@@ -1582,6 +1649,8 @@ CANDIDATES = [
         "P2",
         "Maybe",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/20269/spider-island_2015_-_present",
+        marvel_issue_count=5,
         notes="Do not confuse with 2011 event inside Amazing Spider-Man.",
     ),
     RunCandidate(
@@ -1622,6 +1691,8 @@ CANDIDATES = [
         "P2",
         "Maybe",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/30150/king_in_black_2020_2021",
+        marvel_issue_count=5,
         notes="Include Spider-Man/symbiote-relevant core and tie-ins only.",
     ),
     RunCandidate(
@@ -1651,6 +1722,8 @@ CANDIDATES = [
         "P0",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/45479/",
+        marvel_issue_count=5,
         notes="Marvel announcement describes it as a five-issue limited series spinning out of Amazing Spider-Man and leading toward ASM #1000.",
     ),
     RunCandidate(
@@ -1875,6 +1948,8 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/43354/web_of_spiderverse_new_blood_2025_present",
+        marvel_issue_count=1,
         notes="Prelude to Spider-Verse vs. Venomverse; official issue page was published March 5, 2025.",
     ),
     RunCandidate(
@@ -1889,7 +1964,8 @@ CANDIDATES = [
         "P1",
         "Include",
         "Candidate",
-        marvel_url="https://www.marvel.com/comics/series/43355/web_of_venomverse_fresh_brains_2025_-_present",
+        marvel_url="https://www.marvel.com/comics/series/43355/web_of_venomverse_fresh_brains_2025_present",
+        marvel_issue_count=1,
         notes="Companion one-shot collected with Spider-Verse vs. Venomverse.",
     ),
     RunCandidate(
@@ -1934,6 +2010,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/44604/knull_2026_present",
+        marvel_issue_count=5,
         notes="Queen in Black setup; official issue pages show five issues.",
     ),
     RunCandidate(
@@ -1949,6 +2027,7 @@ CANDIDATES = [
         "Include",
         "Candidate",
         marvel_url="https://www.marvel.com/comics/series/45055/queen_in_black_2026_present",
+        marvel_issue_count=5,
         notes="Marvel announcement says the event is centered around Spider-Man, Venom, Mary Jane, Eddie Brock, and Dylan Brock.",
     ),
     RunCandidate(
@@ -1964,7 +2043,8 @@ CANDIDATES = [
         "Include",
         "Candidate",
         marvel_url="https://www.marvel.com/comics/series/45474/symbie_infinity_comic_2026_present",
-        notes="All-ages digital vertical symbiote comic; lower priority until Spider-Man relevance is checked.",
+        marvel_issue_count=6,
+        notes="Official Marvel page currently shows six Infinity Comic issues.",
     ),
     RunCandidate(
         "CAND-000137",
@@ -1978,7 +2058,9 @@ CANDIDATES = [
         "P2",
         "Maybe",
         "Candidate",
-        notes="Official issue page includes Spider-Man in the premise, but the series is not Spider-led; include only if you want broad symbiote/multiverse tie-ins.",
+        marvel_url="https://www.marvel.com/comics/series/45051/godzilla_conquers_the_multiverse_2026_present",
+        marvel_issue_count=5,
+        notes="Official Marvel page currently shows two solicited issues; Fandom and distributor solicitations mark it as a five-issue limited series. The series is not Spider-led; include only if broad symbiote/multiverse tie-ins stay in scope.",
     ),
     RunCandidate(
         "CAND-000138",
@@ -1992,6 +2074,8 @@ CANDIDATES = [
         "P2",
         "Include",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/44686/marveldc_spidermansuperman_2026_present",
+        marvel_issue_count=1,
         notes="Official Marvel announcement says this is an all-new Marvel/DC crossover one-shot available April 2026.",
     ),
     RunCandidate(
@@ -2006,6 +2090,8 @@ CANDIDATES = [
         "P2",
         "Maybe",
         "Candidate",
+        marvel_url="https://www.marvel.com/comics/series/45053/spiderman_meals_to_astonish_2025_present",
+        marvel_issue_count=1,
         notes="Found on Marvel's Peter Parker character page; verify whether it contains original Spider-Man story content before download priority.",
     ),
     RunCandidate(
