@@ -9,7 +9,7 @@ Sources:
 
 ## Summary
 
-- `P0`: 50 runs, 2172 issue rows, 2230 stored Marvel-count issues.
+- `P0`: 52 runs, 2193 issue rows, 2251 stored Marvel-count issues.
 - `P1`: 151 runs, 1188 issue rows, 1180 stored Marvel-count issues.
 - `P2`: 60 runs, 427 issue rows, 428 stored Marvel-count issues.
 - `P3`: 44 runs, 77 issue rows, 76 stored Marvel-count issues.
@@ -37,6 +37,8 @@ Sources:
 
 ## Fandom Issue-List Gaps
 
+- `P0` `CAND-000309` Spider-Man Unlimited vol. 2 via `Spider-Man_Unlimited_Vol_2`: DB 6 vs Fandom 5
+  - Extra in DB: 1/2
 - `P0` `CAND-000003` Amazing Spider-Man Annual vol. 1 via `Amazing_Spider-Man_Annual_Vol_1`: DB 29 vs Fandom 34
   - Missing in DB: 1996, 1997, 1998, 1999, 2000, 2001
   - Extra in DB: 29
@@ -64,6 +66,7 @@ Sources:
 
 ## Annual/Special/Giant/Event Watchlist
 
+- `P0` `CAND-000309` Spider-Man Unlimited vol. 2 (1999-2000) [TV Tie-In]: DB 6 / Marvel 6
 - `P0` `CAND-000001` Amazing Fantasy vol. 1 (1962) [Anthology]: DB 1 / Marvel 1
 - `P0` `CAND-000003` Amazing Spider-Man Annual vol. 1 (1964-1996) [Annual]: DB 29 / Marvel 29
 - `P0` `CAND-000300` Amazing Spider-Man Annual vol. 3 (2014) [annual]: DB 1 / Marvel 1
@@ -75,6 +78,7 @@ Sources:
 - `P0` `CAND-000306` Giant-Size Amazing Spider-Man vol. 2 (2025) [Giant-Size]: DB 1 / Marvel 1
 - `P0` `CAND-000012` Peter Parker, the Spectacular Spider-Man Annual vol. 1 (1979-1994) [Annual]: DB 11 / Marvel 11
 - `P0` `CAND-000023` Spider-Man Unlimited vol. 1 (1993-1998) [Ongoing]: DB 22 / Marvel 10
+- `P0` `CAND-000310` Spider-Man Unlimited vol. 3 (2004-2006) [Anthology]: DB 15 / Marvel 15
 - `P0` `CAND-000019` Web of Spider-Man Annual vol. 1 (1985-1994) [Annual]: DB 10 / Marvel 8
 - `P0` `CAND-000116` Amazing Spider-Man/Venom: Death Spiral vol. 1 (2026) [One-Shot]: DB 1 / Marvel 1
 - `P0` `CAND-000117` Amazing Spider-Man/Venom: Death Spiral - Body Count vol. 1 (2026) [One-Shot]: DB 1 / Marvel 1

@@ -17,6 +17,7 @@ from .scanner import scan_source_folders
 
 def main(argv: list[str] | None = None) -> int:
 	args = _parse_args(argv)
+	config = None
 
 	try:
 		config = load_config(args.config)
@@ -24,7 +25,8 @@ def main(argv: list[str] | None = None) -> int:
 	except (ConfigError, ReadingOrderError) as exc:
 		error_lines = [f"ERROR {exc}"]
 		print(error_lines[0], file=sys.stderr)
-		write_log(default_log_path(args.config, "comic-organizer.log"), error_lines)
+		log_path = config.log_path if config is not None else default_log_path(args.config, "comic-organizer.log")
+		write_log(log_path, error_lines)
 		return 1
 
 	existing_positions = find_existing_positions(config.destination_folder)

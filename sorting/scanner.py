@@ -22,6 +22,8 @@ def scan_source_folders(source_folders: tuple[SourceFolderConfig, ...]) -> tuple
 						annual_run=source_folder.annual_run,
 						annual_volume=source_folder.annual_volume,
 						annual_start_year=source_folder.annual_start_year,
+						special_run=source_folder.special_run,
+						special_volume=source_folder.special_volume,
 						issue_aliases=source_folder.issue_aliases,
 					)
 				)

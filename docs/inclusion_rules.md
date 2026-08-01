@@ -11,6 +11,7 @@ This database includes original English-language comic publications that a reade
 - Spider-Man supporting-character publications when the title or premise is Spider-Man-facing enough that a Spider-Man reader would reasonably expect it, including Black Cat, Mary Jane Watson / Jackpot, and comparable researched cases.
 - Major Spider-Man-centered events and crossovers, with core chapters distinguished from required, recommended, and optional tie-ins.
 - Symbiote publications only when important to Spider-Man mythology, Spider-family continuity, or a major Spider-Man-adjacent event.
+- Event tie-in volumes are included when the event is anchored by a Spider-Man-derived character or symbiote lineage, even if individual tie-ins feature other Marvel heroes.
 - Alternate-continuity and all-ages publications when they contain original stories rather than reprints or simple adaptations.
 
 ## Exclude

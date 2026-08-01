@@ -156,6 +156,8 @@ def parse_args() -> argparse.Namespace:
 		help="Directory for cached Fandom API responses.",
 	)
 	parser.add_argument("--run-id", help="Only process one comic_runs.id value.")
+	parser.add_argument("--min-run-id", help="Only process issues whose comic_runs.id is at or after this value.")
+	parser.add_argument("--max-run-id", help="Only process issues whose comic_runs.id is at or before this value.")
 	parser.add_argument("--issue-id", help="Only process one issues.id value.")
 	parser.add_argument("--issue-number", help="Only process one issue_number value.")
 	parser.add_argument("--priority", help="Only process runs with this comic_runs.priority value.")
@@ -212,6 +214,12 @@ def fetch_issue_rows(connection, args: argparse.Namespace, *, ignore_filters: bo
 	if args.run_id and not ignore_filters:
 		conditions.append("comic_runs.id = ?")
 		parameters.append(args.run_id)
+	if args.min_run_id and not ignore_filters:
+		conditions.append("comic_runs.id >= ?")
+		parameters.append(args.min_run_id)
+	if args.max_run_id and not ignore_filters:
+		conditions.append("comic_runs.id <= ?")
+		parameters.append(args.max_run_id)
 	if args.issue_id and not ignore_filters:
 		conditions.append("issues.id = ?")
 		parameters.append(args.issue_id)
@@ -379,7 +387,8 @@ def issue_page_candidates(issue: IssueRow) -> list[str]:
 	if source_volume_page:
 		if source_page_matches_issue(source_volume_page, issue.issue_number):
 			pages.append(source_volume_page)
-		pages.append(f"{source_volume_page}_{issue.issue_number}")
+		for issue_suffix in fandom_issue_number_suffixes(issue.issue_number):
+			pages.append(f"{source_volume_page}_{issue_suffix}")
 
 	base_titles = [
 		issue.run_title,
@@ -387,17 +396,32 @@ def issue_page_candidates(issue: IssueRow) -> list[str]:
 		issue.run_title.replace(", the ", ", The "),
 	]
 	for title in base_titles:
-		page = f"{normalize_page_title(title)}_Vol_{issue.volume}_{issue.issue_number}"
-		if page not in pages:
-			pages.append(page)
+		for issue_suffix in fandom_issue_number_suffixes(issue.issue_number):
+			page = f"{normalize_page_title(title)}_Vol_{issue.volume}_{issue_suffix}"
+			if page not in pages:
+				pages.append(page)
 	return pages
 
 
 def source_page_matches_issue(source_page: str, issue_number: str) -> bool:
 	"""Detect notes that already point at a direct Fandom issue page."""
-	return normalize_page_title(source_page).casefold().endswith(
-		f"_{issue_number}".casefold()
+	normalized_source_page = normalize_page_title(source_page).casefold()
+	return any(
+		normalized_source_page.endswith(f"_{issue_suffix}".casefold())
+		for issue_suffix in fandom_issue_number_suffixes(issue_number)
 	)
+
+
+def fandom_issue_number_suffixes(issue_number: str) -> list[str]:
+	suffixes = [issue_number]
+	fraction_suffixes = {
+		"1/4": "¼",
+		"1/2": "½",
+		"3/4": "¾",
+	}
+	if issue_number in fraction_suffixes:
+		suffixes.append(fraction_suffixes[issue_number])
+	return suffixes
 
 
 def run_fandom_volume_page(issue: IssueRow) -> str | None:

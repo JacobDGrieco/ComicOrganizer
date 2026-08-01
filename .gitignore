@@ -1,6 +1,7 @@
 __pycache__/
 .test-tmp
 .cache/
+logs/
 node_modules/
 
 .agents/
@@ -10,5 +11,6 @@ downloader/
 
 database.db
 database/*.db
+database/*.db.*
 config.json
 package-lock.json

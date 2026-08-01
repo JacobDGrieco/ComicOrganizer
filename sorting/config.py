@@ -85,6 +85,8 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 		annual_run = raw_source_folder.get("annual_run", f"{run} Annual" if isinstance(run, str) else "")
 		annual_volume = raw_source_folder.get("annual_volume", volume)
 		annual_start_year = raw_source_folder.get("annual_start_year", "")
+		special_run = raw_source_folder.get("special_run", f"{run} Special" if isinstance(run, str) else "")
+		special_volume = raw_source_folder.get("special_volume", volume)
 		issue_aliases = _issue_aliases(raw_source_folder.get("issue_aliases", {}), f"source_folders[{index}].issue_aliases")
 		if not isinstance(path, str) or not path.strip():
 			raise ConfigError(f"source_folders[{index}].path must be a non-empty string")
@@ -100,6 +102,11 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 			raise ConfigError(f"source_folders[{index}].annual_volume must be a non-empty value")
 		if annual_start_year is not None and not isinstance(annual_start_year, str):
 			raise ConfigError(f"source_folders[{index}].annual_start_year must be a string")
+		if not isinstance(special_run, str) or not special_run.strip():
+			raise ConfigError(f"source_folders[{index}].special_run must be a non-empty string")
+		special_volume_label = normalize_volume_label(special_volume)
+		if not special_volume_label:
+			raise ConfigError(f"source_folders[{index}].special_volume must be a non-empty value")
 
 		source_folders.append(
 			SourceFolderConfig(
@@ -109,6 +116,8 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 				annual_run=annual_run.strip(),
 				annual_volume=annual_volume_label,
 				annual_start_year=str(annual_start_year or "").strip(),
+				special_run=special_run.strip(),
+				special_volume=special_volume_label,
 				issue_aliases=issue_aliases,
 			)
 		)

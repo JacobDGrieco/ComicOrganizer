@@ -14,6 +14,8 @@ class SourceFolderConfig:
 	annual_run: str = ""
 	annual_volume: str = ""
 	annual_start_year: str = ""
+	special_run: str = ""
+	special_volume: str = ""
 	issue_aliases: dict[str, str] | None = None
 
 
@@ -32,6 +34,7 @@ class ReadingOrderEntry:
 	run: str
 	issue_label: str
 	volume: str = "1"
+	run_years: str = ""
 	run_start_year: str = ""
 	release_date: str = ""
 
@@ -45,6 +48,8 @@ class SourceFile:
 	annual_run: str = ""
 	annual_volume: str = ""
 	annual_start_year: str = ""
+	special_run: str = ""
+	special_volume: str = ""
 	issue_aliases: dict[str, str] | None = None
 
 
@@ -61,6 +66,7 @@ class ParsedCandidate:
 	run_start_year: str = ""
 	annual_release_year: str = ""
 	annual_start_year: str = ""
+	is_special: bool = False
 
 
 @dataclass(frozen=True)

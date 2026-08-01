@@ -3,10 +3,855 @@
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Family",
 	"source_folders": [
 		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage (2019)",
+			"run": "Absolute Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage vs. Deadpool (2019)",
+			"run": "Absolute Carnage vs. Deadpool",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Avengers (2019)",
+			"run": "Absolute Carnage: Avengers",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Captain Marvel (2019)",
+			"run": "Absolute Carnage: Captain Marvel",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Immortal Hulk (2019)",
+			"run": "Absolute Carnage: Immortal Hulk",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Lethal Protectors (2019)",
+			"run": "Absolute Carnage: Lethal Protectors",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Miles Morales (2019)",
+			"run": "Absolute Carnage: Miles Morales",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Scream (2019)",
+			"run": "Absolute Carnage: Scream",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Separation Anxiety (2019)",
+			"run": "Absolute Carnage: Separation Anxiety",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Symbiote of Vengeance (2019)",
+			"run": "Absolute Carnage: Symbiote of Vengeance",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Symbiote Spider-Man (2019)",
+			"run": "Absolute Carnage: Symbiote Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Absolute Carnage; Weapon Plus (2019)",
+			"run": "Absolute Carnage: Weapon Plus",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\All-New Spider-Gwen; The Ghost Spider (2024)",
+			"run": "All-New Spider-Gwen: The Ghost-Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\All-New Venom (2025)",
+			"run": "All-New Venom",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Scarlet Spider (1995)",
+			"run": "Amazing Scarlet Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man Family (2008)",
+			"run": "Amazing Spider-Man Family",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man Presents; Anti-Venom - New Ways to Live (2009)",
+			"run": "Amazing Spider-Man Presents: Anti-Venom - New Ways to Live",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Extra! (2008)",
+			"run": "Amazing Spider-Man: Extra!",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Hooky (1986)",
+			"run": "Amazing Spider-Man: Hooky",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Sandblasted (1996)",
+			"run": "Amazing Spider-Man: Sandblasted",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Spider-Versity (2026)",
+			"run": "Amazing Spider-Man: Spider-Versity",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Avenging Spider-Man (2011)",
+			"run": "Avenging Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Black Cat (2019)",
+			"run": "Black Cat",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Black Cat (2020)",
+			"run": "Black Cat",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Black Cat (2025)",
+			"run": "Black Cat",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Black Widow; Venomous (2024)",
+			"run": "Black Widow: Venomous",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage (2010)",
+			"run": "Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage (2015)",
+			"run": "Carnage",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage (2022)",
+			"run": "Carnage",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage (2023)",
+			"run": "Carnage",
+			"volume": 4
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage, U.S.A. (2011)",
+			"run": "Carnage, U.S.A.",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage; Black, White & Blood (2021)",
+			"run": "Carnage: Black, White & Blood",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Cult of Carnage; Misery (2023)",
+			"run": "Cult of Carnage: Misery",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Daredevil & Spider-Man (2001)",
+			"run": "Daredevil/Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Dark Reign - The List; Amazing Spider-Man (2009)",
+			"run": "Dark Reign - The List: Amazing Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Dark Reign; The Sinister Spider-Man (2009)",
+			"run": "Dark Reign: The Sinister Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Deadly Foes of Spider-Man (1991)",
+			"run": "Deadly Foes of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Deadpool vs. Carnage (2014)",
+			"run": "Deadpool vs. Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Death of the Venomverse (2023)",
+			"run": "Death of the Venomverse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Eddie Brock; Carnage (2025)",
+			"run": "Eddie Brock: Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Edge of Venomverse (2017)",
+			"run": "Edge of Venomverse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage Alpha (2021)",
+			"run": "Extreme Carnage Alpha",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage Omega (2021)",
+			"run": "Extreme Carnage Omega",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage; Agony (2021)",
+			"run": "Extreme Carnage: Agony",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage; Lasher (2021)",
+			"run": "Extreme Carnage: Lasher",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage; Phage (2021)",
+			"run": "Extreme Carnage: Phage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage; Riot (2021)",
+			"run": "Extreme Carnage: Riot",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage; Scream (2021)",
+			"run": "Extreme Carnage: Scream",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Carnage; Toxin (2021)",
+			"run": "Extreme Carnage: Toxin",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Extreme Venomverse (2023)",
+			"run": "Extreme Venomverse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Friendly Neighborhood Spider-Man (2005)",
+			"run": "Friendly Neighborhood Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Free Comic Book Day 2019 (Spider-Man-Venom)",
+			"run": "Free Comic Book Day 2019 (Spider-Man/Venom)",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Friendly Neighborhood Spider-Man (2019)",
+			"run": "Friendly Neighborhood Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ghost-Spider (2019)",
+			"run": "Ghost-Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Giant-Size Spider-Man (1974)",
+			"run": "Giant-Size Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Lethal Foes of Spider-Man (1993)",
+			"run": "Lethal Foes of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Marvel Knights Spider-Man (2004)",
+			"run": "Marvel Knights Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Mary Jane (2004)",
+			"run": "Mary Jane",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Mary Jane; Homecoming (2005)",
+			"run": "Mary Jane: Homecoming",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Miles Morales; Spider-Man (2018)",
+			"run": "Miles Morales: Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Miles Morales; Spider-Man (2022)",
+			"run": "Miles Morales: Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Miles Morales; Ultimate Spider-Man (2014)",
+			"run": "Miles Morales: Ultimate Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Minimum Carnage; Alpha (2012)",
+			"run": "Minimum Carnage: Alpha",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Minimum Carnage; Omega (2012)",
+			"run": "Minimum Carnage: Omega",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Non-Stop Spider-Man (2021)",
+			"run": "Non-Stop Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Peter Parker; Spider-Man (1999)",
+			"run": "Peter Parker: Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Peter Parker, The Spectacular Spider-Man (1976)",
+			"run": "Peter Parker, the Spectacular Spider-Man",
+			"volume": 1,
+			"annual_run": "Peter Parker, the Spectacular Spider-Man Annual",
+			"annual_volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Peter Parker; The Spectacular Spider-Man (2017)",
+			"run": "Peter Parker: The Spectacular Spider-Man",
+			"volume": 2,
+			"annual_run": "Peter Parker: The Spectacular Spider-Man Annual",
+			"annual_volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Peter Porker, The Spectacular Spider-Ham (1985)",
+			"run": "Peter Porker, the Spectacular Spider-Ham",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Radioactive Spider-Man (2025)",
+			"run": "Radioactive Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Red Goblin (2023)",
+			"run": "Red Goblin",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Red Goblin; Red Death (2019)",
+			"run": "Red Goblin: Red Death",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Savage Spider-Man (2022)",
+			"run": "Savage Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Secret Invasion; The Amazing Spider-Man (2008)",
+			"run": "Secret Invasion: The Amazing Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Sensational Spider-Man (1996)",
+			"run": "Sensational Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Sensational Spider-Man (2006)",
+			"run": "Sensational Spider-Man",
+			"volume": 2,
+			"annual_run": "Sensational Spider-Man Annual",
+			"annual_volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man; Brand New Day (2026)",
+			"run": "Spectacular Spider-Man: Brand New Day",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Scarlet Spider (1995)",
+			"run": "Spectacular Scarlet Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man (1968)",
+			"run": "Spectacular Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man (2003)",
+			"run": "Spectacular Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Men (2024)",
+			"run": "The Spectacular Spider-Men",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man Super Special (1995)",
+			"run": "The Spectacular Spider-Man Super Special",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Scream; Curse of Carnage (2019)",
+			"run": "Scream: Curse of Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Girl (1998)",
+			"run": "Spider-Girl",
+			"volume": 1,
+			"annual_run": "Spider-Girl 1999",
+			"annual_volume": 1,
+			"issue_aliases": {
+				"0.5": "1/2"
+			}
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Gwen (2015)",
+			"run": "Spider-Gwen",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Gwen (2015)(2)",
+			"run": "Spider-Gwen",
+			"volume": 2,
+			"annual_run": "Spider-Gwen Annual",
+			"annual_volume": 1,
+			"annual_start_year": "2016"
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Gwen; Ghost-Spider (2018)",
+			"run": "Spider-Gwen: Ghost-Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Gwen; Gwenverse (2022)",
+			"run": "Spider-Gwen: Gwenverse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Gwen; Shadow Clones (2023)",
+			"run": "Spider-Gwen: Shadow Clones",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Gwen; Smash (2023)",
+			"run": "Spider-Gwen: Smash",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Long Way Home (2026)",
+			"run": "Spider-Man: Long Way Home",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Black Cat; Evil That Men Do (2002)",
+			"run": "Spider-Man/Black Cat: Evil That Men Do",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Doctor Octopus; Negative Exposure (2003)",
+			"run": "Spider-Man/Doctor Octopus: Negative Exposure",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Doctor Octopus; Out of Reach (2004)",
+			"run": "Spider-Man/Doctor Octopus: Out of Reach",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Doctor Octopus; Year One (2004)",
+			"run": "Spider-Man/Doctor Octopus: Year One",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Fantastic Four (2010)",
+			"run": "Spider-Man/Fantastic Four",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Human Torch (2005)",
+			"run": "Spider-Man/Human Torch",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Punisher; Family Plot (1996)",
+			"run": "Spider-Man/Punisher: Family Plot",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Red Sonja (2007)",
+			"run": "Spider-Man/Red Sonja",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & the Secret Wars (2009)",
+			"run": "Spider-Man & the Secret Wars",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Wolverine (2025)",
+			"run": "Spider-Man & Wolverine",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & X-Factor; Shadowgames (1994)",
+			"run": "Spider-Man/X-Factor: Shadowgames",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man (1990)",
+			"run": "Spider-Man",
+			"volume": 1,
+			"issue_aliases": {
+				"0.5": "1/2"
+			}
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man (2016)",
+			"run": "Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man '94 (2025)",
+			"run": "Spider-Man '94",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man 1602 (2009)",
+			"run": "Spider-Man 1602",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man 2099 (1992)",
+			"run": "Spider-Man 2099",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man 2099 (2014)",
+			"run": "Spider-Man 2099",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man 2099 (2015)",
+			"run": "Spider-Man 2099",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man 2099; Dark Genesis (2023)",
+			"run": "Spider-Man 2099: Dark Genesis",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man 2099; Exodus (2022)",
+			"run": "Spider-Man 2099: Exodus",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man and Power Pack (2007)",
+			"run": "Spider-Man and Power Pack",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man and the Fantastic Four (2007)",
+			"run": "Spider-Man and the Fantastic Four",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Fairy Tales (2007)",
+			"run": "Spider-Man Fairy Tales",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Loves Mary Jane (2005)",
+			"run": "Spider-Man Loves Mary Jane",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Loves Mary Jane (2008)",
+			"run": "Spider-Man Loves Mary Jane",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Noir (2008)",
+			"run": "Spider-Man Noir",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Noir (2020)",
+			"run": "Spider-Man Noir",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Noir (2025)",
+			"run": "Spider-Man Noir",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Noir; Eyes Without A Face (2009)",
+			"run": "Spider-Man Noir: Eyes Without A Face",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Unlimited (1993)",
+			"run": "Spider-Man Unlimited",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Unlimited (1999)",
+			"run": "Spider-Man Unlimited",
+			"volume": 2,
+			"issue_aliases": {
+				"½": "1/2",
+				"0.5": "1/2"
+			}
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Unlimited (2004)",
+			"run": "Spider-Man Unlimited",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; 101 Ways to End the Clone Saga (1996)",
+			"run": "Spider-Man: 101 Ways to End the Clone Saga",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Blue (2002)",
+			"run": "Spider-Man: Blue",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Chapter One (1998)",
+			"run": "Spider-Man: Chapter One",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Dead Man's Hand (1997)",
+			"run": "Spider-Man: Dead Man's Hand",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Death and Destiny (2000)",
+			"run": "Spider-Man: Death and Destiny",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Friends and Enemies (1995)",
+			"run": "Spider-Man: Friends and Enemies",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Funeral For An Octopus (1995)",
+			"run": "Spider-Man: Funeral For An Octopus",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Get Kraven (2002)",
+			"run": "Spider-Man: Get Kraven",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Hobgoblin Lives (1997)",
+			"run": "Spider-Man: Hobgoblin Lives",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; House of M (2005)",
+			"run": "Spider-Man: House of M",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; India (2004)",
+			"run": "Spider-Man: India",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Lifeline (2001)",
+			"run": "Spider-Man: Lifeline",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Power of Terror (1995)",
+			"run": "Spider-Man: Power of Terror",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Quality of Life (2002)",
+			"run": "Spider-Man: Quality of Life",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Redemption (1996)",
+			"run": "Spider-Man: Redemption",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Reign (2006)",
+			"run": "Spider-Man: Reign",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Revenge of the Green Goblin (2000)",
+			"run": "Spider-Man: Revenge of the Green Goblin",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Spirits of the Earth (1990)",
+			"run": "Spider-Man: Spirits of the Earth",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Arachnis Project (1994)",
+			"run": "Spider-Man: The Arachnis Project",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Clone Saga (2009)",
+			"run": "Spider-Man: The Clone Saga",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Final Adventure (1995)",
+			"run": "Spider-Man: The Final Adventure",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Lost Years (1994)",
+			"run": "Spider-Man: The Lost Years",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Mutant Agenda (1994)",
+			"run": "Spider-Man: The Mutant Agenda",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Osborn Journal (1996)",
+			"run": "Spider-Man: The Osborn Journal",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Parker Years (1995)",
+			"run": "Spider-Man: The Parker Years",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Short Halloween (2009)",
+			"run": "Spider-Man: The Short Halloween",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Venom Agenda (1998)",
+			"run": "Spider-Man: The Venom Agenda",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Web of Doom (1994)",
+			"run": "Spider-Man: Web of Doom",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; With Great Power... (2008)",
+			"run": "Spider-Man: With Great Power...",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man's Tangled Web (2001)",
+			"run": "Spider-Man's Tangled Web",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Woman (1978)",
+			"run": "Spider-Woman",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Woman (1993)",
+			"run": "Spider-Woman",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Woman (1999)",
+			"run": "Spider-Woman",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Woman (2009)",
+			"run": "Spider-Woman",
+			"volume": 4
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Spider-Man (2013)",
+			"run": "Superior Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Spider-Man (2018)",
+			"run": "Superior Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Spider-Man (2023)",
+			"run": "Superior Spider-Man",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Carnage (2013)",
+			"run": "Superior Carnage",
+			"volume": 1,
+			"annual_run": "Superior Carnage Annual",
+			"annual_volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Carnage Annual (2014)",
+			"run": "Superior Carnage Annual",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Spider-Man Team-Up (2013)",
+			"run": "Superior Spider-Man Team-Up",
+			"volume": 1,
+			"special_run": "Superior Spider-Man Team-Up Special",
+			"special_volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Girl (2006)",
+			"run": "The Amazing Spider-Girl",
+			"volume": 1
+		},
+		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man (1963)",
 			"run": "The Amazing Spider-Man",
-			"annual_run": "Amazing Spider-Man Annual",
 			"volume": 1,
+			"annual_run": "Amazing Spider-Man Annual",
 			"annual_volume": 1
 		},
 		{
@@ -66,6 +911,180 @@
 			"volume": 7,
 			"annual_run": "Amazing Spider-Man Annual",
 			"annual_volume": 8
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man Super Special (1995)",
+			"run": "Amazing Spider-Man Super Special",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Amazing Spider-Man; Soul Of The Hunter (1992)",
+			"run": "The Amazing Spider-Man: Soul Of The Hunter",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Toxin (2005)",
+			"run": "Toxin",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Comics Spider-Man (2009)",
+			"run": "Ultimate Comics Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Comics Spider-Man (2011)",
+			"run": "Ultimate Comics Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Spider-Man (2000)",
+			"run": "Ultimate Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Spider-Man (2024)",
+			"run": "Ultimate Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Untold Tales of Spider-Man (1995)",
+			"run": "Untold Tales of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom (2003)",
+			"run": "Venom",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War (2024)",
+			"run": "Venom War",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Carnage (2024)",
+			"run": "Venom War: Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Daredevil (2024)",
+			"run": "Venom War: Daredevil",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Deadpool (2024)",
+			"run": "Venom War: Deadpool",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Fantastic Four (2024)",
+			"run": "Venom War: Fantastic Four",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; It's Jeff (2024)",
+			"run": "Venom War: It's Jeff",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Lethal Protectors (2024)",
+			"run": "Venom War: Lethal Protectors",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Venomous (2024)",
+			"run": "Venom War: Venomous",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Wolverine (2024)",
+			"run": "Venom War: Wolverine",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom War; Zombiotes (2024)",
+			"run": "Venom War: Zombiotes",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom Vs. Carnage (2004)",
+			"run": "Venom Vs. Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Lethal Protector (1993)",
+			"run": "Venom: Lethal Protector",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Separation Anxiety (1994)",
+			"run": "Venom: Separation Anxiety",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venomized (2018)",
+			"run": "Venomized",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venomverse (2017)",
+			"run": "Venomverse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venomverse Reborn (2024)",
+			"run": "Venomverse Reborn",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venomverse; War Stories (2017)",
+			"run": "Venomverse: War Stories",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web of Scarlet Spider (1995)",
+			"run": "Web of Scarlet Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web of Spider-Man (1985)",
+			"run": "Web of Spider-Man",
+			"volume": 1,
+			"annual_run": "Web of Spider-Man Annual",
+			"annual_volume": 1,
+			"special_run": "Web of Spider-Man Super Special",
+			"special_volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web of Spider-Man (2009)",
+			"run": "Web of Spider-Man",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web of Spider-Man (2024)",
+			"run": "Web of Spider-Man",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web of Spider-Man Super Special (1995)",
+			"run": "Web of Spider-Man Super Special",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\What If Spider-Man The Other (2006)",
+			"run": "What If? Spider-Man The Other",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\What If Spider-Man; Back in Black (2008)",
+			"run": "What If? Spider-Man: Back in Black",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\X-Men & Spider-Man (2009)",
+			"run": "X-Men/Spider-Man",
+			"volume": 1
 		}
 	],
 	"issue_overrides": {

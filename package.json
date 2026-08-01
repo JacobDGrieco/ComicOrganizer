@@ -1,14 +1,20 @@
 {
-  "scripts": {
-    "sort": "python -m sorting.organizer --config config.json",
-    "sort:dry": "python -m sorting.organizer --config config.json --dry-run",
-    "missing": "python -m sorting.missing_entries --config config.json",
-    "db:validate": "python scripts/db_validate.py --db database/database.db",
-    "db:export": "python scripts/db_export_reading_order.py --db database/database.db",
-    "test": "python -m unittest discover -s tests",
-    "check": "python -m compileall -q sorting scripts tests && python -m unittest discover -s tests && python scripts/db_validate.py --db database/database.db"
-  },
-  "dependencies": {
-    "playwright": "^1.62.1"
-  }
+	"scripts": {
+		"sort": "python -m sorting.organizer --config config.json",
+		"sort:dry": "python -m sorting.organizer --config config.json --dry-run",
+		"missing": "python -m sorting.missing_entries --config config.json",
+		"list": "python -m sorting.list_order --config config.json",
+		"download": "powershell -NoProfile -ExecutionPolicy Bypass -File ./downloader/run.ps1",
+		"download:headless": "powershell -NoProfile -ExecutionPolicy Bypass -File ./downloader/run.ps1 -Headless",
+		"flatten": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/flatten-cbz.ps1",
+		"reindex": "python -m sorting.reindex_output --config config.json --apply",
+		"reindex:dry": "python -m sorting.reindex_output --config config.json",
+		"db:validate": "python scripts/db_validate.py --db database/database.db",
+		"db:export": "python scripts/db_export_reading_order.py --db database/database.db",
+		"test": "python -m unittest discover -s tests",
+		"check": "python -m compileall -q sorting scripts tests && python -m unittest discover -s tests && python scripts/db_validate.py --db database/database.db"
+	},
+	"dependencies": {
+		"playwright": "^1.62.1"
+	}
 }

@@ -90,6 +90,7 @@ def read_entries_from_sqlite(
 				run=run_name,
 				volume=volume,
 				issue_label=issue_label,
+				run_years=str(row["years"] or ""),
 				run_start_year=_start_year(row["years"]),
 				release_date=str(row["release_date"] or ""),
 			)
@@ -113,6 +114,7 @@ def read_entries_from_json(
 		run = _entry_value(raw_entry, "run")
 		raw_volume = _entry_value(raw_entry, "volume")
 		raw_issue = _entry_value(raw_entry, "issue", "issue_label")
+		raw_years = _entry_value(raw_entry, "years", "run_years", "comic_run_years")
 		if run is None or raw_volume is None or raw_issue is None:
 			raise ReadingOrderError(f"Reading-order entry {position} must contain run, volume, and issue")
 
@@ -123,7 +125,16 @@ def read_entries_from_json(
 		if not run_name or not volume or not issue_label:
 			raise ReadingOrderError(f"Reading-order entry {position} must contain non-empty run, volume, and issue")
 
-		entries.append(ReadingOrderEntry(position=position, run=run_name, volume=volume, issue_label=issue_label))
+		entries.append(
+			ReadingOrderEntry(
+				position=position,
+				run=run_name,
+				volume=volume,
+				issue_label=issue_label,
+				run_years=str(raw_years or "").strip(),
+				run_start_year=_start_year(raw_years),
+			)
+		)
 
 	return tuple(entries)
 

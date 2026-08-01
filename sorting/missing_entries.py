@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .config import ConfigError, load_config
+from .logging import default_log_path, write_log
 from .models import ReadingOrderEntry
 from .processor import find_existing_positions
 from .reading_order import ReadingOrderError, read_reading_order
@@ -87,16 +88,16 @@ def main(argv: list[str] | None = None) -> int:
 		existing_positions = find_existing_positions(config.destination_folder)
 		report = build_missing_entries_report(reading_order, existing_positions)
 	except (ConfigError, MissingEntriesError, ReadingOrderError) as exc:
-		print(f"ERROR {exc}", file=sys.stderr)
+		error_lines = [f"ERROR {exc}"]
+		print(error_lines[0], file=sys.stderr)
+		write_log(default_missing_log_path(args), error_lines)
 		return 1
 
 	lines = format_report(report)
 	for line in lines:
 		print(line)
 
-	output_path = Path(args.output) if args.output else config.destination_folder / "missing-entries.log"
-	output_path.parent.mkdir(parents=True, exist_ok=True)
-	output_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+	write_log(default_missing_log_path(args), lines)
 	return 0
 
 
@@ -107,9 +108,13 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
 	parser.add_argument("--config", default="config.json", help="Organizer config JSON. Defaults to config.json.")
 	parser.add_argument(
 		"--output",
-		help="Report file path. Defaults to missing-entries.log in the destination folder.",
+		help="Report file path. Defaults to logs/missing-entries.log next to the config file.",
 	)
 	return parser.parse_args(argv)
+
+
+def default_missing_log_path(args: argparse.Namespace) -> Path:
+	return Path(args.output) if args.output else default_log_path(args.config, "missing-entries.log")
 
 
 if __name__ == "__main__":

@@ -47,7 +47,25 @@ python -m sorting.missing_entries --config config.json
 npm run missing
 ```
 
-The report finds the highest existing numeric prefix in the destination folder, then lists every missing database reading-order entry from position `00001` through that last existing position. It prints to the terminal and writes `missing-entries.log` in the destination folder by default. Use `--output path\to\missing.log` to choose a different log file.
+The report finds the highest existing numeric prefix in the destination folder, then lists every missing database reading-order entry from position `00001` through that last existing position. It prints to the terminal and writes the same lines to `logs/missing-entries.log` next to the config file by default. Use `--output path\to\missing.log` to choose a different log file.
+
+To print the current reading-order list, run:
+
+```powershell
+python -m sorting.list_order --config config.json
+npm run list
+```
+
+The report prints two sections: the first appearance of each comic run by numeric position, then every issue in full sort order. It also writes the same lines to `logs/reading-order-list.log` next to the config file by default.
+
+The downloader and CBZ flattener also mirror terminal output to logs by default:
+
+```powershell
+npm run download
+npm run flatten
+```
+
+Downloader output is written to `logs/downloader.log`. CBZ flattening output is written to `logs/flatten-cbz.log`.
 
 Useful npm shortcuts:
 
@@ -55,6 +73,10 @@ Useful npm shortcuts:
 npm run sort:dry
 npm run sort
 npm run missing
+npm run list
+npm run download
+npm run flatten
+npm run reindex
 npm run db:validate
 npm run db:export
 npm test
@@ -63,7 +85,7 @@ npm run check
 
 ## Config
 
-`config.json` controls the SQLite database, destination folder, scan folders, and optional log path.
+`config.json` controls the SQLite database, destination folder, scan folders, and optional organizer log path. When `log_path` is omitted, organizer output is written to `logs/comic-organizer.log` next to the config file.
 
 For the Spider-Man project, point `reading_order_path` at the SQLite database:
 
@@ -71,7 +93,6 @@ For the Spider-Man project, point `reading_order_path` at the SQLite database:
 {
 	"reading_order_path": "database/database.db",
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Reading Order",
-	"log_path": "D:\\Suwayomi\\Comics\\Spider-Man Reading Order\\comic-organizer.log",
 	"source_folders": [
 		{
 			"path": "D:\\Suwayomi\\Downloads\\Amazing Spider-Man",
@@ -92,7 +113,7 @@ story arc start date -> issue release date -> issue sort_order when present -> s
 
 This keeps a story arc together while still moving through publication history.
 
-The terminal output and `log_path` start with unmatched scanned files, then show the planned or applied conversions in this shape:
+The terminal output and organizer log start with unmatched scanned files, then show the planned or applied conversions in this shape:
 
 ```text
 Unmatched scanned files:
@@ -316,6 +337,25 @@ Example:
 ```
 
 This keeps the sort-order JSON unchanged while matching/outputting `Amazing Fantasy #15`.
+
+## Output Reindex
+
+Use `python -m sorting.reindex_output` after fixing database dates, story arcs, or sort order and you need existing destination filenames renumbered to match the current database order.
+
+Dry run:
+
+```powershell
+python -m sorting.reindex_output --config config.json
+npm run reindex
+```
+
+Apply:
+
+```powershell
+python -m sorting.reindex_output --config config.json --apply
+```
+
+The script scans `destination_folder`, strips the leading `##### - ` prefix, parses the original normalized filename, matches it against the current configured reading order, and renames only the numeric prefix. It writes the same terminal output to `logs/reindex-output.log` next to the config file.
 
 ## Position Shifter
 
