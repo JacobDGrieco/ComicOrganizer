@@ -30,6 +30,18 @@ _REGULAR_ISSUE_YEAR_AFTER_RE = re.compile(
 	rf"^(?P<title>.+?)\s+#\s*{_ISSUE_TOKEN}\s+{_START_YEAR_TOKEN}$",
 	re.IGNORECASE,
 )
+_REGULAR_ISSUE_NO_YEAR_RE = re.compile(
+	rf"^(?P<title>.+?)\s+#\s*{_ISSUE_TOKEN}$",
+	re.IGNORECASE,
+)
+_ONE_SHOT_NO_ISSUE_RE = re.compile(
+	rf"^(?P<title>.+?)\s+{_START_YEAR_TOKEN}$",
+	re.IGNORECASE,
+)
+_SUFFIXED_ONE_SHOT_RE = re.compile(
+	rf"^(?P<title>.+?)\s+{_START_YEAR_TOKEN}\s+(?P<suffix>Alpha|Omega)\s+#\s*{_ISSUE_TOKEN}$",
+	re.IGNORECASE,
+)
 
 
 def parse_source_files(source_files: tuple[SourceFile, ...]) -> tuple[ParsedCandidate, ...]:
@@ -88,6 +100,17 @@ def parse_source_file(source_file: SourceFile) -> ParsedCandidate | None:
 			is_annual=False,
 		)
 
+	match = _SUFFIXED_ONE_SHOT_RE.match(stem)
+	if match:
+		return _candidate(
+			source_file,
+			filename_title=f"{match.group('title')} {match.group('suffix')}",
+			run_start_year=_matched_start_year(match),
+			issue_number=match.group("issue"),
+			is_annual=False,
+			is_special=True,
+		)
+
 	match = _REGULAR_ISSUE_YEAR_AFTER_RE.match(stem)
 	if match:
 		return _candidate(
@@ -95,6 +118,26 @@ def parse_source_file(source_file: SourceFile) -> ParsedCandidate | None:
 			filename_title=match.group("title"),
 			run_start_year=_matched_start_year(match),
 			issue_number=match.group("issue"),
+			is_annual=False,
+		)
+
+	match = _REGULAR_ISSUE_NO_YEAR_RE.match(stem)
+	if match:
+		return _candidate(
+			source_file,
+			filename_title=match.group("title"),
+			run_start_year=_source_folder_start_year(source_file),
+			issue_number=match.group("issue"),
+			is_annual=False,
+		)
+
+	match = _ONE_SHOT_NO_ISSUE_RE.match(stem)
+	if match:
+		return _candidate(
+			source_file,
+			filename_title=match.group("title"),
+			run_start_year=_matched_start_year(match),
+			issue_number="1",
 			is_annual=False,
 		)
 
@@ -150,3 +193,8 @@ def _full_year(short_year: str) -> str:
 
 def _matched_start_year(match: re.Match[str]) -> str:
 	return match.group("start_year_paren") or match.group("start_year")
+
+
+def _source_folder_start_year(source_file: SourceFile) -> str:
+	match = re.search(r"\((\d{4})\)$", source_file.path.parent.name)
+	return match.group(1) if match else ""

@@ -79,8 +79,6 @@ def candidate_matches_entry(candidate: ParsedCandidate, entry: ReadingOrderEntry
 		return False
 	if candidate.annual_release_year:
 		return entry.release_date.startswith(candidate.annual_release_year)
-	if candidate.annual_start_year and entry.run_start_year and entry.run_start_year != candidate.annual_start_year:
-		return False
-	if not candidate.is_annual and entry.run_start_year and candidate.run_start_year != entry.run_start_year:
+	if candidate.is_annual and candidate.annual_start_year and entry.run_start_year and entry.run_start_year != candidate.annual_start_year:
 		return False
 	return comparable_issue_number(candidate.issue_number) == comparable_issue_number(entry.issue_label)

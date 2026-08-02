@@ -17,6 +17,7 @@ class SourceFolderConfig:
 	special_run: str = ""
 	special_volume: str = ""
 	issue_aliases: dict[str, str] | None = None
+	source_title_aliases: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

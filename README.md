@@ -47,7 +47,7 @@ python -m sorting.missing_entries --config config.json
 npm run missing
 ```
 
-The report finds the highest existing numeric prefix in the destination folder, then lists every missing database reading-order entry from position `00001` through that last existing position. It prints to the terminal and writes the same lines to `logs/missing-entries.log` next to the config file by default. Use `--output path\to\missing.log` to choose a different log file.
+The report finds the highest existing numeric prefix in the destination folder, lists every comic run with at least one missing issue in that range, then lists every missing database reading-order entry from position `00001` through that last existing position. It prints to the terminal and writes the same lines to `logs/missing-entries.log` next to the config file by default. Use `--output path\to\missing.log` to choose a different log file.
 
 To print the current reading-order list, run:
 
@@ -112,6 +112,12 @@ story arc start date -> issue release date -> issue sort_order when present -> s
 ```
 
 This keeps a story arc together while still moving through publication history.
+
+For ongoing runs released in 2024 or later, the first two keys are flipped so newer crossover tags do not pull a later issue ahead of earlier issues from the same modern run:
+
+```text
+issue release date -> story arc start date -> issue sort_order when present -> stable title/issue fallback
+```
 
 The terminal output and organizer log start with unmatched scanned files, then show the planned or applied conversions in this shape:
 

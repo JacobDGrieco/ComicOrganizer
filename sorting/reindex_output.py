@@ -116,6 +116,7 @@ def parse_output_files(
 	candidate_paths: dict[Path, Path] = {}
 	for file_index, output_file in enumerate(output_files, start=1):
 		output_candidate_count = 0
+		output_candidate_keys: set[tuple[str, str, str, bool, bool]] = set()
 		year_mismatch_candidates: list[ParsedCandidate] = []
 		for source_index, source_folder in enumerate(config.source_folders, start=1):
 			virtual_path = (
@@ -143,6 +144,16 @@ def parse_output_files(
 			if source_folder_start_year(source_folder.path) not in {"", candidate.run_start_year}:
 				year_mismatch_candidates.append(candidate)
 				continue
+			candidate_key = (
+				title_key(candidate.run),
+				candidate.volume,
+				comparable_issue_number(candidate.issue_number),
+				candidate.is_annual,
+				candidate.is_special,
+			)
+			if candidate_key in output_candidate_keys:
+				continue
+			output_candidate_keys.add(candidate_key)
 			candidates.append(candidate)
 			candidate_paths[candidate.source_path] = output_file.path
 			output_candidate_count += 1
@@ -219,12 +230,15 @@ def match_reindex_candidates(
 	unmatched_entries = []
 	duplicate_candidates: list[DuplicateCandidate] = []
 	used_candidate_ids: set[int] = set()
+	used_output_paths: set[Path] = set()
 
 	for entry in reading_order:
 		entry_candidates = [
 			candidate
 			for candidate in sorted_candidates
-			if id(candidate) not in used_candidate_ids and candidate_matches_entry(candidate, entry)
+			if id(candidate) not in used_candidate_ids
+			and candidate_paths[candidate.source_path] not in used_output_paths
+			and candidate_matches_entry(candidate, entry)
 		]
 		if not entry_candidates:
 			unmatched_entries.append(entry)
@@ -251,6 +265,7 @@ def match_reindex_candidates(
 				continue
 			used_candidate_ids.add(id(duplicate))
 			duplicate_candidates.append(DuplicateCandidate(entry=entry, winner=winner, duplicate=duplicate))
+		used_output_paths.add(candidate_paths[winner.source_path])
 
 	unmatched_candidates = tuple(
 		candidate
@@ -283,7 +298,7 @@ def source_folder_start_year(path: Path) -> str:
 
 
 def title_matches_source(candidate: ParsedCandidate, source_folder) -> bool:
-	expected_titles = {source_folder.run}
+	expected_titles = {source_folder.run, *source_folder.source_title_aliases}
 	if candidate.is_annual:
 		expected_titles.add(re.sub(r"\s+annual\s*$", "", source_folder.annual_run, flags=re.I))
 	if candidate.is_special:
@@ -331,6 +346,8 @@ def build_warnings(output_files, candidates, candidate_paths, match_result, matc
 		duplicate_path = candidate_paths.get(duplicate.duplicate.source_path)
 		winner_path = candidate_paths.get(duplicate.winner.source_path)
 		if duplicate_path is None or winner_path is None:
+			continue
+		if duplicate_path in matched_paths:
 			continue
 		warnings.append(
 			f"{duplicate_path.name}: duplicate match for {duplicate.entry.run} "

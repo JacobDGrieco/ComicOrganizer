@@ -14,6 +14,7 @@ from sorting.missing_entries import build_missing_entries_report, format_report
 from sorting.missing_entries import main as missing_main
 from sorting.models import ReadingOrderEntry
 from sorting.organizer import main
+from sorting.reading_order import read_entries_from_sqlite
 from sorting.reindex_output import main as reindex_main
 
 
@@ -25,6 +26,7 @@ class OrganizerPipelineTests(unittest.TestCase):
 				run="The Amazing Spider-Man",
 				volume="1",
 				issue_label=str(position),
+				run_years="1963-1998",
 				release_date=f"1963-01-{position:02d}",
 			)
 			for position in range(1, 7)
@@ -34,8 +36,11 @@ class OrganizerPipelineTests(unittest.TestCase):
 		lines = format_report(report)
 
 		self.assertEqual(report.last_existing_position, 5)
+		self.assertEqual([(run.position, run.run, run.volume) for run in report.runs], [(1, "The Amazing Spider-Man", "1")])
 		self.assertEqual([entry.position for entry in report.missing_entries], [2, 4])
 		self.assertIn("Missing entries in range: 2", lines)
+		self.assertIn("Comic runs with missing entries:", lines)
+		self.assertIn("  00001 - The Amazing Spider-Man v1 (1963-1998)", lines)
 		self.assertIn("  00002 - The Amazing Spider-Man v1 #2 (1963-01-02)", lines)
 		self.assertNotIn("00006", "\n".join(lines))
 
@@ -242,6 +247,23 @@ class OrganizerPipelineTests(unittest.TestCase):
 			self.assertIn("Comic runs:", output.getvalue())
 			self.assertIn("Sort order:", output.getvalue())
 
+	def test_sqlite_order_uses_release_date_for_recent_ongoing_runs(self) -> None:
+		with self._organizer_fixture() as fixture:
+			_create_database(fixture["db"])
+			_add_recent_ordering_fixture(fixture["db"])
+
+			entries = read_entries_from_sqlite(fixture["db"])
+			entry_keys = [(entry.run, entry.issue_label) for entry in entries]
+
+			self.assertLess(
+				entry_keys.index(("Recent Ongoing Spider-Man", "1")),
+				entry_keys.index(("Recent Ongoing Spider-Man", "2")),
+			)
+			self.assertLess(
+				entry_keys.index(("Recent Limited Spider-Man", "2")),
+				entry_keys.index(("Recent Limited Spider-Man", "1")),
+			)
+
 	def test_reindex_output_dry_run_uses_current_database_order(self) -> None:
 		with self._organizer_fixture() as fixture:
 			_create_database(fixture["db"])
@@ -367,6 +389,62 @@ class OrganizerPipelineTests(unittest.TestCase):
 				"would rename: 00099 - The Amazing Spider-Man (1963) #1.cbz -> 00001 - The Amazing Spider-Man (1963) #1.cbz",
 				report,
 			)
+
+	def test_reindex_output_uses_source_title_alias(self) -> None:
+		with self._organizer_fixture() as fixture:
+			_create_database(fixture["db"])
+			(fixture["destination"] / "00099 - Old Amazing Spider-Man (1963) #1.cbz").write_text("one", encoding="utf-8")
+			_write_config(
+				fixture["config"],
+				fixture["db"],
+				fixture["destination"],
+				fixture["log"],
+				fixture["source"],
+				volume=1,
+				source_title_aliases=["Old Amazing Spider-Man"],
+			)
+
+			output = io.StringIO()
+			with contextlib.redirect_stdout(output):
+				exit_code = reindex_main(["--config", str(fixture["config"])])
+
+			report = output.getvalue()
+			self.assertEqual(exit_code, 0)
+			self.assertIn(
+				"would rename: 00099 - Old Amazing Spider-Man (1963) #1.cbz -> 00001 - Old Amazing Spider-Man (1963) #1.cbz",
+				report,
+			)
+			self.assertNotIn("no configured source title matched original filename", report)
+
+	def test_regular_reindex_issue_ignores_annual_start_year(self) -> None:
+		with self._organizer_fixture() as fixture:
+			_create_database(fixture["db"])
+			_add_spider_gwen_volume_two_issue(fixture["db"])
+			(fixture["destination"] / "00099 - Spider-Gwen (2015) #6.cbz").write_text("gwen", encoding="utf-8")
+			_write_config(
+				fixture["config"],
+				fixture["db"],
+				fixture["destination"],
+				fixture["log"],
+				fixture["root"] / "Spider-Gwen (2015)(2)",
+				run="Spider-Gwen",
+				volume=2,
+				annual_run="Spider-Gwen Annual",
+				annual_volume=1,
+				annual_start_year="2016",
+			)
+
+			output = io.StringIO()
+			with contextlib.redirect_stdout(output):
+				exit_code = reindex_main(["--config", str(fixture["config"])])
+
+			report = output.getvalue()
+			self.assertEqual(exit_code, 0)
+			self.assertIn(
+				"would rename: 00099 - Spider-Gwen (2015) #6.cbz -> 00004 - Spider-Gwen (2015) #6.cbz",
+				report,
+			)
+			self.assertNotIn("no current reading-order match", report)
 
 	def test_config_volume_prevents_cross_volume_issue_matches(self) -> None:
 		with self._organizer_fixture() as fixture:
@@ -622,6 +700,82 @@ def _add_amazing_fantasy_issue(database_path: Path) -> None:
 		connection.close()
 
 
+def _add_recent_ordering_fixture(database_path: Path) -> None:
+	connection = sqlite3.connect(database_path)
+	try:
+		connection.executemany(
+			"""
+			INSERT INTO comic_runs (id, title, volume, years, category, publication_type, priority)
+			VALUES (?, ?, ?, ?, ?, ?, ?)
+			""",
+			[
+				("CAND-RECENT-ONGOING", "Recent Ongoing Spider-Man", "1", "2024", "core", "Ongoing", "P0"),
+				("CAND-RECENT-LIMITED", "Recent Limited Spider-Man", "1", "2024", "event", "Limited Series", "P0"),
+			],
+		)
+		connection.executemany(
+			"""
+			INSERT INTO story_arcs (id, title, start_date, start_date_precision)
+			VALUES (?, ?, ?, ?)
+			""",
+			[
+				("LOCAL-ARC-RECENT-ONGOING-1", "Recent Ongoing Spider-Man #1", "2024-05-01", "day"),
+				("EVENT-RECENT-ONGOING", "Recent Ongoing Event", "2024-04-01", "day"),
+				("LOCAL-ARC-RECENT-LIMITED-1", "Recent Limited Spider-Man #1", "2024-05-01", "day"),
+				("EVENT-RECENT-LIMITED", "Recent Limited Event", "2024-04-01", "day"),
+			],
+		)
+		connection.executemany(
+			"""
+			INSERT INTO issues (
+				id, cand_id, issue_number, release_date, release_date_precision, story_arc_id, sort_order
+			)
+			VALUES (?, ?, ?, ?, ?, ?, ?)
+			""",
+			[
+				(
+					"FANDOM-ISS-CAND-RECENT-ONGOING-1",
+					"CAND-RECENT-ONGOING",
+					"1",
+					"2024-05-01",
+					"day",
+					"LOCAL-ARC-RECENT-ONGOING-1",
+					None,
+				),
+				(
+					"FANDOM-ISS-CAND-RECENT-ONGOING-2",
+					"CAND-RECENT-ONGOING",
+					"2",
+					"2024-06-01",
+					"day",
+					"EVENT-RECENT-ONGOING",
+					None,
+				),
+				(
+					"FANDOM-ISS-CAND-RECENT-LIMITED-1",
+					"CAND-RECENT-LIMITED",
+					"1",
+					"2024-05-01",
+					"day",
+					"LOCAL-ARC-RECENT-LIMITED-1",
+					None,
+				),
+				(
+					"FANDOM-ISS-CAND-RECENT-LIMITED-2",
+					"CAND-RECENT-LIMITED",
+					"2",
+					"2024-06-01",
+					"day",
+					"EVENT-RECENT-LIMITED",
+					None,
+				),
+			],
+		)
+		connection.commit()
+	finally:
+		connection.close()
+
+
 def _add_superior_spider_man_team_up_special(database_path: Path) -> None:
 	connection = sqlite3.connect(database_path)
 	try:
@@ -653,6 +807,45 @@ def _add_superior_spider_man_team_up_special(database_path: Path) -> None:
 				"2013-10-30",
 				"day",
 				"LOCAL-ARC-SUPERIOR-TEAM-UP-SPECIAL-1",
+				None,
+			),
+		)
+		connection.commit()
+	finally:
+		connection.close()
+
+
+def _add_spider_gwen_volume_two_issue(database_path: Path) -> None:
+	connection = sqlite3.connect(database_path)
+	try:
+		connection.execute(
+			"""
+			INSERT INTO comic_runs (id, title, volume, years, category, priority)
+			VALUES (?, ?, ?, ?, ?, ?)
+			""",
+			("CAND-000052", "Spider-Gwen", "2", "2015-2018", "core", "P1"),
+		)
+		connection.execute(
+			"""
+			INSERT INTO story_arcs (id, title, start_date, start_date_precision)
+			VALUES (?, ?, ?, ?)
+			""",
+			("LOCAL-ARC-SPIDER-GWEN-6", "Spider-Gwen #6", "2016-03-09", "day"),
+		)
+		connection.execute(
+			"""
+			INSERT INTO issues (
+				id, cand_id, issue_number, release_date, release_date_precision, story_arc_id, sort_order
+			)
+			VALUES (?, ?, ?, ?, ?, ?, ?)
+			""",
+			(
+				"FANDOM-ISS-CAND-000052-6",
+				"CAND-000052",
+				"6",
+				"2016-03-09",
+				"day",
+				"LOCAL-ARC-SPIDER-GWEN-6",
 				None,
 			),
 		)
@@ -695,9 +888,11 @@ def _write_config(
 	volume: int,
 	annual_run: str = "Amazing Spider-Man Annual",
 	annual_volume: int = 1,
+	annual_start_year: str = "",
 	special_run: str = "The Amazing Spider-Man Special",
 	special_volume: int = 1,
 	issue_aliases: dict[str, str] | None = None,
+	source_title_aliases: list[str] | None = None,
 ) -> None:
 	config_path.write_text(
 		json.dumps(
@@ -712,9 +907,11 @@ def _write_config(
 							"volume": volume,
 							"annual_run": annual_run,
 							"annual_volume": annual_volume,
+							"annual_start_year": annual_start_year,
 							"special_run": special_run,
 							"special_volume": special_volume,
 							"issue_aliases": issue_aliases or {},
+							"source_title_aliases": source_title_aliases or [],
 						}
 				],
 			}

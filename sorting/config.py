@@ -88,6 +88,10 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 		special_run = raw_source_folder.get("special_run", f"{run} Special" if isinstance(run, str) else "")
 		special_volume = raw_source_folder.get("special_volume", volume)
 		issue_aliases = _issue_aliases(raw_source_folder.get("issue_aliases", {}), f"source_folders[{index}].issue_aliases")
+		source_title_aliases = _string_list(
+			raw_source_folder.get("source_title_aliases", ()),
+			f"source_folders[{index}].source_title_aliases",
+		)
 		if not isinstance(path, str) or not path.strip():
 			raise ConfigError(f"source_folders[{index}].path must be a non-empty string")
 		if not isinstance(run, str) or not run.strip():
@@ -119,10 +123,24 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 				special_run=special_run.strip(),
 				special_volume=special_volume_label,
 				issue_aliases=issue_aliases,
+				source_title_aliases=source_title_aliases,
 			)
 		)
 
 	return source_folders
+
+
+def _string_list(value: Any, label: str) -> tuple[str, ...]:
+	if not isinstance(value, (list, tuple)):
+		raise ConfigError(f"Config field '{label}' must be a list")
+
+	items: list[str] = []
+	for index, item in enumerate(value, start=1):
+		if not isinstance(item, str) or not item.strip():
+			raise ConfigError(f"{label}[{index}] must be a non-empty string")
+		items.append(item.strip())
+
+	return tuple(items)
 
 
 def _issue_aliases(value: Any, label: str = "issue_aliases") -> dict[str, str]:

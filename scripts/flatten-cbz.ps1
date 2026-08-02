@@ -11,9 +11,6 @@ Nested folders are removed because directory entries are not written back. If
 multiple nested files have the same leaf filename, later files are renamed with
 __2, __3, and so on before the extension.
 
-Backups are created by default beside each changed archive as:
-<original>.bak-YYYYMMDDHHMMSS
-
 Terminal output is mirrored to logs\flatten-cbz.log by default. Use -LogPath
 to write the log somewhere else.
 
@@ -25,19 +22,14 @@ Dry-run scan of all CBZ files under D:\Comics.
 .EXAMPLE
 powershell -ExecutionPolicy Bypass -File .\scripts\flatten-cbz.ps1 "D:\Comics" -Apply
 
-Rewrite nested CBZ files under D:\Comics and keep .bak timestamp backups.
-
-.EXAMPLE
-powershell -ExecutionPolicy Bypass -File .\scripts\flatten-cbz.ps1 "D:\Comics" -Apply -NoBackup
-
-Rewrite nested CBZ files without retaining backup copies.
+Rewrite nested CBZ files under D:\Comics without creating backup files.
 #>
 
 [CmdletBinding()]
 param(
 	[Parameter(Position = 0, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
 	[Alias("FullName")]
-	[string[]]$Path = @("."),
+	[string[]]$Path = @(),
 
 	[switch]$Apply,
 
@@ -49,10 +41,23 @@ param(
 
 	[switch]$IncludeJunkEntries,
 
-	[string]$LogPath = (Join-Path (Split-Path -Parent $PSScriptRoot) "logs\flatten-cbz.log")
+	[string]$LogPath = ""
 )
 
 $script:TranscriptStarted = $false
+
+function Get-DefaultLogPath {
+	$scriptFolder = $PSScriptRoot
+	if ([string]::IsNullOrWhiteSpace($scriptFolder)) {
+		$scriptFolder = Split-Path -Parent $MyInvocation.MyCommand.Path
+	}
+
+	if ([string]::IsNullOrWhiteSpace($scriptFolder)) {
+		return Join-Path (Get-Location) "logs\flatten-cbz.log"
+	}
+
+	return Join-Path (Split-Path -Parent $scriptFolder) "logs\flatten-cbz.log"
+}
 
 function Start-OutputLog {
 	param([string]$Path)
@@ -76,6 +81,19 @@ function Stop-OutputLog {
 }
 
 $ErrorActionPreference = "Stop"
+if ([string]::IsNullOrWhiteSpace($LogPath)) {
+	$LogPath = Get-DefaultLogPath
+}
+
+if ($Path.Count -eq 0) {
+	$requestedPath = Read-Host "Path to flatten"
+	if ([string]::IsNullOrWhiteSpace($requestedPath)) {
+		throw "Path is required."
+	}
+
+	$Path = @($requestedPath)
+}
+
 Start-OutputLog -Path $LogPath
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
@@ -174,9 +192,9 @@ $summary = [ordered]@{
 			}
 
 			if ($NoRecurse) {
-				Get-ChildItem -LiteralPath $item.FullName -Filter "*.cbz" -File
+				Get-ChildItem -LiteralPath $item.FullName -Filter "*.cbz" -File -ErrorAction SilentlyContinue
 			} else {
-				Get-ChildItem -LiteralPath $item.FullName -Filter "*.cbz" -File -Recurse
+				Get-ChildItem -LiteralPath $item.FullName -Filter "*.cbz" -File -Recurse -ErrorAction SilentlyContinue
 			}
 		}
 	}
@@ -228,7 +246,6 @@ $summary = [ordered]@{
 		)
 
 		$tempPath = Join-Path $CbzFile.DirectoryName (".{0}.flatten-{1}.tmp" -f $CbzFile.BaseName, [guid]::NewGuid().ToString("N"))
-		$backupPath = $null
 
 		try {
 			$sourceArchive = [System.IO.Compression.ZipFile]::OpenRead($CbzFile.FullName)
@@ -259,23 +276,8 @@ $summary = [ordered]@{
 				$sourceArchive.Dispose()
 			}
 
-			if ($NoBackup) {
-				Remove-Item -LiteralPath $CbzFile.FullName -Force
-				Move-Item -LiteralPath $tempPath -Destination $CbzFile.FullName
-				return $null
-			}
-
-			$timestamp = Get-Date -Format "yyyyMMddHHmmss"
-			$backupPath = "{0}.bak-{1}" -f $CbzFile.FullName, $timestamp
-			Move-Item -LiteralPath $CbzFile.FullName -Destination $backupPath
-			try {
-				Move-Item -LiteralPath $tempPath -Destination $CbzFile.FullName
-			} catch {
-				Move-Item -LiteralPath $backupPath -Destination $CbzFile.FullName
-				throw
-			}
-
-			return $backupPath
+			Remove-Item -LiteralPath $CbzFile.FullName -Force
+			Move-Item -LiteralPath $tempPath -Destination $CbzFile.FullName
 		} catch {
 			if (Test-Path -LiteralPath $tempPath) {
 				Remove-Item -LiteralPath $tempPath -Force
@@ -346,14 +348,10 @@ try {
 					$archive.Dispose()
 				}
 
-				$backupPath = Save-FlattenedCbz -CbzFile $cbzFile
+				Save-FlattenedCbz -CbzFile $cbzFile
 
 				$summary.Flattened++
-				if ($backupPath) {
-					Write-Host "FLATTENED: $($cbzFile.FullName) (backup=$backupPath)"
-				} else {
-					Write-Host "FLATTENED: $($cbzFile.FullName)"
-				}
+				Write-Host "FLATTENED: $($cbzFile.FullName)"
 			} catch {
 				$summary.Errors++
 				Write-Warning "FAILED: $($cbzFile.FullName) - $($_.Exception.Message)"

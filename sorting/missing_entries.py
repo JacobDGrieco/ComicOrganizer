@@ -19,8 +19,17 @@ class MissingEntriesError(ValueError):
 
 
 @dataclass(frozen=True)
+class MissingRunSummary:
+	position: int
+	run: str
+	volume: str
+	years: str
+
+
+@dataclass(frozen=True)
 class MissingEntriesReport:
 	last_existing_position: int | None
+	runs: tuple[MissingRunSummary, ...]
 	missing_entries: tuple[ReadingOrderEntry, ...]
 	existing_count_in_range: int
 
@@ -33,6 +42,7 @@ def build_missing_entries_report(
 	if not existing_positions:
 		return MissingEntriesReport(
 			last_existing_position=None,
+			runs=(),
 			missing_entries=(),
 			existing_count_in_range=0,
 		)
@@ -51,9 +61,38 @@ def build_missing_entries_report(
 	)
 	return MissingEntriesReport(
 		last_existing_position=last_existing_position,
+		runs=missing_run_summaries(reading_order, missing_entries),
 		missing_entries=missing_entries,
 		existing_count_in_range=existing_count_in_range,
 	)
+
+
+def missing_run_summaries(
+	reading_order: tuple[ReadingOrderEntry, ...],
+	missing_entries: tuple[ReadingOrderEntry, ...],
+) -> tuple[MissingRunSummary, ...]:
+	"""List runs with at least one missing issue, ordered by each run's first entry."""
+	missing_run_keys = {
+		(entry.run.casefold(), entry.volume)
+		for entry in missing_entries
+	}
+	seen_runs: set[tuple[str, str]] = set()
+	runs: list[MissingRunSummary] = []
+	for entry in reading_order:
+		run_key = (entry.run.casefold(), entry.volume)
+		if run_key not in missing_run_keys or run_key in seen_runs:
+			continue
+		seen_runs.add(run_key)
+		runs.append(
+			MissingRunSummary(
+				position=entry.position,
+				run=entry.run,
+				volume=entry.volume,
+				years=entry.run_years,
+			)
+		)
+
+	return tuple(runs)
 
 
 def format_report(report: MissingEntriesReport) -> list[str]:
@@ -65,6 +104,15 @@ def format_report(report: MissingEntriesReport) -> list[str]:
 	lines.append(f"Last existing output position: {report.last_existing_position:05d}")
 	lines.append(f"Existing entries in range: {report.existing_count_in_range}")
 	lines.append(f"Missing entries in range: {len(report.missing_entries)}")
+	lines.append("")
+	lines.append("Comic runs with missing entries:")
+	if not report.runs:
+		lines.append("  (none)")
+	else:
+		for run in report.runs:
+			years = f" ({run.years})" if run.years else ""
+			lines.append(f"  {run.position:05d} - {run.run} v{run.volume}{years}")
+
 	lines.append("")
 	lines.append("Missing entries:")
 	if not report.missing_entries:

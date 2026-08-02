@@ -12,6 +12,9 @@ from .issue_numbers import comparable_issue_number, normalize_issue_label, norma
 from .models import ReadingOrderEntry
 
 
+RECENT_ONGOING_RELEASE_YEAR = 2024
+
+
 class ReadingOrderError(ValueError):
 	pass
 
@@ -39,7 +42,7 @@ def read_entries_from_sqlite(
 	reading_order_path: str | Path,
 	issue_overrides: dict[str, dict[str, str]] | None = None,
 ) -> tuple[ReadingOrderEntry, ...]:
-	"""Load entries from SQLite using story-arc date, issue release date, and stable fallbacks."""
+	"""Load entries from SQLite using the shared organizer reading-order policy."""
 	path = Path(reading_order_path)
 	overrides = issue_overrides or {}
 	try:
@@ -49,28 +52,7 @@ def read_entries_from_sqlite(
 
 	try:
 		connection.row_factory = sqlite3.Row
-		rows = connection.execute(
-			"""
-			SELECT
-				comic_runs.title AS run,
-				comic_runs.volume AS volume,
-				comic_runs.years AS years,
-				issues.issue_number AS issue,
-				issues.release_date AS release_date
-			FROM issues
-			JOIN comic_runs ON comic_runs.id = issues.cand_id
-			JOIN story_arcs ON story_arcs.id = issues.story_arc_id
-			ORDER BY
-				story_arcs.start_date,
-				issues.release_date,
-				CASE WHEN issues.sort_order IS NULL THEN 1 ELSE 0 END,
-				issues.sort_order,
-				comic_runs.title,
-				CAST(issues.issue_number AS REAL),
-				issues.issue_number,
-				issues.id
-			"""
-		).fetchall()
+		rows = connection.execute(sqlite_reading_order_query()).fetchall()
 	except sqlite3.Error as exc:
 		raise ReadingOrderError(f"Reading-order SQLite query failed: {path}: {exc}") from exc
 	finally:
@@ -97,6 +79,45 @@ def read_entries_from_sqlite(
 		)
 
 	return tuple(entries)
+
+
+def sqlite_reading_order_query(*, include_export_fields: bool = False) -> str:
+	"""Build the SQLite query used by organizer-facing reading-order commands."""
+	extra_fields = """
+				story_arcs.title AS story_arc,
+				story_arcs.start_date AS story_arc_start_date,
+				issues.sort_order AS issue_sort_order,""" if include_export_fields else ""
+	return f"""
+			SELECT
+				comic_runs.title AS run,
+				comic_runs.volume AS volume,
+				comic_runs.years AS years,
+				issues.issue_number AS issue,
+{extra_fields}
+				issues.release_date AS release_date
+			FROM issues
+			JOIN comic_runs ON comic_runs.id = issues.cand_id
+			JOIN story_arcs ON story_arcs.id = issues.story_arc_id
+			ORDER BY
+				CASE
+					WHEN comic_runs.publication_type = 'Ongoing'
+						AND CAST(substr(issues.release_date, 1, 4) AS INTEGER) >= {RECENT_ONGOING_RELEASE_YEAR}
+					THEN issues.release_date
+					ELSE story_arcs.start_date
+				END,
+				CASE
+					WHEN comic_runs.publication_type = 'Ongoing'
+						AND CAST(substr(issues.release_date, 1, 4) AS INTEGER) >= {RECENT_ONGOING_RELEASE_YEAR}
+					THEN story_arcs.start_date
+					ELSE issues.release_date
+				END,
+				CASE WHEN issues.sort_order IS NULL THEN 1 ELSE 0 END,
+				issues.sort_order,
+				comic_runs.title,
+				CAST(issues.issue_number AS REAL),
+				issues.issue_number,
+				issues.id
+			"""
 
 
 def read_entries_from_json(
