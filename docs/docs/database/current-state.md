@@ -1,4 +1,4 @@
-# Current State
+﻿# Current State
 
 ## Stack
 
@@ -6,7 +6,7 @@
 - Organizer source of truth today: simplified SQLite database loaded by `sorting/reading_order.py`; legacy ordered JSON remains supported.
 - Research/download source of truth today: SQLite `comic_runs`, `issues`, and `story_arcs`.
 - Database stack: local SQLite.
-- Active database file: `database/database.db`.
+- Active database file: `projects/spider-man/database/database.db`.
 - Migration framework: raw SQL schema file plus idempotent import scripts.
 
 ## Existing Data
@@ -74,3 +74,4 @@ The research workflow now needs only:
 - This is a local project, not a production service.
 - SQLite is sufficient for thousands of rows and avoids a server dependency.
 - Existing JSON should remain importable/exportable during the transition.
+

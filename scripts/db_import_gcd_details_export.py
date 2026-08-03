@@ -71,7 +71,7 @@ def parse_args() -> argparse.Namespace:
         description="Import a GCD series details export into SQLite."
     )
     parser.add_argument(
-        "--db", default="database/database.db", help="Local ComicOrganizer SQLite database."
+        "--db", default="projects/spider-man/database/database.db", help="Local ComicOrganizer SQLite database."
     )
     parser.add_argument(
         "--gcd-series-id", required=True, type=int, help="GCD series id."
@@ -245,7 +245,7 @@ def normalize_issue_number(raw_number: str) -> str:
 def release_date_from_export(*candidates: str) -> tuple[str | None, str]:
     for candidate in candidates:
         text = str(candidate or "").strip()
-        if not text or text in {"-", "—", "?"}:
+        if not text or text in {"-", "â€”", "?"}:
             continue
         match = re.match(r"^(\d{4})-(\d{2})-(\d{2})$", text)
         if match and match.group(3) != "00":

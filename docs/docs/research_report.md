@@ -1,4 +1,4 @@
-# Research Report
+﻿# Research Report
 
 Status: Spider-affiliated series shell pass expanded.
 
@@ -6,7 +6,7 @@ Research cutoff: 2026-07-31
 
 ## Current State
 
-- SQLite `database/database.db` is the active source of truth for the research/download queue.
+- SQLite `projects/spider-man/database/database.db` is the active source of truth for the research/download queue.
 - `comic_runs`, `issues`, and `story_arcs` are the active catalog tables.
 - No Excel workbook will be created or maintained.
 - Legacy JSON files under `data/` remain transitional/export material only and should not be treated as authoritative.
@@ -68,3 +68,4 @@ Wikipedia's `List of Spider-Man comics` has been added as a discovery-only sourc
 ## Next Checkpoint
 
 Continue issue-level research in strict reading/publication order. Resolve base issue lists for the imported series shells before treating `bibliographicIssueCount` as final, starting with high-priority P0/P1 Spider-Man and Spider-family titles.
+

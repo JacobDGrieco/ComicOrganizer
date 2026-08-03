@@ -128,7 +128,7 @@ def main() -> int:
 
 def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(description="Audit issue coverage by priority.")
-	parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+	parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
 	parser.add_argument(
 		"--priority",
 		action="append",
@@ -136,7 +136,7 @@ def parse_args() -> argparse.Namespace:
 	)
 	parser.add_argument(
 		"--output",
-		default="docs/database/coverage-audit.md",
+		default="projects/spider-man/docs/database/coverage-audit.md",
 		help="Markdown report path.",
 	)
 	parser.add_argument(

@@ -76,7 +76,7 @@ FANDOM_PAGE_OVERRIDES: dict[str, list[str]] = {
 	"CAND-000596": ["How_to_Read_Comics_the_Marvel_Way_Vol_1"],
 	"CAND-000606": ["Who_Is..._Kingpin_Infinity_Comic_Vol_1"],
 	"CAND-000608": ["Who_Is..._Kraven_Infinity_Comic_Vol_1"],
-	"CAND-000609": ["Mighty_Marvel_Holiday_Special_–_Halloween_with_the_Rhino_Infinity_Comic_Vol_1"],
+	"CAND-000609": ["Mighty_Marvel_Holiday_Special_â€“_Halloween_with_the_Rhino_Infinity_Comic_Vol_1"],
 }
 
 
@@ -122,7 +122,7 @@ def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(
 		description="Batch-import recently added Marvel Fandom issue rows."
 	)
-	parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+	parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
 	parser.add_argument("--min-run-id", default="CAND-000323", help="First comic_runs.id to consider.")
 	parser.add_argument("--max-run-id", help="Last comic_runs.id to consider.")
 	parser.add_argument("--run-id", action="append", help="Specific comic_runs.id to import. May be repeated.")

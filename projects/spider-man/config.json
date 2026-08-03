@@ -1,5 +1,9 @@
 {
+	"project_name": "Spider-Man",
 	"reading_order_path": "database/database.db",
+	"character_list_path": "character-lists/Spider-Man.md",
+	"download_urls_path": "downloader/urls.csv",
+	"download_output_folder": "downloader/downloads",
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Family",
 	"source_folders": [
 		{
@@ -270,6 +274,11 @@
 			"volume": 4
 		},
 		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage, U.S.A (2011)",
+			"run": "Carnage, U.S.A.",
+			"volume": 1
+		},
+		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage; Black, White & Blood (2021)",
 			"run": "Carnage: Black, White & Blood",
 			"volume": 1
@@ -282,11 +291,6 @@
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage; Mind Bomb (1996)",
 			"run": "Carnage: Mind Bomb",
-			"volume": 1
-		},
-		{
-			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage, U.S.A (2011)",
-			"run": "Carnage, U.S.A.",
 			"volume": 1
 		},
 		{
@@ -574,6 +578,11 @@
 			"volume": 1
 		},
 		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Punisher vs. Spider-Man (2026)",
+			"run": "Punisher vs. Spider-Man",
+			"volume": 1
+		},
+		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Radioactive Spider-Man (2025)",
 			"run": "Radioactive Spider-Man",
 			"volume": 1
@@ -649,6 +658,11 @@
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man (2003)",
 			"run": "Spectacular Spider-Man",
 			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man Super Special (1995)",
+			"run": "Spectacular Spider-Man Super Special",
+			"volume": 1
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Man; Brand New Day (2026)",
@@ -1043,6 +1057,14 @@
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; India (2004)",
 			"run": "Spider-Man: India",
 			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Kingpin To The Death (1998)",
+			"run": "Kingpin",
+			"volume": 1,
+			"source_title_aliases": [
+				"Spider-Man; Kingpin To The Death"
+			]
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Legend of the Spider-Clan (2002)",
@@ -1442,8 +1464,11 @@
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Spectacular Spider-Man Super Special (1995)",
-			"run": "The Spectacular Spider-Man Super Special",
-			"volume": 1
+			"run": "Spectacular Spider-Man Super Special",
+			"volume": 1,
+			"source_title_aliases": [
+				"The Spectacular Spider-Man Super Special"
+			]
 		},
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Timestorm 2009-2099 (2009)",
@@ -1748,6 +1773,226 @@
 		{
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\X-Men & Spider-Man (2009)",
 			"run": "X-Men/Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\The Superior Foes of Spider-Man (2013)",
+			"run": "The Superior Foes of Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Superior Carnage (2013)",
+			"run": "Superior Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Verse (2015)",
+			"run": "Spider-Verse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Scarlet Spiders (2015)",
+			"run": "Scarlet Spiders",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Marvel Spotlight (1971)",
+			"run": "Marvel Spotlight",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Inhumanity; Superior Spider-Man (2014)",
+			"run": "Inhumanity: Superior Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Edge of Spider-Verse (2014)",
+			"run": "Edge of Spider-Verse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Edge of Spider-Verse (2022)",
+			"run": "Edge of Spider-Verse",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Edge of Spider-Verse (2023)",
+			"run": "Edge of Spider-Verse",
+			"volume": 3
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Edge of Spider-Verse (2024)",
+			"run": "Edge of Spider-Verse",
+			"volume": 4
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Deadpool vs. Carnage (2014)",
+			"run": "Deadpool vs. Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\AXIS; Carnage (2014)",
+			"run": "AXIS: Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Minimum Carnage; Alpha (2012)",
+			"run": "Minimum Carnage: Alpha",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Minimum Carnage; Omega (2012)",
+			"run": "Minimum Carnage: Omega",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Tooth and Claw (2018)",
+			"run": "Venom: Tooth and Claw",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\What If... (1989)",
+			"run": "What If...?",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Seed of Darkness (1997)",
+			"run": "Venom: Seed of Darkness",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Sign of the Boss (1997)",
+			"run": "Venom: Sign of the Boss",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; The Finale (1997)",
+			"run": "Venom: The Finale",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Carnage Unleashed (1995)",
+			"run": "Venom: Carnage Unleashed",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; License to Kill (1997)",
+			"run": "Venom: License to Kill",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; On Trial (1997)",
+			"run": "Venom: On Trial",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom vs. Carnage (2004)",
+			"run": "Venom vs. Carnage",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Six (2003)",
+			"run": "Ultimate Six",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Fallout (2011)",
+			"run": "Ultimate Fallout",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man Holiday Special (1995)",
+			"run": "Spider-Man Holiday Special",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Legacy of Evil (1996)",
+			"run": "Spider-Man: Legacy of Evil",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; The Jackal Files (1995)",
+			"run": "Spider-Man: The Jackal Files",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Arana Special; The Hunter Revealed (2006)",
+			"run": "Spider-Man & Araña Special: The Hunter Revealed",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Badrock (1997)",
+			"run": "Spider-Man/Badrock",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & Gen13 (1996)",
+			"run": "Spider-Man/Gen13",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Ham 25th Anniversary Special (2010)",
+			"run": "Spider-Ham 25th Anniversary Special",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Island; Spider-Woman (2011)",
+			"run": "Spider-Island: Spider-Woman",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Island; The Amazing Spider-Girl (2011)",
+			"run": "Spider-Island: The Amazing Spider-Girl",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Sentry & Spider-Man (2001)",
+			"run": "Sentry/Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spectacular Spider-Girl (2010)",
+			"run": "Spectacular Spider-Girl",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Osborn (2011)",
+			"run": "Osborn",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Rune vs. Venom (1995)",
+			"run": "Rune vs. Venom",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Scarlet Spider Unlimited (1995)",
+			"run": "Scarlet Spider Unlimited",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Arana; The Heart of the Spider (2005)",
+			"run": "Araña: The Heart of the Spider",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Free Comic Book Day 2007 (Spider-Man) (2007)",
+			"run": "Free Comic Book Day 2007 (Spider-Man)",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Marvel MegaMorphs (2005)",
+			"run": "Marvel MegaMorphs",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Marvel Tails Starring Peter Porker the Spectacular Spider-Ham (1983)",
+			"run": "Marvel Tails Starring Peter Porker the Spectacular Spider-Ham",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Strange Heads (1997)",
+			"run": "Amazing Spider-Man: Strange Heads",
 			"volume": 1
 		}
 	],

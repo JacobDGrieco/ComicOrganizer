@@ -1,4 +1,4 @@
-"""Shared SQLite helpers for Spider-Man reading-list scripts."""
+"""Shared SQLite helpers for project reading-list scripts."""
 
 from __future__ import annotations
 

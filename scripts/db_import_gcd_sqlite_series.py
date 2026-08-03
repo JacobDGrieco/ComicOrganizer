@@ -56,7 +56,7 @@ def parse_args() -> argparse.Namespace:
         description="Import one series from a local GCD SQLite dump."
     )
     parser.add_argument(
-        "--db", default="database/database.db", help="Local ComicOrganizer SQLite database."
+        "--db", default="projects/spider-man/database/database.db", help="Local ComicOrganizer SQLite database."
     )
     parser.add_argument(
         "--gcd-db", required=True, help="Path to a downloaded GCD SQLite dump."

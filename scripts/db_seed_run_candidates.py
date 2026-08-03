@@ -41,7 +41,7 @@ def main() -> int:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Seed Spider-Man comic runs.")
-    parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+    parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
     return parser.parse_args()
 
 
@@ -8785,9 +8785,9 @@ CANDIDATES = [
         marvel_issue_count=2,
         notes="Dark Web tie-in limited series; Marvel issue copy identifies a Chasm confrontation and Limbo/Goblin Queen tie-in scope.",
     ),
-    RunCandidate(
-        "CAND-000622",
-        "Dark Reign: Mister Negative",
+	RunCandidate(
+		"CAND-000622",
+		"Dark Reign: Mister Negative",
         "1",
         "2009",
         "Spider-Man Villain",
@@ -8798,9 +8798,25 @@ CANDIDATES = [
         "Include",
         "Candidate",
         marvel_url="https://www.marvel.com/comics/series/7691/dark_reign_mister_negative_2009",
-        marvel_issue_count=3,
-        notes="Spider-Man villain limited series; Spot appears in Marvel's Spot/Mister Negative character connections and related issue coverage.",
-    ),
+		marvel_issue_count=3,
+		notes="Spider-Man villain limited series; Spot appears in Marvel's Spot/Mister Negative character connections and related issue coverage.",
+	),
+	RunCandidate(
+		"CAND-000625",
+		"Punisher vs. Spider-Man",
+		"1",
+		"2026",
+		"Core Peter Parker",
+		"Limited Series",
+		"Earth-616",
+		"Peter Parker / Frank Castle",
+		"P2",
+		"Include",
+		"Candidate",
+		marvel_url="https://www.marvel.com/comics/series/45206/punisher_vs_spiderman_2026_present",
+		marvel_issue_count=1,
+		notes="Official Marvel series page currently lists issue #1, published July 15, 2026.",
+	),
 ]
 
 

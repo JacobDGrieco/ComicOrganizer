@@ -85,7 +85,7 @@ def parse_args() -> argparse.Namespace:
         description="Scrape Marvel's public series index for Spider-related runs."
     )
     parser.add_argument(
-        "--db", default="database/database.db", help="SQLite database path used with --apply."
+        "--db", default="projects/spider-man/database/database.db", help="SQLite database path used with --apply."
     )
     parser.add_argument(
         "--url", default=DEFAULT_INDEX_URL, help="Marvel series index URL."

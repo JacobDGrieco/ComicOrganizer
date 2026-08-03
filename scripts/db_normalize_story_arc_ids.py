@@ -48,7 +48,7 @@ def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(
 		description="Rename old ARC/GCD-ARC/MM-ARC/FANDOM-ARC IDs to the current namespace."
 	)
-	parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+	parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
 	parser.add_argument("--dry-run", action="store_true", help="Report without writing.")
 	return parser.parse_args()
 

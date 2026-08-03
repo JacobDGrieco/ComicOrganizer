@@ -42,7 +42,7 @@ def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(
 		description="Rename issue IDs to FANDOM-ISS-<CAND-ID>-<ISSUE>."
 	)
-	parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+	parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
 	parser.add_argument("--dry-run", action="store_true", help="Report without writing.")
 	return parser.parse_args()
 

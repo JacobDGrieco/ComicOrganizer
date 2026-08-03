@@ -27,6 +27,8 @@ class OrganizerConfig:
 	log_path: Path
 	source_folders: tuple[SourceFolderConfig, ...]
 	issue_overrides: dict[str, dict[str, str]]
+	project_name: str = ""
+	character_list_path: Path | None = None
 
 
 @dataclass(frozen=True)

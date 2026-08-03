@@ -74,7 +74,7 @@ def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(
 		description="Import one Marvel Fandom volume page into the simplified SQLite catalog."
 	)
-	parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+	parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
 	parser.add_argument("--run-id", required=True, help="Existing comic_runs.id value.")
 	parser.add_argument(
 		"--fandom-page",

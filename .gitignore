@@ -14,3 +14,14 @@ database/*.db
 database/*.db.*
 config.json
 package-lock.json
+projects/*/database/*.db
+projects/*/database/*.db.*
+projects/*/logs/
+projects/*/downloader/downloads/
+
+# Project profiles are meant to be reusable even though root config files stay local.
+!projects/*/config.json
+!projects/*/character-lists/
+!projects/*/character-lists/*.md
+!projects/*/docs/
+!projects/*/docs/**/*.md

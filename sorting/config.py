@@ -31,10 +31,12 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 	if not isinstance(raw_config, dict):
 		raise ConfigError(f"Config file must contain a JSON object: {config_path}")
 
-	reading_order_path = _required_path(raw_config, "reading_order_path")
-	destination_folder = _required_path(raw_config, "destination_folder")
-	log_path = _optional_path(raw_config, "log_path") or default_log_path(config_path, "comic-organizer.log")
-	source_folders = _source_folders(raw_config.get("source_folders"))
+	project_name = _optional_string(raw_config, "project_name") or ""
+	reading_order_path = _required_path(raw_config, config_path, "reading_order_path")
+	destination_folder = _required_path(raw_config, config_path, "destination_folder")
+	log_path = _optional_path(raw_config, config_path, "log_path") or default_log_path(config_path, "comic-organizer.log")
+	character_list_path = _optional_path(raw_config, config_path, "character_list_path")
+	source_folders = _source_folders(raw_config.get("source_folders"), config_path)
 	issue_overrides = _issue_overrides(raw_config.get("issue_overrides", {}))
 
 	_require_file(reading_order_path, "Reading-order source")
@@ -46,6 +48,8 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 		log_path=log_path,
 		source_folders=tuple(source_folders),
 		issue_overrides=issue_overrides,
+		project_name=project_name,
+		character_list_path=character_list_path,
 	)
 
 
@@ -57,20 +61,35 @@ def _required_string(raw_config: dict[str, Any], key: str) -> str:
 	return value.strip()
 
 
-def _required_path(raw_config: dict[str, Any], key: str) -> Path:
-	return Path(_required_string(raw_config, key))
-
-
-def _optional_path(raw_config: dict[str, Any], key: str) -> Path | None:
+def _optional_string(raw_config: dict[str, Any], key: str) -> str | None:
 	value = raw_config.get(key)
 	if value is None:
 		return None
 	if not isinstance(value, str) or not value.strip():
 		raise ConfigError(f"Config field '{key}' must be a non-empty string when provided")
-	return Path(value.strip())
+	return value.strip()
 
 
-def _source_folders(value: Any) -> list[SourceFolderConfig]:
+def _required_path(raw_config: dict[str, Any], config_path: Path, key: str) -> Path:
+	return _resolve_config_relative_path(config_path, _required_string(raw_config, key))
+
+
+def _optional_path(raw_config: dict[str, Any], config_path: Path, key: str) -> Path | None:
+	value = _optional_string(raw_config, key)
+	if value is None:
+		return None
+	return _resolve_config_relative_path(config_path, value)
+
+
+def _resolve_config_relative_path(config_path: Path, value: str) -> Path:
+	path = Path(value)
+	if path.is_absolute():
+		return path
+	parent = config_path.parent if str(config_path.parent) else Path(".")
+	return parent / path
+
+
+def _source_folders(value: Any, config_path: Path) -> list[SourceFolderConfig]:
 	if not isinstance(value, list) or not value:
 		raise ConfigError("Config field 'source_folders' must be a non-empty list")
 
@@ -114,7 +133,7 @@ def _source_folders(value: Any) -> list[SourceFolderConfig]:
 
 		source_folders.append(
 			SourceFolderConfig(
-				path=Path(path),
+				path=_resolve_config_relative_path(config_path, path.strip()),
 				run=run.strip(),
 				volume=volume_label,
 				annual_run=annual_run.strip(),

@@ -149,7 +149,7 @@ def parse_args() -> argparse.Namespace:
 	parser = argparse.ArgumentParser(
 		description="Backfill SQLite issue story arcs from Marvel Fandom issue pages."
 	)
-	parser.add_argument("--db", default="database/database.db", help="SQLite database path.")
+	parser.add_argument("--db", default="projects/spider-man/database/database.db", help="SQLite database path.")
 	parser.add_argument(
 		"--cache-dir",
 		default=".cache/fandom-story-arcs",

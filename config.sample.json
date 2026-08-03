@@ -1,29 +1,19 @@
 {
-	"reading_order_path": "database/database.db",
-	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Verse",
+	"project_name": "Example Group",
+	"reading_order_path": "database.db",
+	"character_list_path": "character-list.md",
+	"download_urls_path": "downloader/urls.csv",
+	"download_output_folder": "downloads",
+	"destination_folder": "D:\\Suwayomi\\Comics\\Example Group Reading Order",
 	"source_folders": [
 		{
-			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\XOXO Comics (EN)\\Giant-Size Spider-Man",
-			"run": "Giant-Size Spider-Man",
-			"volume": 1
-		},
-		{
-			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\ReadAllComics (EN)\\Amazing Spider-Man (Publisher_ Marvel)",
-			"run": "The Amazing Spider-Man",
-			"annual_run": "Amazing Spider-Man Annual",
+			"path": "downloads\\Example Series",
+			"run": "Example Series",
 			"volume": 1,
+			"annual_run": "Example Series Annual",
 			"annual_volume": 1,
 			"issue_aliases": {}
-		},
-		{
-			"path": "C:\\Users\\gamin\\AppData\\Local\\Tachidesk\\downloads\\mangas\\ReadComicOnline (EN)\\The Amazing Spider-Man (1963)",
-			"run": "The Amazing Spider-Man",
-			"volume": 1
 		}
 	],
-	"issue_overrides": {
-		"Amazing Fantasy": {
-			"1": "15"
-		}
-	}
+	"issue_overrides": {}
 }

@@ -1,4 +1,4 @@
-# Comic Organizer
+﻿# Comic Organizer
 
 Python utilities for organizing Tachidesk/Suwayomi comic downloads into a single reading-order folder.
 
@@ -27,14 +27,14 @@ python -m pip install -r requirements.txt
 Run a dry run first:
 
 ```powershell
-python -m sorting.organizer --config config.json --dry-run
+python -m sorting.organizer --config projects/spider-man/config.json --dry-run
 npm run sort:dry
 ```
 
 Run for real:
 
 ```powershell
-python -m sorting.organizer --config config.json
+python -m sorting.organizer --config projects/spider-man/config.json
 npm run sort
 ```
 
@@ -43,7 +43,7 @@ The organizer is safe to rerun. It checks existing destination files by their nu
 To report gaps in the output folder, run:
 
 ```powershell
-python -m sorting.missing_entries --config config.json
+python -m sorting.missing_entries --config projects/spider-man/config.json
 npm run missing
 ```
 
@@ -52,7 +52,7 @@ The report finds the highest existing numeric prefix in the destination folder, 
 To print the current reading-order list, run:
 
 ```powershell
-python -m sorting.list_order --config config.json
+python -m sorting.list_order --config projects/spider-man/config.json
 npm run list
 ```
 
@@ -65,7 +65,7 @@ npm run download
 npm run flatten
 ```
 
-Downloader output is written to `logs/downloader.log`. CBZ flattening output is written to `logs/flatten-cbz.log`.
+Downloader output is written to the selected project's `logs/downloader.log`. CBZ flattening output is written to the selected project's `logs/flatten-cbz.log`.
 
 Useful npm shortcuts:
 
@@ -85,13 +85,92 @@ npm run check
 
 ## Config
 
-`config.json` controls the SQLite database, destination folder, scan folders, and optional organizer log path. When `log_path` is omitted, organizer output is written to `logs/comic-organizer.log` next to the config file.
+A project `config.json` controls the SQLite database, destination folder, scan folders, and optional organizer log path. When `log_path` is omitted, organizer output is written to `logs/comic-organizer.log` next to the config file.
+
+For multiple reading projects, put each config in its own folder under `projects/`. Relative paths in that config are resolved next to the config file, so each group can keep its own database, logs, downloads, and character list:
+
+```text
+projects/
+  spider-man/
+    config.json
+    database/
+      database.db
+    character-lists/
+      Spider-Man.md
+    downloader/
+      urls.csv
+      downloads/
+    logs/
+  x-men/
+    config.json
+    database/
+      database.db
+    character-lists/
+      X-Men.md
+    downloader/
+      urls.csv
+      downloads/
+    logs/
+```
+
+Project commands use `projects/<name>/config.json`:
+
+```powershell
+npm run project:sort:dry -- --project spider-man
+npm run project:sort -- --project spider-man
+npm run project:missing -- --project spider-man
+npm run project:list -- --project spider-man
+npm run project:reindex:dry -- --project spider-man
+npm run project:flatten:dry -- --project spider-man
+npm run project:characters -- --project spider-man
+```
+
+These write per-project logs by default:
+
+```text
+projects/<name>/logs/comic-organizer.log
+projects/<name>/logs/flatten-cbz.log
+projects/<name>/logs/missing-entries.log
+projects/<name>/logs/reading-order-list.log
+projects/<name>/logs/reindex-output.log
+```
+
+Add `character_list_path` to each project config to claim the characters covered by that group:
+
+```json
+{
+	"project_name": "Spider-Man",
+	"reading_order_path": "database/database.db",
+	"character_list_path": "character-lists/Spider-Man.md",
+	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Reading Order",
+	"source_folders": [
+		{
+			"path": "downloads\\The Amazing Spider-Man",
+			"run": "The Amazing Spider-Man",
+			"volume": 1
+		}
+	]
+}
+```
+
+Check duplicate character claims across all project character-list folders with:
+
+```powershell
+npm run characters
+```
+
+Check the selected project's list with:
+
+```powershell
+npm run project:characters -- --project spider-man
+```
 
 For the Spider-Man project, point `reading_order_path` at the SQLite database:
 
 ```json
 {
 	"reading_order_path": "database/database.db",
+	"character_list_path": "character-lists/Spider-Man.md",
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Reading Order",
 	"source_folders": [
 		{
@@ -134,9 +213,9 @@ Conversions:
 Initialize and import the current JSON research data:
 
 ```powershell
-python scripts\db_init.py --db database/database.db --reset
-python scripts\db_seed_run_candidates.py --db database/database.db
-python scripts\db_validate.py --db database/database.db
+python scripts\db_init.py --db projects/spider-man/database/database.db --reset
+python scripts\db_seed_run_candidates.py --db projects/spider-man/database/database.db
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 The simplified working schema keeps only:
@@ -156,16 +235,16 @@ Issue IDs use `FANDOM-ISS-<comic_runs.id>-<issue-number>`, such as `FANDOM-ISS-C
 Existing older databases can be migrated with:
 
 ```powershell
-python scripts\db_migrate_simplify_schema.py --db database/database.db --dry-run
-python scripts\db_migrate_simplify_schema.py --db database/database.db
+python scripts\db_migrate_simplify_schema.py --db projects/spider-man/database/database.db --dry-run
+python scripts\db_migrate_simplify_schema.py --db projects/spider-man/database/database.db
 ```
 
 Import issue metadata from GCD for a known series:
 
 ```powershell
-python scripts\db_import_gcd_series.py --db database/database.db --gcd-series-id 1570 --run-id SER-000002 --dry-run --max-network-requests 10
-python scripts\db_import_gcd_series.py --db database/database.db --gcd-series-id 1570 --run-id SER-000002 --max-network-requests 10
-python scripts\db_validate.py --db database/database.db
+python scripts\db_import_gcd_series.py --db projects/spider-man/database/database.db --gcd-series-id 1570 --run-id SER-000002 --dry-run --max-network-requests 10
+python scripts\db_import_gcd_series.py --db projects/spider-man/database/database.db --gcd-series-id 1570 --run-id SER-000002 --max-network-requests 10
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 The GCD importer uses GCD issue `on_sale_date` when available, skips records marked as variants unless `--include-variants` is passed, and creates temporary per-issue story arcs until proper arc grouping is researched. Run it repeatedly in small batches; cached responses and already imported issue numbers are skipped.
@@ -174,9 +253,9 @@ For faster Marvel issue-list imports, use the Marvel Metadata API importer:
 
 ```powershell
 python scripts\db_search_marvel_metadata_series.py "The Amazing Spider-Man (1963"
-python scripts\db_import_marvel_metadata_series.py --db database/database.db --marvel-series-id 1987 --run-id SER-000002 --dry-run
-python scripts\db_import_marvel_metadata_series.py --db database/database.db --marvel-series-id 1987 --run-id SER-000002
-python scripts\db_validate.py --db database/database.db
+python scripts\db_import_marvel_metadata_series.py --db projects/spider-man/database/database.db --marvel-series-id 1987 --run-id SER-000002 --dry-run
+python scripts\db_import_marvel_metadata_series.py --db projects/spider-man/database/database.db --marvel-series-id 1987 --run-id SER-000002
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 This source can import large series in a few paginated requests. Existing issue dates are preserved unless `--refresh-existing` is passed.
@@ -184,9 +263,9 @@ This source can import large series in a few paginated requests. Existing issue 
 Some Marvel Metadata series are incomplete. For example, Web of Spider-Man (1985 - 1995) is listed there with fewer issues than Marvel's public page and GCD. For those cases, use a local GCD SQLite dump instead of the rate-limited GCD API:
 
 ```powershell
-python scripts\db_import_gcd_sqlite_series.py --db database/database.db --gcd-db "D:\Path\To\gcd.sqlite3" --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --dry-run
-python scripts\db_import_gcd_sqlite_series.py --db database/database.db --gcd-db "D:\Path\To\gcd.sqlite3" --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1
-python scripts\db_validate.py --db database/database.db
+python scripts\db_import_gcd_sqlite_series.py --db projects/spider-man/database/database.db --gcd-db "D:\Path\To\gcd.sqlite3" --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --dry-run
+python scripts\db_import_gcd_sqlite_series.py --db projects/spider-man/database/database.db --gcd-db "D:\Path\To\gcd.sqlite3" --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 The local GCD importer avoids web rate limits because it reads from the downloaded dump. It imports one reading entry per issue number by default, collapses direct/newsstand/variant rows, prefers exact `on_sale_date` values, and stores source URLs back to the selected GCD issue records. Use `--include-variants` only if you explicitly want variants as separate reading entries.
@@ -194,12 +273,12 @@ The local GCD importer avoids web rate limits because it reads from the download
 If you do not want to download the full GCD SQLite dump, use GCD's series details export as the smaller fallback. The script tries the public JSON export URL by default, but GCD may block scripted requests. If that happens, open the series details page in a browser, click the `.csv` or `.json` export link, save it locally, and pass it with `--input`:
 
 ```powershell
-python scripts\db_import_gcd_details_export.py --db database/database.db --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129 --dry-run
-python scripts\db_import_gcd_details_export.py --db database/database.db --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129
+python scripts\db_import_gcd_details_export.py --db projects/spider-man/database/database.db --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129 --dry-run
+python scripts\db_import_gcd_details_export.py --db projects/spider-man/database/database.db --gcd-series-id 3059 --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129
 
-python scripts\db_import_gcd_details_export.py --db database/database.db --gcd-series-id 3059 --input "D:\Downloads\web-of-spider-man-gcd.csv" --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129 --dry-run
-python scripts\db_import_gcd_details_export.py --db database/database.db --gcd-series-id 3059 --input "D:\Downloads\web-of-spider-man-gcd.csv" --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129
-python scripts\db_validate.py --db database/database.db
+python scripts\db_import_gcd_details_export.py --db projects/spider-man/database/database.db --gcd-series-id 3059 --input "D:\Downloads\web-of-spider-man-gcd.csv" --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129 --dry-run
+python scripts\db_import_gcd_details_export.py --db projects/spider-man/database/database.db --gcd-series-id 3059 --input "D:\Downloads\web-of-spider-man-gcd.csv" --run-id SER-000018 --run-title "Web of Spider-Man" --volume 1 --expected-count 129
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 Use `--expected-count` on gap-repair imports. It makes the import fail loudly when the source does not contain the issue count we expect.
@@ -207,7 +286,7 @@ Use `--expected-count` on gap-repair imports. It makes the import fail loudly wh
 Export a compact JSON reading order when needed:
 
 ```powershell
-python scripts\db_export_reading_order.py --db database/database.db
+python scripts\db_export_reading_order.py --db projects/spider-man/database/database.db
 ```
 
 The database schema is in `database/schema.sql`.
@@ -217,9 +296,9 @@ The database schema is in `database/schema.sql`.
 Before importing issue rows, maintain the run-level download/research queue:
 
 ```powershell
-python scripts\db_seed_run_candidates.py --db database/database.db
-python scripts\db_export_run_checklist.py --db database/database.db --priority P0
-python scripts\db_export_run_checklist.py --db database/database.db --priority P0 --format csv
+python scripts\db_seed_run_candidates.py --db projects/spider-man/database/database.db
+python scripts\db_export_run_checklist.py --db projects/spider-man/database/database.db --priority P0
+python scripts\db_export_run_checklist.py --db projects/spider-man/database/database.db --priority P0 --format csv
 ```
 
 The checklist is intentionally run-level only. It does not claim that issue rows, annual counts, or story arcs are complete.
@@ -241,9 +320,9 @@ The scraper excludes obvious reprints, collections, facsimiles, variants, and si
 When Marvel's official series page is recorded on a run but the issue rows are still missing, import the dated Marvel Fandom volume list into the simplified SQLite schema:
 
 ```powershell
-python scripts\db_import_fandom_volume.py --db database/database.db --run-id CAND-000022 --fandom-page Spider-Man_Vol_1 --dry-run
-python scripts\db_import_fandom_volume.py --db database/database.db --run-id CAND-000022 --fandom-page Spider-Man_Vol_1 --max-release-date 2026-07-31
-python scripts\db_validate.py --db database/database.db
+python scripts\db_import_fandom_volume.py --db projects/spider-man/database/database.db --run-id CAND-000022 --fandom-page Spider-Man_Vol_1 --dry-run
+python scripts\db_import_fandom_volume.py --db projects/spider-man/database/database.db --run-id CAND-000022 --fandom-page Spider-Man_Vol_1 --max-release-date 2026-07-31
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 The importer creates one issue row per dated issue and links it to the existing `comic_runs.id`. It creates placeholder story-arc rows because the current schema requires `issues.story_arc_id`; those rows should be replaced or regrouped during a later story-arc pass. Use `--max-release-date` for ongoing runs so future solicited issues are not imported before release.
@@ -255,9 +334,9 @@ For one-shots or graphic novels where Fandom has a single issue page instead of 
 After issue rows exist, backfill Fandom event/story-arc assignments and within-arc order:
 
 ```powershell
-python scripts\db_backfill_fandom_story_arcs.py --db database/database.db --dry-run --limit 25
-python scripts\db_backfill_fandom_story_arcs.py --db database/database.db --limit 300 --offset 0
-python scripts\db_validate.py --db database/database.db
+python scripts\db_backfill_fandom_story_arcs.py --db projects/spider-man/database/database.db --dry-run --limit 25
+python scripts\db_backfill_fandom_story_arcs.py --db projects/spider-man/database/database.db --limit 300 --offset 0
+python scripts\db_validate.py --db projects/spider-man/database/database.db
 ```
 
 The backfill reads issue-page `EventN` fields first, then `StoryArcN` fields. If multiple candidates are present, it chooses the event/story-arc page with the earliest detected start date. It fills `issues.sort_order` when Fandom exposes a `Reading Order:` list or ordered `PartN` fields; otherwise the organizer falls back to release date inside the selected arc.
@@ -304,7 +383,7 @@ Fields:
 
 Moved files keep the original normalized filename after the five-digit reading-order prefix.
 
-Source folders do not need to exist yet. Missing or unreachable source folders are reported as warnings and skipped, so you can add paths to `config.json` before those series finish downloading.
+Source folders do not need to exist yet. Missing or unreachable source folders are reported as warnings and skipped, so you can add paths to the project `config.json` before those series finish downloading.
 
 Supported filename formats include:
 
@@ -351,14 +430,14 @@ Use `python -m sorting.reindex_output` after fixing database dates, story arcs, 
 Dry run:
 
 ```powershell
-python -m sorting.reindex_output --config config.json
+python -m sorting.reindex_output --config projects/spider-man/config.json
 npm run reindex
 ```
 
 Apply:
 
 ```powershell
-python -m sorting.reindex_output --config config.json --apply
+python -m sorting.reindex_output --config projects/spider-man/config.json --apply
 ```
 
 The script scans `destination_folder`, strips the leading `##### - ` prefix, parses the original normalized filename, matches it against the current configured reading order, and renames only the numeric prefix. It writes the same terminal output to `logs/reindex-output.log` next to the config file.
@@ -373,10 +452,10 @@ Dry run:
 python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --folder "D:\Suwayomi\Comics\Spider-Verse"
 ```
 
-Dry run using `config.json` for the destination folder:
+Dry run using the project config for the destination folder:
 
 ```powershell
-python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --config config.json
+python -m sorting.shift_positions "00004 - The Amazing Spider-Man 1963 #3.cbz" --config projects/spider-man/config.json
 ```
 
 Apply:
@@ -409,13 +488,13 @@ Use `python -m sorting.migrate_sort_order` when you rebuild the JSON sort order 
 Recommended dry run using the old JSON file as a reference:
 
 ```powershell
-python -m sorting.migrate_sort_order --config config.json --old-reading-order "sort_orders\spider-verse-old.json"
+python -m sorting.migrate_sort_order --config projects/spider-man/config.json --old-reading-order "sort_orders\spider-verse-old.json"
 ```
 
 Apply:
 
 ```powershell
-python -m sorting.migrate_sort_order --config config.json --old-reading-order "sort_orders\spider-verse-old.json" --apply
+python -m sorting.migrate_sort_order --config projects/spider-man/config.json --old-reading-order "sort_orders\spider-verse-old.json" --apply
 ```
 
 With `--config`, the tool uses:
@@ -429,7 +508,7 @@ The old-reading-order mode is safest because it uses each existing file's curren
 Fallback dry run without an old JSON reference:
 
 ```powershell
-python -m sorting.migrate_sort_order --config config.json
+python -m sorting.migrate_sort_order --config projects/spider-man/config.json
 ```
 
 Fallback mode decodes legacy generated names like `00455 - The Amazing Spider-Man #396.cbz` and looks for the same title/issue in the new JSON file. If that title/issue appears in multiple volumes, the tool warns and skips that file until you provide `--old-reading-order`.
@@ -443,3 +522,4 @@ Run all tests:
 ```powershell
 python -m unittest discover -s tests
 ```
+

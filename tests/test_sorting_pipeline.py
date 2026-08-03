@@ -8,6 +8,8 @@ import sqlite3
 import unittest
 from pathlib import Path
 
+from sorting.characters import character_list_path_from_config, find_duplicate_claims, read_character_claims
+from sorting.config import load_config
 from sorting.list_order import build_list_report, format_report as format_list_report
 from sorting.list_order import main as list_main
 from sorting.missing_entries import build_missing_entries_report, format_report
@@ -181,6 +183,94 @@ class OrganizerPipelineTests(unittest.TestCase):
 			self.assertEqual(exit_code, 0)
 			self.assertTrue(log_path.is_file())
 			self.assertEqual(output.getvalue(), log_path.read_text(encoding="utf-8"))
+
+	def test_config_relative_paths_resolve_next_to_project_config(self) -> None:
+		root = Path.cwd() / ".test-tmp" / "project-config"
+		shutil.rmtree(root, ignore_errors=True)
+		try:
+			project_root = root / "projects" / "spider-man"
+			destination_folder = project_root / "organized"
+			source_folder = project_root / "downloads" / "The Amazing Spider-Man"
+			project_root.mkdir(parents=True)
+			destination_folder.mkdir()
+			source_folder.mkdir(parents=True)
+			(project_root / "database.db").write_text("", encoding="utf-8")
+			(project_root / "character-list.md").write_text("| Character |\n| --- |\n| Spider-Man |\n", encoding="utf-8")
+			config_path = project_root / "config.json"
+			config_path.write_text(
+				json.dumps(
+					{
+						"project_name": "Spider-Man",
+						"reading_order_path": "database.db",
+						"destination_folder": "organized",
+						"character_list_path": "character-list.md",
+						"source_folders": [
+							{
+								"path": "downloads\\The Amazing Spider-Man",
+								"run": "The Amazing Spider-Man",
+								"volume": 1,
+							}
+						],
+					}
+				),
+				encoding="utf-8",
+			)
+
+			config = load_config(config_path)
+
+			self.assertEqual(config.project_name, "Spider-Man")
+			self.assertEqual(config.reading_order_path, project_root / "database.db")
+			self.assertEqual(config.destination_folder, destination_folder)
+			self.assertEqual(config.character_list_path, project_root / "character-list.md")
+			self.assertEqual(config.source_folders[0].path, source_folder)
+			self.assertEqual(config.log_path, project_root / "logs" / "comic-organizer.log")
+		finally:
+			shutil.rmtree(root, ignore_errors=True)
+
+	def test_character_list_duplicate_detection_uses_aliases(self) -> None:
+		root = Path.cwd() / ".test-tmp" / "character-lists"
+		shutil.rmtree(root, ignore_errors=True)
+		try:
+			root.mkdir(parents=True)
+			spider_list = root / "Spider-Man.md"
+			symbiote_list = root / "Symbiotes.md"
+			spider_list.write_text(
+				"| Character | Origin |\n| --- | --- |\n| Venom (Eddie Brock) | ASM #300 |\n",
+				encoding="utf-8",
+			)
+			symbiote_list.write_text(
+				"| Character |\n| --- |\n| Venom |\n",
+				encoding="utf-8",
+			)
+
+			claims = read_character_claims(spider_list) + read_character_claims(symbiote_list)
+			duplicates = find_duplicate_claims(claims)
+
+			self.assertEqual([duplicate.key for duplicate in duplicates], ["venom"])
+			self.assertEqual([claim.name for claim in duplicates[0].claims], ["Venom (Eddie Brock)", "Venom"])
+		finally:
+			shutil.rmtree(root, ignore_errors=True)
+
+	def test_character_list_path_can_be_read_before_project_database_exists(self) -> None:
+		root = Path.cwd() / ".test-tmp" / "character-config"
+		shutil.rmtree(root, ignore_errors=True)
+		try:
+			project_root = root / "projects" / "x-men"
+			project_root.mkdir(parents=True)
+			config_path = project_root / "config.json"
+			config_path.write_text(
+				json.dumps(
+					{
+						"project_name": "X-Men",
+						"character_list_path": "character-list.md",
+					}
+				),
+				encoding="utf-8",
+			)
+
+			self.assertEqual(character_list_path_from_config(config_path), project_root / "character-list.md")
+		finally:
+			shutil.rmtree(root, ignore_errors=True)
 
 	def test_missing_entries_defaults_to_config_logs_folder(self) -> None:
 		with self._organizer_fixture() as fixture:
