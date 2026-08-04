@@ -26,6 +26,6 @@ This database includes original English-language comic publications that a reade
 
 If a publication mixes reprints with substantial original Spider-Man material, include it once and explain the original content in `notes`.
 
-If a title is marginally related, create a `review.json` item instead of silently excluding or including it.
+If a title is marginally related, create a database review record instead of silently excluding or including it.
 
 If sources disagree about issue count, date, numbering, or reading order, record the disagreement and mark the affected record `Conflicting Sources` or `Manual Review`.

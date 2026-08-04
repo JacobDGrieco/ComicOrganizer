@@ -1,4 +1,4 @@
-"""Renumber existing destination files after the reading-order JSON changes."""
+"""Renumber existing destination files after the reading-order database changes."""
 
 from __future__ import annotations
 
@@ -140,11 +140,11 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _parse_args(argv: list[str] | None) -> argparse.Namespace:
-	parser = argparse.ArgumentParser(description="Renumber existing destination files against a revised sort-order JSON file.")
+	parser = argparse.ArgumentParser(description="Renumber existing destination files against a revised reading-order database.")
 	parser.add_argument("--config", help="Organizer config JSON. Provides folder and new reading-order file.")
 	parser.add_argument("--folder", help="Destination folder containing already organized files.")
-	parser.add_argument("--new-reading-order", help="Reworked reading-order JSON path. Defaults to config reading_order_path.")
-	parser.add_argument("--old-reading-order", help="Original reading-order JSON path. Recommended when repeated issue numbers exist across volumes.")
+	parser.add_argument("--new-reading-order", help="Reworked reading-order database path. Defaults to config reading_order_path.")
+	parser.add_argument("--old-reading-order", help="Original reading-order database path. Recommended when repeated issue numbers exist across volumes.")
 	parser.add_argument("--apply", action="store_true", help="Actually rename files. Without this, only prints the plan.")
 	return parser.parse_args(argv)
 
@@ -239,7 +239,7 @@ def _unique_entry_index(entries: tuple[ReadingOrderEntry, ...]) -> dict[tuple[st
 	for entry in entries:
 		key = entry_match_key(entry)
 		if key in index:
-			raise MigrationError(f"New reading-order JSON has duplicate entry: {entry.run} volume {entry.volume} #{entry.issue_label}")
+			raise MigrationError(f"New reading-order database has duplicate entry: {entry.run} volume {entry.volume} #{entry.issue_label}")
 		index[key] = entry
 
 	return index

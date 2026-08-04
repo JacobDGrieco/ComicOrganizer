@@ -3,10 +3,10 @@
 ## Stack
 
 - Application runtime: Python 3.11+.
-- Organizer source of truth today: simplified SQLite database loaded by `sorting/reading_order.py`; legacy ordered JSON remains supported.
+- Organizer source of truth today: simplified SQLite database loaded by `sorting/reading_order.py`.
 - Research/download source of truth today: SQLite `comic_runs`, `issues`, and `story_arcs`.
 - Database stack: local SQLite.
-- Active database file: `projects/spider-man/database/database.db`.
+- Active database file: `databases/spider-man.db`.
 - Migration framework: raw SQL schema file plus idempotent import scripts.
 
 ## Existing Data
@@ -38,7 +38,7 @@ Current issue ID namespace:
 
 All P0, P1, P2, and P3 runs now have issue rows. `LOCAL-ARC-*` placeholder arcs remain where Marvel Fandom issue pages did not expose an `EventN` or `StoryArcN` field, or where a local issue could not be matched to a Fandom issue page.
 
-The organizer reads SQLite directly when `reading_order_path` points to `.db`, `.sqlite`, or `.sqlite3`.
+The organizer reads SQLite directly when `reading_order_path` points to `.db`, `.sqlite`, or `.sqlite3`. Non-database reading-order files are rejected.
 
 ## Application Dependency
 
@@ -73,5 +73,5 @@ The research workflow now needs only:
 
 - This is a local project, not a production service.
 - SQLite is sufficient for thousands of rows and avoids a server dependency.
-- Existing JSON should remain importable/exportable during the transition.
+- Reading-order data should remain in root `databases/<project>.db` files; config files may still be JSON.
 

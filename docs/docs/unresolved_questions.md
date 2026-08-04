@@ -4,10 +4,9 @@ Status: schema phase.
 
 ## Open
 
-- Confirm whether `leadCharacterIds` should remain as plain stable string IDs without a dedicated `characters.json` file, or whether a character authority file should be added later.
+- Confirm whether `leadCharacterIds` should remain as plain stable string IDs or whether a character authority table should be added later.
 - Confirm whether `publicationOrder` and `recommendedReadingOrder` should be stored directly on issue records, derived by script, or both.
-- Confirm whether the existing organizer should eventually read `data/issues.json` and `data/readingBlocks.json` instead of the simpler `sort_orders/spider-verse.json`.
-- Confirm whether legacy workbook rows should be imported into `review.json` as unverified discovery candidates or left outside the JSON source of truth.
+- Confirm whether legacy workbook rows should be imported into a database review table as unverified discovery candidates or left outside the source of truth.
 - Resolve `REV-000001`: Amazing Fantasy #15 on-sale/published/cover-date treatment.
 - Resolve `REV-000002`: The Amazing Spider-Man (1963 series) issue-count conflict between Marvel and GCD.
 - Resolve `REV-000003`: later Amazing Spider-Man annual structure after the 1964 #1-#28 series.
@@ -23,6 +22,6 @@ Status: schema phase.
 
 ## Resolved
 
-- JSON is the final source of truth.
+- SQLite is the final reading-order source of truth.
 - No Excel workbook will be produced.
 - Research must proceed one category at a time.

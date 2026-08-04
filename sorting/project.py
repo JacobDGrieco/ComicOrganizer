@@ -42,8 +42,6 @@ def main(argv: list[str] | None = None) -> int:
             return characters_main(["--config", str(config_path)])
         if args.command == "db-validate":
             return run_database_script(config_path, "db_validate.py")
-        if args.command == "db-export":
-            return run_database_script(config_path, "db_export_reading_order.py")
         if args.command == "flatten":
             return run_flatten(config_path, apply=args.apply, paths=args.path)
         if args.command == "download":
@@ -180,7 +178,6 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
             "download",
             "characters",
             "db-validate",
-            "db-export",
         ),
     )
     parser.add_argument(

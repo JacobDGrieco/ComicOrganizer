@@ -32,10 +32,10 @@ def _validate_config(raw_config: Any, config_path: Path) -> OrganizerConfig:
 		raise ConfigError(f"Config file must contain a JSON object: {config_path}")
 
 	project_name = _optional_string(raw_config, "project_name") or ""
-	reading_order_path = _required_path(raw_config, config_path, "reading_order_path")
+	reading_order_path = _optional_path(raw_config, config_path, "reading_order_path") or _default_project_database_path(config_path)
 	destination_folder = _required_path(raw_config, config_path, "destination_folder")
 	log_path = _optional_path(raw_config, config_path, "log_path") or default_log_path(config_path, "comic-organizer.log")
-	character_list_path = _optional_path(raw_config, config_path, "character_list_path")
+	character_list_path = _optional_path(raw_config, config_path, "character_list_path") or _default_character_list_path(config_path)
 	source_folders = _source_folders(raw_config.get("source_folders"), config_path)
 	issue_overrides = _issue_overrides(raw_config.get("issue_overrides", {}))
 
@@ -87,6 +87,21 @@ def _resolve_config_relative_path(config_path: Path, value: str) -> Path:
 		return path
 	parent = config_path.parent if str(config_path.parent) else Path(".")
 	return parent / path
+
+
+def _default_project_database_path(config_path: Path) -> Path:
+	"""Infer `databases/<project>.db` for configs stored under `projects/<project>/`."""
+	config_folder = config_path.parent if str(config_path.parent) else Path(".")
+	projects_folder = config_folder.parent
+	if projects_folder.name.casefold() != "projects":
+		raise ConfigError("Config field 'reading_order_path' is required outside projects/<project>/ configs")
+	return projects_folder.parent / "databases" / f"{config_folder.name}.db"
+
+
+def _default_character_list_path(config_path: Path) -> Path:
+	"""Use the standard per-project character list name."""
+	config_folder = config_path.parent if str(config_path.parent) else Path(".")
+	return config_folder / "characters.md"
 
 
 def _source_folders(value: Any, config_path: Path) -> list[SourceFolderConfig]:

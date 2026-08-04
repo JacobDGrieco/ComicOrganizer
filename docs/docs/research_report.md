@@ -6,17 +6,17 @@ Research cutoff: 2026-07-31
 
 ## Current State
 
-- SQLite `projects/spider-man/database/database.db` is the active source of truth for the research/download queue.
+- SQLite `databases/spider-man.db` is the active source of truth for the research/download queue.
 - `comic_runs`, `issues`, and `story_arcs` are the active catalog tables.
 - No Excel workbook will be created or maintained.
-- Legacy JSON files under `data/` remain transitional/export material only and should not be treated as authoritative.
+- Legacy data files are not authoritative and should not be used for reading-order storage.
 - First-pass run records have been populated for Amazing Fantasy, core Amazing Spider-Man publication identities, and a broad Marvel-official Spider-affiliated run queue.
 
 ## Repository Audit
 
-Existing project files before schema scaffolding included a Python comic organizer, tests, a config file, a sample reading-order JSON file, and an ignored `sort_orders/` folder.
+Existing project files before schema scaffolding included a Python comic organizer, tests, a config file, and legacy research inputs.
 
-Legacy workbook input exists at `sort_orders/spider-verse.xlsx`. It has three sheets: `Read Me`, `Comic Runs`, and `Issue Release Order`.
+Legacy workbook input existed with three sheets: `Read Me`, `Comic Runs`, and `Issue Release Order`.
 
 Workbook inspection found:
 

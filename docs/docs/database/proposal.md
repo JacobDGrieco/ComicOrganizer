@@ -43,7 +43,7 @@ This is an additive SQLite schema change. Existing code that ignores `issues.sor
 
 ## Data Transformation
 
-1. Back up `projects/spider-man/database/database.db`.
+1. Back up `databases/spider-man.db`.
 2. Add `issues.sort_order INTEGER` when missing.
 3. Add an index for story-arc ordering.
 4. Fetch Marvel Fandom issue pages for local issues.
@@ -56,17 +56,17 @@ This is an additive SQLite schema change. Existing code that ignores `issues.sor
 Run:
 
 ```powershell
-python scripts\db_validate.py --db projects/spider-man/database/database.db
-python scripts\db_backfill_fandom_story_arcs.py --db projects/spider-man/database/database.db --dry-run --limit 25
-python scripts\db_backfill_fandom_story_arcs.py --db projects/spider-man/database/database.db
-python scripts\db_validate.py --db projects/spider-man/database/database.db
+python scripts\db_validate.py --db databases/spider-man.db
+python scripts\db_backfill_fandom_story_arcs.py --db databases/spider-man.db --dry-run --limit 25
+python scripts\db_backfill_fandom_story_arcs.py --db databases/spider-man.db
+python scripts\db_validate.py --db databases/spider-man.db
 python -m py_compile scripts\db_backfill_fandom_story_arcs.py scripts\db_validate.py sorting\reading_order.py
 python -m unittest discover -s tests
 ```
 
 ## Rollback
 
-Restore the backup written next to `projects/spider-man/database/database.db` before the backfill.
+Restore the backup written next to `databases/spider-man.db` before the backfill.
 
 ## Classification
 
@@ -130,7 +130,7 @@ This is a data-only migration. Table shape and application queries remain compat
 
 ## Data Transformation
 
-1. Back up `projects/spider-man/database/database.db`.
+1. Back up `databases/spider-man.db`.
 2. For each legacy story-arc row, compute a deterministic target ID.
 3. Insert the target row if it does not already exist.
 4. Update any `issues.story_arc_id` references from the old ID to the target ID.
@@ -142,9 +142,9 @@ This is a data-only migration. Table shape and application queries remain compat
 Run:
 
 ```powershell
-python scripts\db_normalize_story_arc_ids.py --db projects/spider-man/database/database.db --dry-run
-python scripts\db_normalize_story_arc_ids.py --db projects/spider-man/database/database.db
-python scripts\db_validate.py --db projects/spider-man/database/database.db
+python scripts\db_normalize_story_arc_ids.py --db databases/spider-man.db --dry-run
+python scripts\db_normalize_story_arc_ids.py --db databases/spider-man.db
+python scripts\db_validate.py --db databases/spider-man.db
 python -m py_compile scripts\db_normalize_story_arc_ids.py scripts\db_import_fandom_volume.py
 ```
 
@@ -215,7 +215,7 @@ Any external notes, caches, or commands that refer to old issue IDs manually wil
 
 ## Data Transformation
 
-1. Back up `projects/spider-man/database/database.db`.
+1. Back up `databases/spider-man.db`.
 2. Compute the target ID for every issue row.
 3. Fail the migration if any target IDs collide.
 4. Update `issues.id` in place.
@@ -226,9 +226,9 @@ Any external notes, caches, or commands that refer to old issue IDs manually wil
 Run:
 
 ```powershell
-python scripts\db_normalize_issue_ids.py --db projects/spider-man/database/database.db --dry-run
-python scripts\db_normalize_issue_ids.py --db projects/spider-man/database/database.db
-python scripts\db_validate.py --db projects/spider-man/database/database.db
+python scripts\db_normalize_issue_ids.py --db databases/spider-man.db --dry-run
+python scripts\db_normalize_issue_ids.py --db databases/spider-man.db
+python scripts\db_validate.py --db databases/spider-man.db
 python -m py_compile scripts\db_normalize_issue_ids.py scripts\db_import_fandom_volume.py
 ```
 

@@ -154,7 +154,7 @@ def discover_character_list_paths(root: str | Path) -> tuple[Path, ...]:
 		return ()
 	if root_path.is_file():
 		return (root_path,)
-	project_paths = list(root_path.glob("*/character-lists/*.md"))
+	project_paths = list(root_path.glob("*/characters.md"))
 	paths = project_paths or list(root_path.glob("*.md"))
 	return tuple(sorted(paths, key=lambda path: str(path).casefold()))
 
@@ -224,9 +224,9 @@ def character_list_path_from_config(config_path: str | Path) -> Path:
 	if not isinstance(raw_config, dict):
 		raise ConfigError(f"Config file must contain a JSON object: {path}")
 
-	value = raw_config.get("character_list_path")
+	value = raw_config.get("character_list_path", "characters.md")
 	if not isinstance(value, str) or not value.strip():
-		raise ValueError(f"Config does not define character_list_path: {path}")
+		raise ValueError(f"Config field 'character_list_path' must be a non-empty string when provided: {path}")
 
 	character_list_path = Path(value.strip())
 	if character_list_path.is_absolute():

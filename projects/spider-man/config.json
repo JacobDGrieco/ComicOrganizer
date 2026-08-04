@@ -1,7 +1,6 @@
 {
 	"project_name": "Spider-Man",
-	"reading_order_path": "database/database.db",
-	"character_list_path": "character-lists/Spider-Man.md",
+	"character_list_path": "characters.md",
 	"download_urls_path": "downloader/urls.csv",
 	"download_output_folder": "downloader/downloads",
 	"destination_folder": "D:\\Suwayomi\\Comics\\Spider-Man Family",
