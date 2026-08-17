@@ -61,7 +61,8 @@ npm run missing -- spider-man
 npm run list -- spider-man
 npm run reindex:dry -- spider-man
 npm run reindex -- spider-man
-npm run download -- spider-man
+npm run download
+npm run download:headless
 npm run flatten:dry -- spider-man
 npm run flatten -- spider-man
 npm run check

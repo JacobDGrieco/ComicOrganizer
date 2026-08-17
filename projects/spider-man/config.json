@@ -1993,6 +1993,118 @@
 			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Strange Heads (1997)",
 			"run": "Amazing Spider-Man: Strange Heads",
 			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Carnage (2015)",
+			"run": "Carnage",
+			"volume": 2
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Guardians of the Galaxy (2015)",
+			"run": "Guardians of the Galaxy",
+			"volume": 3,
+			"annual_run": "Guardians of the Galaxy Annual",
+			"annual_volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web Warriors (2015)",
+			"run": "Web Warriors",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Secret Wars 2099 (2015)",
+			"run": "Secret Wars 2099",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Island (2015)",
+			"run": "Spider-Island",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man & the X-Men (2015)",
+			"run": "Spider-Man & the X-Men",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Renew Your Vows (2015)",
+			"run": "Amazing Spider-Man: Renew Your Vows",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man & Venom; Death Spiral - Body Count (2026)",
+			"run": "Amazing Spider-Man/Venom: Death Spiral - Body Count",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man & Venom; Death Spiral (2026)",
+			"run": "Amazing Spider-Man/Venom: Death Spiral",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Astonishing Miles Morales; Spider-Man (2026)",
+			"run": "Astonishing Miles Morales: Spider-Man",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Edge Of Venomverse (2025)",
+			"run": "Edge Of Venomverse",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\King In Black (2020)",
+			"run": "King In Black",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Marvel & DC; Spider-Man & Superman (2026)",
+			"run": "Marvel/DC: Spider-Man/Superman",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Queen In Black (2026)",
+			"run": "Queen In Black",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Spider-Man; Holiday Spectacular (2025)",
+			"run": "Spider-Man: Holiday Spectacular",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Ultimate Spider-Man; Incursion (2025)",
+			"run": "Ultimate Spider-Man: Incursion",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom (2021)",
+			"run": "Venom",
+			"volume": 5
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom (2025)",
+			"run": "Venom",
+			"volume": 6
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Venom; Black, White & Blood (2025)",
+			"run": "Venom: Black, White & Blood",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Web Of Venom (2026)",
+			"run": "Web Of Venom",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\Amazing Spider-Man; Torn (2025)",
+			"run": "Amazing Spider-Man: Torn",
+			"volume": 1
+		},
+		{
+			"path": "D:\\Suwayomi\\.temp\\Spider-Man\\All-New Venom (2024)",
+			"run": "All-New Venom",
+			"volume": 1
 		}
 	],
 	"issue_overrides": {
